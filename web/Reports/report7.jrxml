@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report5" language="groovy" pageWidth="1015" pageHeight="802" columnWidth="1015" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ddaa744c-efb6-497c-a177-df82a9d02c96">
+	<property name="ireport.zoom" value="4.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="idEmpresa" class="java.lang.Integer"/>
+	<parameter name="fechaIni" class="java.lang.String"/>
+	<parameter name="fechaFin" class="java.lang.String"/>
+	<parameter name="documento" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT s.servicio,
+                 c.ciudad origen,
+                 c2.ciudad destino,
+                 CONVERT(datetime, vt.fecha_inicial) as fecha_inicial,
+                 CONVERT(datetime, vt.fecha_final) as fecha_final,
+                 e.documento,
+                 e.nombre,
+                 vt.tiquetes_asignados ,
+                 vt.ida_regreso,
+                 vt.id_viaje_tiquete,
+                 vt.orden_servicio,
+                 vt.tiquetes_entregados
+          FROM detalle_convenio dc, tbl_empleados e, tbl_viajes_tiquetes vt, tbl_ciudades c,
+               tbl_ciudades c2, tbl_servicios s
+          WHERE dc.detalle_conv_pk = vt.detalle_conv_pk AND
+               e.documento = vt.documento AND
+               c.cod_ciudad =  dc.cod_ciudad_origen AND c2.cod_ciudad = dc.cod_ciudad_destino AND
+               vt.estado = 1 AND
+               s.id_servicio = dc.id_servicio AND dc.cod_estado = 38
+               AND dc.id_empresa = $P{idEmpresa}
+               AND vt.fecha_inicial BETWEEN $P{fechaIni} AND $P{fechaFin}
+               AND vt.documento =  $P{documento}]]>
+	</queryString>
+	<field name="servicio" class="java.lang.String"/>
+	<field name="origen" class="java.lang.String"/>
+	<field name="destino" class="java.lang.String"/>
+	<field name="fecha_inicial" class="java.sql.Timestamp"/>
+	<field name="fecha_final" class="java.sql.Timestamp"/>
+	<field name="documento" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="tiquetes_asignados" class="java.lang.Integer"/>
+	<field name="ida_regreso" class="java.lang.String"/>
+	<field name="id_viaje_tiquete" class="java.lang.Integer"/>
+	<field name="orden_servicio" class="java.lang.String"/>
+	<field name="tiquetes_entregados" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement uuid="a23269fd-9264-4bc1-acf9-d4fed5d51fac" x="0" y="0" width="1015" height="15"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Saldo Actual Para El Empleado: " + $F{nombre}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="15" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="100" y="0" width="104" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="0" y="0" width="100" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Documento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="204" y="0" width="100" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Origen]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="304" y="0" width="100" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Destino]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="404" y="0" width="113" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tiquetes Asignados]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="517" y="0" width="131" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tiquetes Entregados]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="648" y="0" width="76" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saldos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="724" y="0" width="103" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vence]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="827" y="0" width="101" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ida y Regreso]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="928" y="0" width="87" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[O. de Servicio]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement uuid="ffbb8c1b-5b97-4508-8962-6d17d8b330cf" x="0" y="0" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{documento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9defbedb-2edf-4efb-a662-04d60bc4e90c" x="100" y="0" width="104" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="204" y="0" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{origen}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="304" y="0" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{destino}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="404" y="0" width="113" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{tiquetes_asignados}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="517" y="0" width="131" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{tiquetes_entregados}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="648" y="0" width="76" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{tiquetes_asignados}-$F{tiquetes_entregados}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy/MM/dd">
+				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="724" y="0" width="103" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{fecha_final}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="827" y="0" width="101" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{fecha_final}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="928" y="0" width="87" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{orden_servicio}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

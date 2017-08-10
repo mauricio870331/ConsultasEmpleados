@@ -1,0 +1,164 @@
+/*.ui-button-text{
+    background-color: #3c8dbc;
+    border-color: #367fa9;   
+    border-radius: 3px;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border: 1px solid;
+    color: #fff;
+}
+*/
+/*.ui-button{
+    background-color: #008749 !important;
+   
+}
+*/
+
+
+
+
+.separe{   
+    font-size: 12px;      
+    text-align: left; 
+    cursor: pointer;
+    margin-right: 2px!important;
+    color: white!important;
+}
+
+.ui-dialog{
+    /* margin-left: -65px!important;*/
+    margin-top: -10px;
+}
+
+.inputmio{    
+    margin-top: 8px!important;
+}
+
+.ui-chkbox {
+    margin-right: 12px!important;
+    margin-top: 2px!important;
+    height: 29px!important;  
+}
+
+.prime{   
+    margin-right: 8px;
+    height: 30px!important;   
+}
+
+.ui-button-text, .ui-c {
+    font-size: 11px!important;
+    /*        margin-top:  2px;*/
+    margin-bottom: 3px!important;
+    margin-left: -3px!important;
+}
+
+.bulb{
+    color: #3c8dbc;  
+    cursor: pointer;
+
+}
+
+/*.y{
+    color: yellow;     
+}*/
+
+.miIcon{
+    color: green;
+}
+
+.ui-inputfield{
+    width: 100%;
+    height: 32px;
+}
+
+.ui-button-icon{
+    color: #fff !important; 
+}
+
+.m{    
+    margin-right: 10px;
+}
+
+.micomplete{    
+    width: 100% !important;
+}
+
+.ui-autocomplete-input{
+    width: 100% !important;
+    margin-bottom: 10px;
+}
+
+
+
+.s{
+    width: 72px;
+    height: 34px;
+    font-size: 14px;
+    text-align: center;      
+}
+
+.iconS{      
+    font-size: 12px;   
+    height: 25px;
+    text-align: left; 
+    cursor: pointer;
+    margin-right: 5px;
+    color: white!important;
+}
+
+
+.iconS2{   
+    width: 39px;
+    font-size: 12px;   
+    height: 25px;
+    text-align: left; 
+    cursor: pointer;
+    color: white !important;
+    margin-right: 5px;
+}
+
+.iconSm{      
+    font-size: 12px;   
+    height: 30px;
+    text-align: left; 
+    cursor: pointer;
+    margin-right: 5px;
+    color: white!important;
+}
+
+
+.iconplus{      
+    font-size: 12px;   
+    height: 32px;
+    text-align: left; 
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+
+
+
+
+.miBtn{     
+    width: 55px;
+    top: -6px;
+    height: 34px;    
+    cursor: pointer;
+    color: white !important;
+    text-align: center;
+}
+
+
+
+.miBtn2{     
+    width: 55px;   
+    height: 34px;    
+    cursor: pointer;
+    color: white !important;
+    text-align: center;
+}
+
+.miPicker{
+    margin-bottom: 11px !important;    
+}
+

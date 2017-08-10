@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reciboDeCaja" language="groovy" pageWidth="275" pageHeight="500" columnWidth="275" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isSummaryWithPageHeaderAndFooter="true" uuid="32445b16-e23f-4a3f-8628-2fb67e7b5f70">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="idTransaccion" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="con" class="java.lang.String" isForPrompting="false"/>
+	<queryString>
+		<![CDATA[select t.id_transaccion,CONVERT(datetime, t.fecha_mod) as fechaEntrega,
+       t.cant_tiquetes, t.descripcion_tiquetes,
+       t.total, e.nombre, t.userNodum, t.usuario_taquilla, t.taquilla, t.tiquetes_entregados
+from transaccion t, tbl_empresas e, usuarios u
+where t.id_transaccion = $P{idTransaccion}
+and u.id_empresa = e.id_empresa and t.id_usuario = u.id_usuario]]>
+	</queryString>
+	<field name="id_transaccion" class="java.lang.Integer"/>
+	<field name="fechaEntrega" class="java.sql.Timestamp"/>
+	<field name="cant_tiquetes" class="java.lang.Integer"/>
+	<field name="descripcion_tiquetes" class="java.lang.String"/>
+	<field name="total" class="java.lang.Integer"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="userNodum" class="java.lang.String"/>
+	<field name="usuario_taquilla" class="java.lang.String"/>
+	<field name="taquilla" class="java.lang.String"/>
+	<field name="tiquetes_entregados" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="46" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="17493b2b-0557-4c95-bcbf-7a8da8b1d532" x="23" y="4" width="175" height="22"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Recibo de Caja]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="17493b2b-0557-4c95-bcbf-7a8da8b1d532" x="23" y="24" width="175" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Afiliados Palmira S.A]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="122" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="e81c6960-037e-4749-9196-a96ebde1c6b7" x="5" y="79" width="265" height="40"/>
+				<subreportParameter name="idTrans">
+					<subreportParameterExpression><![CDATA[$P{idTransaccion}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement uuid="92391148-6c17-4ac8-a278-233359a5c999" x="11" y="18" width="64" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cliente:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="f82fabee-2b94-49e8-b168-fc8ab37f743a" x="76" y="18" width="122" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="cf376695-ab44-490f-8ead-08aa5ad5288a" x="11" y="4" width="64" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Transaccion:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="2b3b5526-55ca-4315-9b5b-cde780505af5" x="76" y="4" width="122" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{id_transaccion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e0e6d357-d111-417e-83f1-da85c1f3fe83" x="76" y="33" width="122" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{usuario_taquilla}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="92391148-6c17-4ac8-a278-233359a5c999" x="11" y="33" width="64" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Entrega:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="92391148-6c17-4ac8-a278-233359a5c999" x="11" y="48" width="64" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tot Tiquetes:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="e0e6d357-d111-417e-83f1-da85c1f3fe83" x="76" y="48" width="122" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cant_tiquetes}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="92391148-6c17-4ac8-a278-233359a5c999" x="11" y="62" width="64" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tiquetes:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e0e6d357-d111-417e-83f1-da85c1f3fe83" x="76" y="62" width="122" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{tiquetes_entregados}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="98">
+			<textField>
+				<reportElement uuid="087e6d2e-5a1d-4f7c-a8d1-15d1edd61a98" x="11" y="71" width="87" height="12"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fechaEntrega}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2b22687e-3ac7-4404-93f2-db084d8bb50c" x="98" y="71" width="172" height="12"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{taquilla}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="cf376695-ab44-490f-8ead-08aa5ad5288a" x="11" y="2" width="76" height="12"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL GENERAL:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="087e6d2e-5a1d-4f7c-a8d1-15d1edd61a98" x="177" y="0" width="87" height="12"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="cf376695-ab44-490f-8ead-08aa5ad5288a" x="11" y="33" width="76" height="12"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Firma Usuario:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="bc0fd184-b0b5-4480-8633-27e3b4d805e5" x="69" y="41" width="143" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="cf376695-ab44-490f-8ead-08aa5ad5288a" x="11" y="87" width="76" height="8"/>
+				<textElement>
+					<font size="6" isBold="true" isItalic="true" isUnderline="true" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[Descargue Convenio]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

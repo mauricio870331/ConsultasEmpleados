@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="faturaventaAdmon" language="groovy" pageWidth="1450" pageHeight="500" columnWidth="1450" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ddaa744c-efb6-497c-a177-df82a9d02c96">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="1410"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="idEmpresa" class="java.lang.Integer"/>
+	<parameter name="fechaIni" class="java.lang.String"/>
+	<parameter name="fechaFin" class="java.lang.String"/>
+	<parameter name="doc" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT e.documento,e.nombre,e.ot,c.ciudad as origen,
+				c2.ciudad as destino,
+				dc.valor_cliente,
+				vt.tiquetes_asignados,
+				t.fecha_mod as fecha_venta,
+				vt.ida_regreso,
+case when vt.ida_regreso = 'Si' then (tv.cant_tiquetes * dc.valor_cliente)* 2
+			       else (tv.cant_tiquetes * dc.valor_cliente) end total,
+			   vt.orden_servicio, case when t.tiquetes_entregados is null then '--' else t.tiquetes_entregados end   as tiquetes,
+case when (select cm_asoc from detalle_relacion where id_trans_conv = t.id_transaccion) is null then 'Pendiente' else (select cm_asoc from detalle_relacion where id_trans_conv = t.id_transaccion) end cm
+		 FROM tbl_empleados e, tbl_ciudades c,
+		      tbl_ciudades c2, detalle_convenio dc,
+		      tbl_viajes_tiquetes vt, transaccion_viajero tv, transaccion t
+		 WHERE e.documento = vt.documento AND vt.detalle_conv_pk = dc.detalle_conv_pk
+            AND vt.estado = 1
+            AND dc.cod_ciudad_origen = c.cod_ciudad AND dc.cod_ciudad_destino = c2.cod_ciudad
+            AND tv.id_viaje_tiquete = vt.id_viaje_tiquete AND tv.id_transaccion = t.id_transaccion
+            AND vt.id_empresa = dc.id_empresa AND vt.id_empresa in ($P{idEmpresa})
+            AND t.fecha_mod BETWEEN ($P{fechaIni})
+            AND ($P{fechaFin})
+            AND vt.documento in ($P{doc})
+          UNION all
+            select t.documento, t.nombre, t.ot, c.ciudad, c2.ciudad, t.valor, t.cantidad, t.Fecha_Creacion,
+            case when t.ida_regreso = 'N' then 'No' else 'Si' end ida_regreso,
+            t.total, 'NA' orden_servicio, case when tiquete is null then '--' else tiquete end as tiquetes,
+            case when (select cm_asoc from detalle_relacion where id_trans_conv = t.id_registro) is null then 'Pendiente' else (select cm_asoc from detalle_relacion where id_trans_conv = t.id_registro) end cm from tbl_usuarioRegistro t, tbl_ciudades c,
+		    tbl_ciudades c2
+		    where t.cod_ciudad_origen = c.cod_ciudad
+		    AND t.cod_ciudad_destino = c2.cod_ciudad
+		    AND t.id_empresa in ($P{idEmpresa})
+            AND t.Fecha_Creacion BETWEEN ($P{fechaIni})
+            AND ($P{fechaFin})
+            AND t.documento in ($P{doc})]]>
+	</queryString>
+	<field name="documento" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="ot" class="java.lang.String"/>
+	<field name="origen" class="java.lang.String"/>
+	<field name="destino" class="java.lang.String"/>
+	<field name="valor_cliente" class="java.lang.Integer"/>
+	<field name="tiquetes_asignados" class="java.lang.Integer"/>
+	<field name="fecha_venta" class="java.sql.Timestamp"/>
+	<field name="ida_regreso" class="java.lang.String"/>
+	<field name="total" class="java.lang.Integer"/>
+	<field name="orden_servicio" class="java.lang.String"/>
+	<field name="tiquetes" class="java.lang.String"/>
+	<field name="cm" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="f8f50db0-240c-45d4-bab3-6c81615fe4f0" x="0" y="0" width="1450" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Factura de Venta]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="100" y="0" width="209" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="0" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Documento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="309" y="0" width="104" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[OT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="413" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Origen]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="513" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Destino]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="613" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor Unitario]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="713" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="813" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="913" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fech Venta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="1013" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ida y Regreso]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6697882a-3aca-453b-9eb8-df8ac36987bc" x="1113" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[OS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6697882a-3aca-453b-9eb8-df8ac36987bc" x="1213" y="0" width="136" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tiquetes Entregados]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6697882a-3aca-453b-9eb8-df8ac36987bc" x="1349" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[No. CM]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement uuid="ffbb8c1b-5b97-4508-8962-6d17d8b330cf" x="0" y="0" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{documento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9defbedb-2edf-4efb-a662-04d60bc4e90c" x="100" y="0" width="209" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2443839a-57d1-456b-8796-85d545a86e57" x="309" y="0" width="104" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ot}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="413" y="0" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{origen}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="513" y="0" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{destino}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="613" y="0" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{valor_cliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="713" y="0" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{tiquetes_asignados}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="813" y="0" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="913" y="0" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{fecha_venta}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="1013" y="0" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ida_regreso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8c288e20-0dbd-4598-a66c-096d5298d920" x="1113" y="0" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{orden_servicio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="eec3a739-68bf-4f23-99ad-c58be693d0c3" x="1213" y="0" width="136" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{tiquetes}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="eec3a739-68bf-4f23-99ad-c58be693d0c3" x="1349" y="0" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cm}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

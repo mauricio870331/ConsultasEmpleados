@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"  
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <ui:composition template="../Templets/templetValores.xhtml">
+        <ui:define name="titleapp">
+            <h:outputText value="Generar Relacón"></h:outputText>             
+        </ui:define>
+        <ui:define name="user">
+            <h:outputText value="#{loginBean.nomUserLog}"></h:outputText>
+        </ui:define>
+        <ui:define name="title">
+            <h:outputText value="Generar Relacón de Recibos de Caja"></h:outputText>    
+        </ui:define>
+        <ui:define name="body">  
+            <b:panel> 
+                <h:form id="form">                   
+                    <p:tabView>                        
+                        <p:tab title="Convenios" >
+                            <b:growl  id="growl" showDetail="true" placementFrom="bottom" globalOnly="true" />  
+                            <b:panelGrid colSpans="1,2,1,2,5,1" id="datos" >                  
+                                <h:outputText value="F. Inicial:" />
+                                <p:calendar id="fechaIni" alt="Seleccione fecha" value="#{transaccionesBean.selecFechaIni}" pattern="dd/MM/yy" >                              
+                                    <f:ajax event="dateSelect" execute="@this" ></f:ajax>
+                                </p:calendar>
+
+                                <h:outputText value="F. Final:" />
+                                <p:calendar id="fechaFin" alt="Seleccione fecha" value="#{transaccionesBean.selecFechaFin}" pattern="dd/MM/yy" >  
+                                    <f:ajax event="dateSelect" execute="@this" ></f:ajax>
+                                </p:calendar>   
+
+
+                                <p:selectCheckboxMenu id="empresa"  value="#{transaccionesBean.selectedEmpresas}" label="Todas las Empresas"
+                                                      filter="true" filterMatchMode="startsWith" panelStyle="width:310px">                                    
+                                    <f:selectItems value="#{transaccionesBean.list_empresas}" var="a" itemValue="#{a.nombre}" itemLabel="#{a.nombre}" />
+                                    <f:ajax event="change" execute="@this" ></f:ajax>
+                                </p:selectCheckboxMenu>
+
+                                <b:commandButton id="refresh" styleClass="iconSx" look="primary" value="" tooltip="Buscar">
+                                    <b:iconAwesome name="search" size="1x" />
+                                    <f:ajax event="click" listener="#{transaccionesBean.generarCmConvenios()}"  render="tblconvenios growl fechaIni fechaFin empresa save" ></f:ajax>
+                                </b:commandButton>
+
+                            </b:panelGrid>  
+
+                            <b:panelGrid colSpans="1,4,1,4,2" id="datosmanual" >                  
+                                <h:outputText value="Usuario:" />
+                                <b:inputText value="#{transaccionesBean.detalleCm.pagado_a}" name="pp" id="pp"                                     
+                                             placeholder="Usuario"  >                            
+                                </b:inputText> 
+
+                                <h:outputText value="Cedula/Nit:" />
+                                <b:inputText value="#{transaccionesBean.detalleCm.cc_nit}" name="cc" id="cc"                                     
+                                             placeholder="Cedula/Nit">                            
+                                </b:inputText> 
+
+                                <input type="hidden" value="" name="dd" id="dd" /> 
+
+                            </b:panelGrid>  
+
+                            <b:panelGrid colSpans="1,4,1,4,2" id="datosmanual2" >                  
+                                <h:outputText value="Empresa" />
+                                <b:selectOneMenu value="#{transaccionesBean.detalleCm.concepto}" pt:name="conc" id="conc" 
+                                                 tooltip="Selecione Empresa" >
+                                    <f:facet name="append">
+                                        <b:iconAwesome name="list" />
+                                    </f:facet>
+                                    <f:selectItem itemLabel="Seleccione" itemValue="Todas"/>
+                                    <f:selectItems value="#{transaccionesBean.list_empresas}" var="a" itemValue="#{a.nombre}" itemLabel="#{a.nombre}" />
+                                </b:selectOneMenu>
+
+
+                                <h:outputText value="Valor:" />
+                                <b:inputText value="#{transaccionesBean.detalleCm.valor}" name="val" id="val"                                     
+                                             placeholder="Valor">                            
+                                </b:inputText> 
+
+                                <b:commandButton id="add2" styleClass="iconSx" look="primary" value="" tooltip="Agregar">
+                                    <b:iconAwesome name="plus" size="1x" />
+                                    <f:ajax event="click" listener="#{transaccionesBean.addConceptCmManual()}"  render="form:tblconvenios, conc, val, cc, pp, growl" ></f:ajax>
+                                </b:commandButton>
+                            </b:panelGrid> 
+                            <br/>                
+
+                            <p:dataTable id="tblconvenios" var="detalle" value="#{transaccionesBean.detalleCmList2}" rows="10"
+                                         paginator="true"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="5,10,15">  
+                                <p:column headerText="Usuario" width="220" style="text-align: center">
+                                    <h:outputText value="#{detalle.pagado_a}" />
+                                </p:column>
+                                <p:column headerText="C.C / NIT" style="text-align: center" width="100">
+                                    <h:outputText value="#{detalle.cc_nit}" />
+                                </p:column>                                
+
+                                <p:column headerText="Empresa" width="300" style="text-align: center">
+                                    <h:outputText value="#{detalle.concepto}" rendered="#{detalle.tabla=='transaccion'}"/>
+
+                                    <b:selectOneMenu rendered="#{detalle.tabla=='tbl_usuarioRegistro'}" 
+                                                     value="#{detalle.concepto}"                                                      
+                                                     >
+                                        <f:facet name="append">
+                                            <b:iconAwesome name="list" />
+                                        </f:facet>                                        
+                                        <f:selectItems value="#{transaccionesBean.list_empresas}" var="a" itemValue="#{a.nombre}" itemLabel="#{a.nombre}" />
+                                        <f:ajax event="change" 
+                                                execute="@this" 
+                                                listener="#{transaccionesBean.editValue2(detalle)}" 
+                                                render="@this"></f:ajax>
+                                    </b:selectOneMenu>
+
+                                </p:column> 
+
+                                <p:column headerText="Valor" width="100" style="text-align: center">
+                                    <h:outputText value="#{detalle.valor}" rendered="#{detalle.tabla=='transaccion'}"/>
+                                    <p:inputText  value="#{detalle.valor}" 
+                                                  style="width: 70px;height: 25px;"
+                                                  rendered="#{detalle.tabla=='tbl_usuarioRegistro'}">  
+                                        <f:ajax event="blur"
+                                                execute="@this" 
+                                                listener="#{transaccionesBean.editValue(detalle)}" 
+                                                render="@this" />
+                                    </p:inputText>
+                                </p:column>   
+
+
+                                <p:column headerText="Descripción" width="170" style="text-align: center" >
+                                    <p:inputText style="width: 155px;height: 25px;" value="#{detalle.descripcion}" rendered="#{detalle.tabla=='transaccion'}">  
+                                        <f:ajax event="blur"                                        
+                                                execute="@this"                                                 
+                                                render="@this"
+                                                />
+                                    </p:inputText>
+                                </p:column> 
+
+                                <p:column headerText="No CM" width="100" style="text-align: center" >
+                                    <p:inputText style="width: 80px;height: 25px;" value="#{detalle.cm_asoc}" >  
+                                        <f:ajax event="blur"                                        
+                                                execute="@this" 
+                                                listener="#{transaccionesBean.adddetalleasoccm(detalle)}" 
+                                                render="@this"
+                                                />
+                                    </p:inputText>
+                                </p:column> 
+                            </p:dataTable>  
+                            <br/>
+                            <b:commandButton id="save" styleClass="btn btn-primary btn-sm m" value="Guardar" look="primary" 
+                                             actionListener="#{transaccionesBean.crearCM2()}" 
+                                             immediate="true" update="growl print2 tblconvenios" />
+                            <h:commandLink id="print2" styleClass="btn btn-primary  iconSm" 
+                                           value="Imprimir" actionListener="#{transaccionesBean.generarCm(evt, '', false)}"
+                                           target="_blank" disabled="#{transaccionesBean.printCm2}"  immediate="true" />
+
+                            <a class="btn btn-primary iconSm" href="#{transaccionesBean.cmList}">Cancelar | Regresar</a>
+                        </p:tab>
+
+                    </p:tabView>
+                </h:form>              
+
+            </b:panel> 
+
+        </ui:define>
+
+    </ui:composition>
+</html>

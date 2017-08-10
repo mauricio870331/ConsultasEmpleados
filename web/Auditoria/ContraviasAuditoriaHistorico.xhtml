@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"  
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <ui:composition template="../Templets/templetAuditoria.xhtml">
+        <ui:define name="titleapp">
+            <h:outputText value="Listado Contravias"></h:outputText>
+        </ui:define>
+        <ui:define name="user">
+            <h:outputText value="#{loginBean.nomUserLog}"></h:outputText>
+        </ui:define>
+        <ui:define name="title">
+            <h:outputText value="Historico de Contravias Aplicación Anterior"></h:outputText>
+        </ui:define>
+        <ui:define name="body">  
+            <b:panel> 
+                <h:form id="form">
+                    <b:growl  id="growl" showDetail="true" placementFrom="bottom" globalOnly="true" />
+                    <b:panelGrid colSpans="1,3,1,3,3,1" id="datos">                  
+                        <h:outputText value="F. Inicial:" />
+                        <p:calendar id="fechaIni" alt="Seleccione fecha" value="#{taquillaContraviasBean.selecFechaIni}" pattern="dd/MM/yy" >  
+                            <f:ajax event="dateSelect" execute="@this" ></f:ajax>
+                        </p:calendar>                 
+
+                        <h:outputText value="F. Final:" />
+                        <p:calendar id="fechaFin" alt="Seleccione fecha" value="#{taquillaContraviasBean.selecFechaFin}" pattern="dd/MM/yy" >  
+                            <f:ajax event="dateSelect" execute="@this" ></f:ajax>
+                        </p:calendar>  
+
+                        <b:selectOneMenu value="#{taquillaContraviasBean.agencia}" id="agencia" 
+                                         tooltip="Selecione Empresa" >
+                            <f:facet name="append">
+                                <b:iconAwesome name="list" />
+                            </f:facet>
+                            <f:selectItem itemLabel="Ver Todas" itemValue=""/>
+                            <f:selectItems value="#{taquillaContraviasBean.list_taquillas}" var="a" itemValue="#{a.taquilla}" itemLabel="#{a.taquilla}" />
+                            <f:ajax event="change" execute="@this"  render="agencia"></f:ajax>
+                        </b:selectOneMenu>
+
+                        <b:commandButton id="refresh" styleClass="iconSx" look="primary" value="" tooltip="Buscar">
+                            <b:iconAwesome name="search" size="1x" />
+                            <f:ajax event="click" listener="#{taquillaContraviasBean.listContraviasTesoriaHistoric()}"  render="tblempleados growl fechaIni fechaFin agencia" ></f:ajax>
+                        </b:commandButton>
+                    </b:panelGrid>
+                    <img id="ajaxloader" src="../resources/ajaxloader.gif" style="display: none;" />
+                    <p:dataTable id="tblempleados" var="contravia" value="#{taquillaContraviasBean.listContraviasPendientes}" rows="10"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">  
+
+                        <p:column headerText="Transacción">
+                            <h:outputText value="#{contravia.transaccion}" />
+                        </p:column> 
+                        <p:column headerText="C.C Comprador">
+                            <h:outputText value="#{contravia.cc_comprador}" />
+                        </p:column>                        
+                        <p:column headerText="Nombre Comprador">
+                            <h:outputText value="#{contravia.nombre_comprador}" />
+                        </p:column>
+                        <p:column headerText="C.C Viajero">
+                            <h:outputText value="#{contravia.cc_viajero}" />
+                        </p:column>                        
+                        <p:column headerText="Nombre Viajero">
+                            <h:outputText value="#{contravia.nombre_viajero}" />
+                        </p:column>
+                        <p:column headerText="Origen">
+                            <h:outputText value="#{contravia.origen}" />
+                        </p:column> 
+
+                        <p:column headerText="Destino">
+                            <h:outputText value="#{contravia.destino}" />
+                        </p:column> 
+
+                        <p:column headerText="Servicio">
+                            <h:outputText value="#{contravia.servicio}" />
+                        </p:column> 
+
+                        <p:column headerText="Total" width="70" style="text-align: center" >
+                            <h:outputText value="#{contravia.total}" />
+                        </p:column>  
+
+                        <p:column headerText="Estado" width="70" style="text-align: center" >
+                            <h:outputText value="#{contravia.estado}" />
+                        </p:column>  
+
+                        <p:column headerText="Detalle" width="80" style="text-align: center">                            
+                            <b:iconAwesome name="eye" id="content" />
+                            <p:tooltip id="toolTipContent" for="content"  >
+                                <div class="ui-g" >
+                                    <h4>Detalle Contravia</h4>
+                                    <hr/>
+                                    <div class="ui-g-6"><b>Fecha de Compra: </b> <h:outputText id="f" value="#{contravia.fecha_creacion}" /></div>
+                                    <div class="ui-g-6"><b>Consecutivo:</b> <h:outputText id="c" value="#{contravia.transaccion}" /></div>   
+                                    <div class="ui-g-6"><b>Tiquete </b> <h:outputText value="#{contravia.no_tiquete}" /></div> 
+                                    <div class="ui-g-6"><b>Estado: </b> <h:outputText value="#{contravia.estado}" /></div> 
+                                    <div class="ui-g-6"><b>Comprador: </b> <h:outputText value="#{contravia.cc_comprador}" /> - <h:outputText value="#{contravia.nombre_comprador.toUpperCase()}" /></div> 
+                                    <div class="ui-g-6"><b>Viajero: </b> <h:outputText value="#{contravia.cc_viajero}" /> - <h:outputText value="#{contravia.nombre_viajero.toUpperCase()}" /></div> 
+                                    <div class="ui-g-6"><b>Origen: </b> <h:outputText value="#{contravia.origen}" /></div> 
+                                    <div class="ui-g-6"><b>Destino: </b> <h:outputText value="#{contravia.destino}" /></div> 
+                                    <div class="ui-g-6"><b>Ida y Regreso: </b> <h:outputText value="#{contravia.ida_regreso}" /></div> 
+                                    <div class="ui-g-6"><b>Servicio: </b> <h:outputText value="#{contravia.servicio}" /></div>
+                                    <div class="ui-g-6"><b>Bus: </b> <h:outputText value="#{contravia.cod_bus}" /></div> 
+                                    <div class="ui-g-6"><b>Taquilla Vende: </b> <h:outputText value="#{contravia.taquilla_vende}" /></div> 
+                                    <div class="ui-g-6"><b>Vendedor(a): </b> <h:outputText value="#{contravia.usuarioTaquilla_vende}" /></div>                             
+                                    <div class="ui-g-6"><b>Taquilla Entrega: </b> <h:outputText value="#{contravia.taquilla_entrega}" /></div> 
+                                    <div class="ui-g-6"><b>Entrega: </b> <h:outputText value="#{contravia.usuarioTaquillaEntrega}" /></div> 
+                                    <div class="ui-g-6"><b>Cantidad: </b> <h:outputText value="#{contravia.cant_tiquetes}" /> --- <b>Valor: </b> <h:outputText value="#{contravia.valor}" /> --- <b>Total: </b> <h:outputText value="#{contravia.total}" /></div> 
+                                    <div class="ui-g-6"><b>Observación: </b> <h:outputText value="#{contravia.observacion}" /></div>
+                                    <hr/>
+                                </div>  
+                            </p:tooltip>
+                        </p:column>                    
+
+                    </p:dataTable>                   
+                    <br/>
+                    <b:commandButton class="btn btn-primary btn-sm m" look="primary" value="Exportar Contravias Excel" 
+                                     action="#{taquillaContraviasBean.exportarContraviasOldApp()}" immediate="true" ajax="false">
+                        <b:iconAwesome name="file-excel-o" />                       
+                    </b:commandButton>
+
+                </h:form>              
+
+            </b:panel>
+
+        </ui:define>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"  
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <ui:composition template="../Templets/templeTaquilla.xhtml">
+        <ui:define name="titleapp">
+            <h:outputText value="Entregar Contravias"></h:outputText>
+        </ui:define>
+        <ui:define name="user">
+            <h:outputText value="#{loginBean.nomUserLog}"></h:outputText>
+        </ui:define>
+        <ui:define name="title">
+            <b><h:outputText value="Entrega de ' Contravias ' Expreso Palmira." style="color: #085"></h:outputText></b>
+        </ui:define>
+        <ui:define name="body">  
+            <b:panel> 
+                <h:form id="form">
+                    <b:growl  id="growl" showDetail="true" placementFrom="bottom" globalOnly="true" />                 
+                    <b:panelGrid colSpans="6,2,1,3" id="datos"> 
+
+                        <b:inputText value="#{taquillaContraviasBean.selectUser}" required="true" name="selectUser"  id="selectUser"
+                                     required-message="Clave"
+                                     placeholder="Documento Comprador ó Viajero || Para FICS solo número del tiquete."
+                                     tooltip="Ingrese documnto de comprador o viajero, Para FICS solo número del tiquete.">                            
+                        </b:inputText>   
+
+                        <h:outputText value="Buscar en Fics:" style="font-weight: bold;"/>
+                        <h:selectBooleanCheckbox value="#{taquillaContraviasBean.fics}" id="fics" f:name="fics" label="Fics" style="position: absolute;margin-left: -84px;margin-top: 5px;" >
+                            <f:ajax event="change" execute="@this"  render="tblempleados fics save confirmar"></f:ajax>
+                        </h:selectBooleanCheckbox>
+
+                        <b:commandButton id="seacrh" styleClass="iconSx" look="primary" value="" tooltip="Buscar">
+                            <b:iconAwesome name="search" size="1x" />
+                            <f:ajax event="click" listener="#{taquillaContraviasBean.listContraviasEntrega()}"  render="acciones tblempleados growl selectUser Nomtaq claveNodum fics" ></f:ajax>
+                        </b:commandButton>
+
+                    </b:panelGrid>
+
+                    <p:dataTable id="tblempleados" editable="true" editMode="cell" var="contravia" value="#{taquillaContraviasBean.listContraviasPendientes}" rows="10"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">  
+                        <p:column headerText="C.C Comprador">
+                            <h:outputText value="#{contravia.cc_comprador}" />
+                        </p:column>                        
+                        <p:column headerText="Nombre Comprador">
+                            <h:outputText value="#{contravia.nombre_comprador}" />
+                        </p:column>
+                        <p:column headerText="C.C Viajero">
+                            <h:outputText value="#{contravia.cc_viajero}" />
+                        </p:column>                        
+                        <p:column headerText="Nombre Viajero">
+                            <h:outputText value="#{contravia.nombre_viajero}" />
+                        </p:column>
+                        <p:column headerText="Origen">
+                            <h:outputText value="#{contravia.origen}" />
+                        </p:column> 
+
+                        <p:column headerText="Destino">
+                            <h:outputText value="#{contravia.destino}" />
+                        </p:column> 
+
+                        <p:column headerText="Servicio">
+                            <h:outputText value="#{contravia.servicio}" />
+                        </p:column> 
+
+                        <p:column rendered="#{taquillaContraviasBean.pisoint}" headerText="Piso" width="60" style="text-align: center">
+                            <h:outputText value="#{contravia.piso}" />
+                        </p:column>   
+
+
+                        <p:column rendered="#{taquillaContraviasBean.pisoStr}" headerText="Piso" width="60" style="text-align: center">
+                            <h:outputText value="#{contravia.strPiso}" />
+                        </p:column>  
+
+                        <p:column headerText="Cantidad" width="70" style="text-align: center">
+                            <h:outputText value="#{contravia.cant_tiquetes}" />
+                        </p:column> 
+                        <p:column headerText="Total" width="70" style="text-align: center" >
+                            <h:outputText value="#{contravia.total}" />
+                        </p:column> 
+
+
+                        <p:column headerText="No. Tiquete" width="70" style="text-align: center" >
+                            <p:inputText style="width: 43px;height: 25px;"
+                                         disabled="#{taquillaContraviasBean.fics}" value="#{contravia.no_tiquete}" >  
+                                <f:ajax event="mouseout"                                        
+                                        execute="@this" 
+                                        listener="#{taquillaContraviasBean.addTiqueteToList(contravia)}" 
+                                        render="confirmar form:growl form:claveNodum  form:Nomtaq"
+                                        />
+                            </p:inputText>
+                        </p:column> 
+
+
+                    </p:dataTable>
+                    <br/>
+
+                    <b:panelGrid colSpans="5,5,1,1" id="acciones">  
+
+                        <b:inputText value="#{taquillaContraviasBean.usuarioNodum}"  required="true"
+                                     placeholder="Usuario" id="Nomtaq" required-message="Ingrese usuario" >
+                            <f:ajax event="blur" listener="@this" render="growl, Nomtaq"></f:ajax>
+                        </b:inputText>
+
+                        <b:inputSecret  value="#{taquillaContraviasBean.claveNodum}" required="true"  
+                                        id="claveNodum" required-message="Clave"
+                                        placeholder="Clave">
+                            <f:ajax event="blur" listener="@this" render="growl, claveNodum"></f:ajax>
+                        </b:inputSecret >                                              
+
+
+                        <b:commandButton id="save" class="btn btn-primary btn-sm m" look="primary" disabled="#{taquillaContraviasBean.fics}" value="Guardar"                                         
+                                         action="#{taquillaContraviasBean.entregarContravia(loginBean.documentoUserLog,loginBean.nomUserLog)}" immediate="true" update="save, Nomtaq, claveNodum, tblempleados, growl, print, selectUser">
+                            <b:iconAwesome name="save" size="1x" />                            
+                        </b:commandButton> 
+
+                        <h:commandLink id="print" styleClass="btn btn-primary btn-sm m"  
+                                       value="Imprimir" 
+                                       actionListener="#{taquillaContraviasBean.imprimirEntrega(actionEvent)}"
+                                       target="#{(taquillaContraviasBean.transContraviaEntrega != '' || taquillaContraviasBean.listContraviasPendientes.size() > 0) ? '_blank' : '_self'}" 
+                                       immediate="true" />
+
+                    </b:panelGrid>
+
+
+                </h:form>              
+
+            </b:panel> 
+
+        </ui:define>
+
+    </ui:composition>
+</html>

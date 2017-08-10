@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"  
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <ui:composition template="../../Templets/templetAdmon.xhtml">
+        <ui:define name="titleapp">
+            <h:outputText value="Historial Convenios"></h:outputText>
+        </ui:define>
+        <ui:define name="user">
+            <h:outputText value="#{loginBean.nomUserLog}"></h:outputText>
+        </ui:define>
+        <ui:define name="title">
+            <h:outputText value="Historial de Convenios Para el Cliente: "></h:outputText><b>#{tarifasBean.empresaSession}</b>
+        </ui:define>
+        <ui:define name="body">  
+            <b:panel> 
+                <h:form id="form">
+                    <b:growl  id="growl" showDetail="true" placementFrom="bottom"
+                              globalOnly="true" />                    
+                    <p:dataTable var="convenioh" value="#{tarifasBean.listConvenios}" rows="10"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+                        <p:column headerText="Descripción">
+                            <h:outputText value="#{convenioh.descripcion}" />
+                        </p:column>
+                        <p:column headerText="Fecha Inicial">
+                            <h:outputText value="#{convenioh.dfechaInicial}" />
+                        </p:column>   
+                        <p:column headerText="Fecha Final">
+                            <h:outputText value="#{convenioh.dfechaFinal}" />
+                        </p:column>  
+                        <p:column headerText="Valor Global">
+                            <h:outputText value="#{convenioh.valorGlobal}" />
+                        </p:column> 
+                        <p:column headerText="Estado">
+                            <h:outputText value="#{convenioh.estado == 'A' ? 'Activo' : 'Inactivo'}" />
+                        </p:column> 
+                        <p:column headerText="Modificó">
+                            <h:outputText value="#{convenioh.user_mod}" />
+                        </p:column> 
+                        <p:column headerText="Acciones">                           
+                            <b:commandButton styleClass="iconS" look="primary" value="" tooltip="Detalle" action="#{tarifasBean.viewDetalle(convenioh.idconvenio, convenioh.idempresa, convenioh.empresa, false, convenioh.descripcion)}" ><b:iconAwesome name="eye" /></b:commandButton>
+
+                        </p:column>
+                    </p:dataTable>
+                    <br/>              
+                    <a class="btn btn-primary btn-sm" href="#{tarifasBean.listTarifa}">Regresar</a>
+                </h:form>              
+
+            </b:panel>
+
+        </ui:define>
+
+    </ui:composition>
+</html>

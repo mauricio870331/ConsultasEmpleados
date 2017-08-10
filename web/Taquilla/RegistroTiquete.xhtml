@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"  
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <ui:composition template="../Templets/templeTaquilla.xhtml">
+        <ui:define name="titleapp">
+            <h:outputText value="Registro de Tiquetes"></h:outputText>
+        </ui:define>
+        <ui:define name="user">
+            <h:outputText value="#{loginBean.nomUserLog}"></h:outputText>
+        </ui:define>
+        <ui:define name="title">
+            <b><h:outputText value="Formulario de ' Convenios ' Expreso Palmira." style="color: #005384"></h:outputText></b>            
+        </ui:define>        
+        <ui:define name="body" >
+            <h:form id="form2">
+                <h:commandLink id="print"  value="Ayuda" actionListener="#{taquillaRegistroTiquete.listDocumentos()}" target="_blank" immediate="true" />
+            </h:form>
+            <br/>
+            <center>
+                <b:panel>
+                    <h:form id="form">
+                        <b:growl id="growlMsg" globalOnly="true" placementFrom="bottom"
+                                 show-detail="true" show-summary="false" allowDismiss="true"
+                                 delay="10000" escape="true" /> 
+                        <br></br>
+                        <b:panelGrid colSpans="2,8,2" id="datos">
+                            
+                            <h:outputText value="Fecha :" /> 
+                            <b:datepicker id="f1" mode="icon-popup" tooltip="Seleccione Una Fecha" showWeek="true"  required="true" required-message="Ingrese Fecha"
+                                          value="#{taquillaRegistroTiquete.selected.fechaviaje}" ></b:datepicker>
+                            <h:message for="f1" style="color: red"></h:message>  
+
+
+                            <h:outputText value="Nombre :" />
+                            <b:inputText value="#{taquillaRegistroTiquete.selected.nombre}" required="true"  id="name" required-message="Ingrese Nombre"/>
+                            <h:message for="name" style="color: red" />
+
+                            <h:outputText value="Cedula :" />
+                            <b:inputText value="#{taquillaRegistroTiquete.selected.documento}" required="true"  id="cc" required-message="Ingrese Cedula"/>
+                            <h:message for="cc" style="color: red" />
+
+                            <h:outputText value="Numero Tiquete :" />
+                            <b:inputText value="#{taquillaRegistroTiquete.selected.tiquete}" required="true"  id="tiq" required-message="Ingrese Tiquete" />
+                            <h:message for="tiq" style="color: red" />
+
+                            <h:outputText value="Numero Bus :" />
+                            <b:inputText value="#{taquillaRegistroTiquete.selected.codBus}"  id="Bus" required-message="Ingrese Bus"/>
+                            <h:message for="Bus" style="color: red" />
+
+                            <h:outputText value="Empresa :" />
+                            <b:selectOneMenu value="#{taquillaRegistroTiquete.selected.idEmpresa}" id="empresa" required="true" required-message="Selecione Empresa"
+                                             tooltip="Selecione Empresa" >
+                                <f:facet name="append">
+                                    <b:iconAwesome name="list" />
+                                </f:facet>
+                                <f:selectItem itemLabel="Seleccione" itemValue=""/>
+                                <f:selectItems value="#{taquillaRegistroTiquete.list_empresas}" var="a" itemValue="#{a.id_empresa}" itemLabel="#{a.nombre}" />
+                                <f:ajax event="change" execute="@this"  render="empresa"></f:ajax>
+                            </b:selectOneMenu>
+                            <h:message for="empresa" style="color: red" />
+
+                            <h:outputText value="Origen :" />
+                            <b:selectOneMenu value="#{taquillaRegistroTiquete.selected.codCiudadOrigen}" id="origen"  
+                                             tooltip="Selecione una ciudad de Origen" required="true" required-message="Seleccione Origen">
+                                <f:facet name="append">
+                                    <b:iconAwesome name="list" />
+                                </f:facet>
+                                <f:selectItem itemLabel="Seleccione Origen" itemValue=""/>
+                                <f:selectItems value="#{taquillaRegistroTiquete.list_origen}" var="c" itemValue="#{c.cod_ciudad}" itemLabel="#{c.ciudad}"/>
+                                <f:ajax event="change" execute="@this" render="origen"></f:ajax>
+                            </b:selectOneMenu>
+                            <h:message for="origen" style="color: red" />
+
+                            <h:outputText value="Destino" />
+                            <b:selectOneMenu value="#{taquillaRegistroTiquete.selected.codCiudadDestino}" id="destino"  
+                                             tooltip="Selecione una ciudad de Destino" required="true" required-message="Seleccione Destino" >
+                                <f:facet name="append">
+                                    <b:iconAwesome name="list" />
+                                </f:facet>
+                                <f:selectItem itemLabel="Seleccione Destino" itemValue=""/>
+                                <f:selectItems value="#{taquillaRegistroTiquete.list_destino}" var="c" itemValue="#{c.cod_ciudad}" itemLabel="#{c.ciudad}"></f:selectItems>   
+                                <f:ajax event="change" listener="#{taquillaRegistroTiquete.getRutasweb()}"   render="valor tot serv"></f:ajax>
+                            </b:selectOneMenu>
+                            <h:message for="destino" style="color: red" />
+
+                            <h:outputText value="Servicio" />
+                            <b:selectOneMenu value="#{taquillaRegistroTiquete.servTemp}" id="serv"  
+                                             tooltip="Selecione un servicio" required-message="Seleccione Servicio" >
+                                <f:facet name="append">
+                                    <b:iconAwesome name="list" />
+                                </f:facet>
+                                <f:selectItem itemLabel="Seleccione Servicio" itemValue=""/>
+                                <f:selectItems value="#{taquillaRegistroTiquete.servicio}" var="c" itemValue="#{c}" itemLabel="#{c}"></f:selectItems>   
+                                <f:ajax event="change" listener="#{taquillaRegistroTiquete.getValorServicio(1)}"  render="valor tot growlMsg"></f:ajax>
+                            </b:selectOneMenu>
+                            <h:message for="serv" style="color: red" />                            
+
+                            <h:outputText value="Valor :" />
+                            
+                            <b:inputText value="#{taquillaRegistroTiquete.selected.valor}" required="true"  id="valor" required-message="Ingrese Valor" >
+                                <f:ajax event="keyup" listener="#{taquillaRegistroTiquete.teclaValor()}"  render="tot"></f:ajax>
+                            </b:inputText>
+                            
+                            <h:message for="valor" style="color: red" />
+
+                            <h:outputText value="Cantidad :" />
+                            <b:inputText value="#{taquillaRegistroTiquete.selected.cantidad}" required="true"  id="cant" required-message="Ingrese Cantidad">
+                                <f:ajax event="keyup" listener="#{taquillaRegistroTiquete.teclaValor()}" render="tot"></f:ajax>
+                            </b:inputText>
+                            <h:message for="cant" style="color: red" />
+
+                            <h:outputText value="Total :" />
+                            <b:inputText value="#{taquillaRegistroTiquete.selected.total}" required="false" name="tot" id="tot"  disabled="true">
+                                <f:ajax event="change" listener="@this" render="tot"></f:ajax>
+                            </b:inputText>
+                            <h:message for="tot" style="color: red" />
+
+                            <h:outputText value="Ida y Regreso :" />
+                            <b:selectOneMenu value="#{taquillaRegistroTiquete.selected.idaRegreso}" id="ida"  
+                                             tooltip="Selecione una Opción" required="true" required-message="Seleccione una Opción">
+                                <f:facet name="append">
+                                    <b:iconAwesome name="list" />
+                                </f:facet>
+                                <f:selectItem itemLabel="Seleccione" itemValue=""/>
+                                <f:selectItem itemLabel="Si" itemValue="S"/>
+                                <f:selectItem itemLabel="No" itemValue="N"/>
+                                <f:ajax event="change" listener="#{taquillaRegistroTiquete.idavuelta()}"  render="tot"></f:ajax>
+                            </b:selectOneMenu>
+                            <h:message for="ida" style="color: red" />
+
+                            <h:outputText value="Usuario :" />
+                            <b:inputText value="#{taquillaRegistroTiquete.selected.usuarioNodum}" required="true" id="Nomtaq" required-message="Ingrese usuario">
+                                <f:ajax event="blur" execute="@this" render="Nomtaq"></f:ajax>
+                            </b:inputText>
+                            <h:message for="Nomtaq" style="color: red" />
+
+                            <h:outputText value="Clave :" />
+                            <b:inputSecret value="#{taquillaRegistroTiquete.selected.claveNodum}" required="true"  id="claveNodum" required-message="Clave">
+                                <f:ajax event="blur" listener="@this" render="Nomtaq claveNodum growlMsg"></f:ajax>
+                            </b:inputSecret>
+                            <h:message for="claveNodum" style="color: red" />
+
+                            <h:outputText value="Observacion :" />
+                            <b:inputTextarea value="#{taquillaRegistroTiquete.selected.observacion}" required="false" id="obs"/>
+                            <h:message for="obs" style="color: red" />
+                        </b:panelGrid>
+                        <br/>                                         
+
+                        <b:commandButton id="guardar" styleClass="btn btn-primary btn-sm m" value="Guardar" look="primary" 
+                                         action="#{taquillaRegistroTiquete.agregarTiquete(loginBean.documentoUserLog,loginBean.nomUserLog)}" update="form:datos, growlMsg"/>                        
+                        <a class="btn btn-primary btn-sm m" href="#{taquillaRegistroTiquete.listEntrega}">Cancelar | Regresar</a>                       
+                        <h:commandLink id="print" styleClass="btn btn-primary btn-sm m" value="Imprimir" actionListener="#{taquillaRegistroTiquete.imprimir(actionEvent)}" 
+                                       target="_blank" immediate="true" />
+                    </h:form>  
+                </b:panel>
+
+            </center>
+
+
+        </ui:define>
+
+    </ui:composition>
+
+</html>
+
+

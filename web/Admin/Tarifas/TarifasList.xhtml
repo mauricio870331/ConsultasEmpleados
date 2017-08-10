@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"  
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <ui:composition template="../../Templets/templetAdmon.xhtml">
+        <ui:define name="titleapp">
+            <h:outputText value="Convenios"></h:outputText>
+        </ui:define>
+        <ui:define name="user">
+            <h:outputText value="#{loginBean.nomUserLog}"></h:outputText>
+        </ui:define>
+        <ui:define name="title">
+            <h:outputText value="Listado de Convenios"></h:outputText>
+        </ui:define>
+        <ui:define name="body">  
+            <b:panel> 
+                <h:form id="form">
+                    <b:growl  id="growl" showDetail="true" placementFrom="bottom"
+                              globalOnly="true" />                    
+                    <p:dataTable var="empconvenio" value="#{tarifasBean.listEmpConvenio}" rows="10"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+                        <p:column headerText="Cliente">
+                            <h:outputText value="#{empconvenio.nombre}" />
+                        </p:column>
+                        <p:column headerText="Descripción">
+                            <h:outputText value="#{empconvenio.convenio.descripcion}" />
+                        </p:column>                                            
+                        <p:column headerText="Acciones">                           
+                            <b:commandButton styleClass="iconS" look="primary" value="" tooltip="Detalle" action="#{tarifasBean.viewDetalle(empconvenio.convenio.idconvenio, empconvenio.id_empresa, empconvenio.nombre, true, '')}" ><b:iconAwesome name="eye" /></b:commandButton>
+                            <b:commandButton styleClass="iconS" look="success" value="" tooltip="Historial" action="#{tarifasBean.viewDetalleHistory(empconvenio.id_empresa, empconvenio.nombre, true, '')}" ><b:iconAwesome name="list-ol" /></b:commandButton>
+                            <b:commandButton styleClass="iconS2" look="warning" value="" tooltip="Editar" action="#{tarifasBean.editarConvenio(empconvenio)}" ><b:iconAwesome name="pencil" /></b:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                    <br/>              
+                    <a class="btn btn-primary btn-sm" href="#{tarifasBean.crearTarifa}">Nuevo Convenio</a>
+                </h:form>              
+
+            </b:panel>
+
+        </ui:define>
+
+    </ui:composition>
+</html>

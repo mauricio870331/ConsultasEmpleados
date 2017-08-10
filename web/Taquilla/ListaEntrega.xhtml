@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"  
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <ui:composition template="../Templets/templeTaquilla.xhtml">
+        <ui:define name="titleapp">
+            <h:outputText value="Entregar Convenios"></h:outputText>
+        </ui:define>
+        <ui:define name="user">
+            <h:outputText value="#{loginBean.nomUserLog}"></h:outputText>
+        </ui:define>
+        <ui:define name="title">
+            <b><h:outputText value="Entrega de ' Convenios ' Expreso Palmira." style="color: #005384"></h:outputText></b>
+        </ui:define>
+        <ui:define name="body">  
+            <b:panel> 
+                <h:form id="form">
+                    <b:growl  id="growl" showDetail="true" placementFrom="bottom" globalOnly="true" />                 
+                    <b:panelGrid colSpans="6,1,5" id="datos">         
+                        <b:inputText value="#{transaccionesBean.selectUser}" name="doc" id="doc"                                     
+                                     placeholder="Documento ó Nombre"
+                                     tooltip="Ingrese Documento o Nombre">                            
+                        </b:inputText>                        
+
+                        <b:commandButton id="refresh" styleClass="iconSx" look="primary" value="" tooltip="Buscar">
+                            <b:iconAwesome name="search" size="1x" />
+                            <f:ajax event="click" listener="#{transaccionesBean.saldoActual()}"  render="acciones tblempleados growl doc Nomtaq claveNodum descT" ></f:ajax>
+                        </b:commandButton>
+
+                        <b:inputText value="#{transaccionesBean.tiqs}" name="tiqs" id="tiqs"                                     
+                                     placeholder="Tiquetes a entregar"
+                                     tooltip="Digite los numeros de tiquetes que va a entregar">                            
+                        </b:inputText> 
+                    </b:panelGrid>
+
+                    <p:dataTable editable="true" editMode="cell" id="tblempleados" var="empleado" value="#{transaccionesBean.saldos}" rows="10"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15" >
+                        
+                        <p:column headerText="Nombre"  width="150">
+                            <h:outputText value="#{empleado.empresa.nombre}" />
+                        </p:column>                        
+                        <p:column headerText="Documento" width="80">
+                            <h:outputText value="#{empleado.detalleConvenio.codCiudadOrigen.ciudad}" />
+                        </p:column>
+                        
+                         <p:column headerText="Destino" width="80">
+                            <h:outputText value="#{empleado.detalleConvenio.codCiudadDestino.ciudad}" />
+                        </p:column> 
+
+                        <p:column headerText="Servicio" width="90">
+                            <h:outputText value="#{empleado.detalleConvenio.tblservicio.servicio}" />
+                        </p:column> 
+
+                        <p:column headerText="Cédula" width="80">
+                            <h:outputText value="#{empleado.empleado.documento}" />
+                        </p:column>                        
+                        <p:column headerText="Nombre">
+                            <h:outputText value="#{empleado.empleado.nombre}"  style="font-size: 10px" />
+                        </p:column> 
+                        <p:column headerText="Ida y Regreso" width="90" style="text-align: center">
+                            <h:outputText value="#{empleado.idaRegreso}" />
+                        </p:column> 
+                        <p:column headerText="Valor Unitario" width="80">
+                            <h:outputText value="#{empleado.detalleConvenio.valorExpal}" />
+                        </p:column>  
+                        <p:column headerText="Saldo" width="70" style="text-align: center" >
+                            <h:outputText value="#{empleado.saldo}" />
+                        </p:column> 
+
+                        <p:column headerText="Cantidad" width="70" style="text-align: center" >
+
+                            <p:inputText style="width: 43px;height: 25px;" value="#{empleado.cantidadAEntregar}" >  
+                                <f:ajax event="blur"                                        
+                                        execute="@this" 
+                                        listener="#{transaccionesBean.addTiqueteToList(empleado)}"
+                                        render="@this confirmar form:growl"
+                                        />
+                            </p:inputText>
+
+                        </p:column> 
+
+                        <!--<p:column headerText="Confirmar" width="80" style="text-align: center">                             
+                            <p:selectBooleanCheckbox  id="confirmar" value="{empleado.selected}">
+                                <p:ajax  listener="{transaccionesBean.addTiqueteToList(empleado, empleado.opc)}" 
+                                         update="tblempleados confirmar form:growl"/>
+                            </p:selectBooleanCheckbox>
+                        </p:column>-->
+
+                    </p:dataTable>
+                    <br/>
+
+                    <b:panelGrid colSpans="4,3,3,1,1" id="acciones">  
+
+                        <b:inputText value="#{transaccionesBean.usuarioNodum}" required="true"
+                                     placeholder="Usuario" id="Nomtaq" required-message="Ingrese usuario">
+                            <f:ajax event="blur" listener="@this" render="growl, save"></f:ajax>
+                        </b:inputText>
+
+                        <b:inputSecret value="#{transaccionesBean.claveNodum}" required="true"  
+                                       id="claveNodum" required-message="Clave"
+                                       placeholder="Clave">
+                            <f:ajax event="blur" listener="@this" render="growl, save"></f:ajax>
+                        </b:inputSecret>
+
+
+                        <b:inputText value="#{transaccionesBean.descripcionTiquetes}" required="true"  id="descT"                                    
+                                     placeholder="Descripción">
+                            <f:ajax event="blur" execute="@this" render="descT"></f:ajax>
+                        </b:inputText>                         
+
+
+                        <b:commandButton id="save" class="btn btn-primary btn-sm m" look="primary" value="Guardar"                                         
+                                         actionListener="#{transaccionesBean.createTransaccion()}" immediate="true" update="save, Nomtaq, claveNodum, descT, tblempleados, growl, print, tiqs">
+                            <b:iconAwesome name="save" size="1x" />                            
+                        </b:commandButton> 
+
+                        <h:commandLink id="print" styleClass="btn btn-primary btn-sm m" value="Imprimir" actionListener="#{transaccionesBean.imprimir(actionEvent)}" target="#{transaccionesBean.a > 0 ? '_blank' : '_self'}" immediate="true" />
+
+                    </b:panelGrid>
+
+
+                </h:form>              
+
+            </b:panel> 
+
+        </ui:define>
+
+    </ui:composition>
+</html>

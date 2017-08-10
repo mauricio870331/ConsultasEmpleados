@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"  
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <ui:composition template="../../Templets/templeEmpresa.xhtml">
+        <ui:define name="user">
+            <h:outputText value="#{loginBean.nomUserLog}"></h:outputText>
+        </ui:define>
+        <ui:define name="title">
+            <h:outputText value="Codigos de Rutas (Para archivo .xls) "></h:outputText><b:iconAwesome styleClass="miIcon" name="file-excel-o" size="1x" />
+        </ui:define>
+        <ui:define name="body">  
+            <b:panel> 
+                <h:form id="form">
+                    <!--<b:growl  id="growl" showDetail="true" placementFrom="bottom" globalOnly="true" />-->
+                    <b:panelGrid colSpans="3,3,3,3" id="datos">                   
+
+                        <b:inputText value="#{empleadosBean.codRuta}" styleClass="solo-numero" pt:placeholder="Codigo de Ruta"                                   
+                                     id="codRuta"  >
+                            <f:ajax event="keyup" listener="#{empleadosBean.listarCodigosRutas()}" 
+                                    render="tblCodigos" ></f:ajax>
+                        </b:inputText>
+
+                        <b:inputText value="#{empleadosBean.origen}"  pt:placeholder="Origen" id="origen"  >
+                            <f:ajax event="keyup" listener="#{empleadosBean.listarCodigosRutas()}" 
+                                    render="tblCodigos" ></f:ajax>
+                        </b:inputText>
+
+                        <b:inputText value="#{empleadosBean.destino}"  pt:placeholder="Destino" id="destino"  >
+                            <f:ajax event="keyup" listener="#{empleadosBean.listarCodigosRutas()}" 
+                                    render="tblCodigos" ></f:ajax>
+                        </b:inputText>
+
+                        <b:inputText value="#{empleadosBean.servicio}"  pt:placeholder="Servicio" id="servicio"  > 
+                            <f:ajax event="keyup" listener="#{empleadosBean.listarCodigosRutas()}" 
+                                    render="tblCodigos" ></f:ajax>
+                        </b:inputText>
+                        
+                    </b:panelGrid>
+
+                    <p:dataTable id="tblCodigos" var="rutas" value="#{empleadosBean.codigosRutas}" rows="10"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+                        <p:column headerText="Servicio">
+                            <h:outputText value="#{rutas.id_detalle_fk}" />
+                        </p:column>
+                        <p:column headerText="Origen">
+                            <h:outputText value="#{rutas.codCiudadOrigen.ciudad}" />
+                        </p:column>
+                        <p:column headerText="Destino">
+                            <h:outputText value="#{rutas.codCiudadDestino.ciudad}" />
+                        </p:column>   
+                        <p:column headerText="Servicio">
+                            <h:outputText value="#{rutas.tblservicio.servicio}" />
+                        </p:column>                       
+
+                    </p:dataTable>
+                    <br/>              
+                    <b:commandButton class="btn btn-primary btn-sm m" look="primary" value="Exportar Excel" action="#{empleadosBean.exportarRutasXLS}" ><b:iconAwesome name="file-excel-o" /></b:commandButton>
+                    <br/>                   
+                    <b:growl  id="growl" showDetail="true" placementFrom="bottom" globalOnly="true" />
+                </h:form>              
+
+            </b:panel>
+
+        </ui:define>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"  
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <ui:composition template="../../Templets/templeEmpresa.xhtml">
+        <ui:define name="user">
+            <h:outputText value="#{loginBean.nomUserLog}"></h:outputText>
+        </ui:define>
+        <ui:define name="title">
+            <h:outputText value="Solicitud de Nuevo Viaje"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <center>
+                <b:panel>
+                    <h:form id="form">
+                        <br></br>                                                      
+                        <b:growl  id="growl" showDetail="true" placementFrom="bottom"
+                                  globalOnly="true" />
+                        <p:messages for="datos" showDetail="true" autoUpdate="true" closable="true" />
+                        <b:panelGrid colSpans="2,8,2" id="datos">
+                            <h:outputText  value="Origen-Destino-Servicio:" />
+                            <b:selectOneMenu id="ciudad" value="#{empleadosBean.usuariosTiquetes.detalleConvenio.id_detalle_fk}"  
+                                             tooltip="Selecione una ciudad"                                             
+                                             required="true"
+                                             required-message="Selecione una Ruta">
+                                <f:facet name="append">
+                                    <b:iconAwesome name="list" />
+                                </f:facet>
+                                <f:selectItem itemLabel="Seleccione" itemValue=""/>
+                                <f:selectItems value="#{empleadosBean.listDetalleConvenio}" var="d" itemValue="#{d.id_detalle_fk}" itemLabel="#{d.toString()}"/>
+                            </b:selectOneMenu>
+                            <h:message for="ciudad" style="color: red"></h:message>
+
+                            <h:outputText value="Fecha Inicial :" /> 
+                            <b:datepicker id="f1" mode="icon-popup" tooltip="Seleccione una Fecha" showWeek="true"  required="true" required-message="Ingrese Fecha"
+                                          value="#{empleadosBean.usuariosTiquetes.fechaInicial}" ></b:datepicker>
+                            <h:message for="f1" style="color: red"></h:message>  
+
+                            <h:outputText value="Fecha Final :" /> 
+                            <b:datepicker id="f2" mode="icon-popup" tooltip="Seleccione una Fecha" showWeek="true"  required="true" required-message="Ingrese Fecha"
+                                          value="#{empleadosBean.usuariosTiquetes.fechaFinal}" ></b:datepicker>
+                            <h:message for="f2" style="color: red"></h:message>
+
+
+                            <h:outputText value="Documento - Empleado:" />
+                            <p:autoComplete id="doc" styleClass="micomplete" value="#{empleadosBean.usuariosTiquetes.empleado.nomDoc}"                                    
+                                            required="true"
+                                            title="Filtrar por Documento ó Nombre"
+                                            requiredMessage="Ingrese Empleado" completeMethod="#{empleadosBean.queryByName}" />
+                            <h:message for="doc" style="color: red"></h:message> 
+
+                            <h:outputText value="Cantidad Tiquetes:" />
+                            <b:inputText value="#{empleadosBean.usuariosTiquetes.strtTquetesAsignados}" styleClass="solo-numero" tooltip="Ingrese Descripción" id="tiquetes" required="true"
+                                         required-message="Ingrese Cant. Tiquetes"
+                                         />
+                            <h:message for="tiquetes" style="color: red"></h:message>   
+
+                            <h:outputText value="Ida y Vuelta:" />                            
+                            <b:selectOneMenu id="idavuelta" value="#{empleadosBean.usuariosTiquetes.idaRegreso}"  
+                                             tooltip="Selecione una ciudad"                                             
+                                             required="true"
+                                             required-message="Selecione una opcion">
+                                <f:facet name="append">
+                                    <b:iconAwesome name="list" />
+                                </f:facet>
+                                <f:selectItem itemLabel="Seleccione" itemValue=""/>
+                                <f:selectItem itemLabel="Si" itemValue="Si"/>
+                                <f:selectItem itemLabel="No" itemValue="No"/>
+                            </b:selectOneMenu>
+                            <h:message for="idavuelta" style="color: red"></h:message>
+                            <h:outputText value="OS:" />
+                            <b:inputText value="#{empleadosBean.usuariosTiquetes.os}" tooltip="Orden de Servicio (Opcional)" id="os" />
+                            <h:message for="os" style="color: red"></h:message> 
+                        </b:panelGrid>
+                        <br/> 
+                        <img id="ajaxloader" src="../../resources/ajaxloader.gif" style="display: none;margin-bottom: 25px;" />                       
+                        <b:commandButton  styleClass="btn btn-primary btn-sm m " value="Guardar" look="primary" 
+                                         action="#{empleadosBean.editRutaseEmpleados()}" update=":form:datos,growl" disabled="disabled();"/>
+                        <a class="btn btn-primary btn-sm m" href="#{empleadosBean.listUsuariosTiquetes}">Cancelar | Regresar</a>
+                    </h:form>  
+                </b:panel>
+            </center>
+        </ui:define>
+    </ui:composition>
+</html>

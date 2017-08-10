@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReportHistoryContra" language="groovy" pageWidth="1532" pageHeight="802" columnWidth="1532" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ddaa744c-efb6-497c-a177-df82a9d02c96">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="2260"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="transaccion" class="java.lang.String"/>
+	<field name="nombre_comprador" class="java.lang.String"/>
+	<field name="cc_comprador" class="java.lang.String"/>
+	<field name="cc_viajero" class="java.lang.String"/>
+	<field name="nombre_viajero" class="java.lang.String"/>
+	<field name="origen" class="java.lang.String"/>
+	<field name="destino" class="java.lang.String"/>
+	<field name="valor" class="java.lang.Integer"/>
+	<field name="total" class="java.lang.String"/>
+	<field name="ida_regreso" class="java.lang.String"/>
+	<field name="cod_bus" class="java.lang.String"/>
+	<field name="observacion" class="java.lang.String"/>
+	<field name="fecha_creacion" class="java.util.Date"/>
+	<field name="taquilla_vende" class="java.lang.String"/>
+	<field name="userNodumVende" class="java.lang.String"/>
+	<field name="usuarioTaquilla_vende" class="java.lang.String"/>
+	<field name="servicio" class="java.lang.String"/>
+	<field name="strPiso" class="java.lang.String"/>
+	<field name="estado" class="java.lang.String"/>
+	<field name="taquilla_entrega" class="java.lang.String"/>
+	<field name="userNodumEntrega" class="java.lang.String"/>
+	<field name="usuarioTaquillaEntrega" class="java.lang.String"/>
+	<field name="telefonoComprador" class="java.lang.String"/>
+	<field name="no_reserva" class="java.lang.String"/>
+	<field name="reimprimir" class="java.lang.Integer"/>
+	<field name="dineroEnCasa" class="java.lang.Integer"/>
+	<field name="dineroSiNo" class="java.lang.Boolean"/>
+	<field name="fecha_entrega" class="java.lang.String"/>
+	<field name="claveNodum" class="java.lang.String"/>
+	<field name="no_tiquete" class="java.lang.String"/>
+	<field name="cant_tiquetes" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="f8f50db0-240c-45d4-bab3-6c81615fe4f0" x="0" y="0" width="1532" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Contravias Historico Aplicativo Anterior]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="75" y="0" width="67" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Transaccion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="0" y="0" width="75" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha venta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="142" y="0" width="69" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[No Tiquete]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="211" y="0" width="77" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CC Comprador]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="532" y="0" width="68" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Origen]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="736" y="0" width="65" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="288" y="0" width="77" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Comprador]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="365" y="0" width="77" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CC Viajero]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="442" y="0" width="90" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Viajero]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="600" y="0" width="68" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Destino]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="668" y="0" width="68" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cant]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="801" y="0" width="65" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="866" y="0" width="85" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ida y Regreso]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="951" y="0" width="45" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Bus]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="996" y="0" width="84" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Taquilla Vende]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="1080" y="0" width="84" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quien Vende]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="1164" y="0" width="47" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Servicio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="1211" y="0" width="47" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Piso]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="1258" y="0" width="56" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="1314" y="0" width="85" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Taquilla Entrega]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="1399" y="0" width="85" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quien Entrega]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="1484" y="0" width="48" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Recaudo]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="a747f7a1-fdfe-4b26-a660-41a59514002d" x="0" y="0" width="75" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{fecha_creacion}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="75" y="0" width="67" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{transaccion}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="142" y="0" width="69" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{no_tiquete}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="211" y="0" width="77" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cc_comprador}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="288" y="0" width="77" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nombre_comprador}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="365" y="0" width="77" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cc_viajero}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="442" y="0" width="90" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nombre_viajero}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="532" y="0" width="68" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{origen}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="600" y="0" width="68" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{destino}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="668" y="0" width="68" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cant_tiquetes}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="736" y="0" width="65" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="801" y="0" width="65" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="866" y="0" width="85" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ida_regreso}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="951" y="0" width="45" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cod_bus}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="996" y="0" width="84" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{taquilla_vende}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="1080" y="0" width="84" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{usuarioTaquilla_vende}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="1164" y="0" width="47" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{servicio}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="1211" y="0" width="47" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{strPiso}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="1258" y="0" width="56" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{estado}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="1314" y="0" width="85" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{taquilla_entrega}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="1399" y="0" width="85" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{usuarioTaquillaEntrega}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8fb73149-e97c-4be0-9136-1df49584c202" x="1484" y="0" width="48" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{dineroEnCasa}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

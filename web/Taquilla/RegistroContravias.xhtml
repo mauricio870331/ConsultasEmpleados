@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"  
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <ui:composition template="../Templets/templeTaquilla.xhtml">
+        <ui:define name="titleapp">
+            <h:outputText value="Venta Contravia"></h:outputText>
+        </ui:define>
+        <ui:define name="user">
+            <h:outputText value="#{loginBean.nomUserLog}"></h:outputText>
+        </ui:define>
+        <ui:define name="title">
+            <h:outputText value="Contravias Expreso Palmira"></h:outputText>
+        </ui:define>
+
+        <ui:define name="body" >
+            <center>
+                <b:panel>
+                    <h:form id="form">
+                        <b:growl id="growlMsg" globalOnly="true" placementFrom="bottom"
+                                 show-detail="true" show-summary="false" allowDismiss="true"
+                                 delay="10000" escape="true" /> 
+                        <br></br>
+                        <b:panelGrid colSpans="2,8,2" id="datos">                 
+
+                            <h:outputText value="Nombre Comprador *:" />
+                            <b:inputText value="#{taquillaContraviasBean.temporal.nombre_comprador}" tooltip="Ingrese Nombre Comprador" required="true"  id="nom_comprqador" required-message="Ingrese Nombre Comprador"/>
+                            <h:message for="nom_comprqador" style="color: red" />
+
+                            <h:outputText value="Cédula Comprador *:" />
+                            <b:inputText value="#{taquillaContraviasBean.temporal.cc_comprador}" tooltip="Ingrese Cédula Comprador" required="true"  id="cc_comprador" required-message="Ingrese Cedula Comprador"/>
+                            <h:message for="cc_comprador" style="color: red" />
+
+                            <h:outputText value="Telefono Comprador :" />
+                            <b:inputText value="#{taquillaContraviasBean.temporal.telefonoComprador}"  id="telefono"  />
+                            <h:message for="telefono" style="color: red" />
+
+                            <h:outputText value="Nombre Viajero *:" />
+                            <b:inputText value="#{taquillaContraviasBean.temporal.nombre_viajero}"  tooltip="Ingrese Nombre Viajero" id="nom_viajero" required-message="Ingrese Nombre Viajero"/>
+                            <h:message for="nom_viajero" style="color: red" />
+
+                            <h:outputText value="Cédula Viajero *:" />
+                            <b:inputText value="#{taquillaContraviasBean.temporal.cc_viajero}" tooltip="Ingrese Cédula Viajero" required="true"  id="cc_viajero" required-message="Ingrese Cédula Viajero"/>
+                            <h:message for="cc_viajero" style="color: red" />
+
+                            <h:outputText value="Número Reserva :" />
+                            <b:inputText value="#{taquillaContraviasBean.temporal.no_reserva}"  id="reserva" />
+                            <h:message for="reserva" style="color: red" />
+
+                            <h:outputText value="Número Bus :" />
+                            <b:inputText value="#{taquillaContraviasBean.temporal.cod_bus}"  id="bus" />
+                            <h:message for="bus" style="color: red" />
+
+                            <h:outputText value="Origen *:" />
+                            <b:selectOneMenu value="#{taquillaContraviasBean.temporal.origen}" id="origen"  
+                                             tooltip="Selecione una ciudad de Origen" required="true" required-message="Seleccione Origen">
+                                <f:facet name="append">
+                                    <b:iconAwesome name="list" />
+                                </f:facet>
+                                <f:selectItem itemLabel="Seleccione Origen" itemValue=""/>
+                                <f:selectItems value="#{taquillaContraviasBean.list_origen}" var="c" itemValue="#{c.ciudad}" itemLabel="#{c.ciudad}"/>
+                                <f:ajax event="change" execute="@this" render="destino"></f:ajax>
+                            </b:selectOneMenu>
+                            <h:message for="origen" style="color: red" />
+
+                            <h:outputText value="Destino *" />
+                            <b:selectOneMenu value="#{taquillaContraviasBean.temporal.destino}" id="destino"  
+                                             tooltip="Selecione una ciudad de Destino" required="true" required-message="Seleccione Destino" >
+                                <f:facet name="append">
+                                    <b:iconAwesome name="list" />
+                                </f:facet>
+                                <f:selectItem itemLabel="Seleccione Destino" itemValue=""/>
+                                <f:selectItems value="#{taquillaContraviasBean.list_destino}" var="c" itemValue="#{c.ciudad}" itemLabel="#{c.ciudad}"></f:selectItems>   
+                                <f:ajax event="change" listener="#{taquillaContraviasBean.getRutasweb()}"   render="origen destino serv valor cant tot growlMsg"></f:ajax>
+                            </b:selectOneMenu>
+                            <h:message for="destino" style="color: red" />
+
+                            <h:outputText value="Servicio" />
+                            <b:selectOneMenu value="#{taquillaContraviasBean.servTemp}" id="serv"  
+                                             tooltip="Selecione un servicio" required-message="Seleccione Servicio" >
+                                <f:facet name="append">
+                                    <b:iconAwesome name="list" />
+                                </f:facet>
+                                <f:selectItem itemLabel="Seleccione Servicio" itemValue=""/>
+                                <f:selectItems value="#{taquillaContraviasBean.servicio}" var="c" itemValue="#{c}" itemLabel="#{c}"></f:selectItems>   
+                                <f:ajax event="change" listener="#{taquillaContraviasBean.getValorServicio(1)}"  render="valor tot growlMsg"></f:ajax>
+                            </b:selectOneMenu>
+                            <h:message for="serv" style="color: red" />                              
+
+                            <h:outputText value="Valor *:" />
+                            <b:inputText value="#{taquillaContraviasBean.temporal.valor}" tooltip="Ingrese Valor" required="true"  id="valor" required-message="Ingrese Valor" >
+                                <f:ajax event="keyup" listener="#{taquillaContraviasBean.teclaValor()}"  render="tot"></f:ajax>
+                            </b:inputText>
+                            <h:message for="valor" style="color: red" />
+
+                            <h:outputText value="Cantidad *:" />
+                            <b:inputText value="#{taquillaContraviasBean.temporal.cant_tiquetes}" required="true"  id="cant" required-message="Ingrese Cantidad">
+                                <f:ajax event="keyup" listener="#{taquillaContraviasBean.teclaValor()}" render="tot"></f:ajax>
+                            </b:inputText>
+                            <h:message for="cant" style="color: red" />
+
+                            <h:outputText value="Total :" />
+                            <b:inputText value="#{taquillaContraviasBean.temporal.total}" required="false"  id="tot"  disabled="true"/>
+                            <h:message for="tot" style="color: red" />                        
+
+                            <h:outputText value="Usuario :" />
+                            <b:inputText value="#{taquillaContraviasBean.temporal.userNodumVende}" tooltip="Ingrese Usuario" required="true" id="Nomtaq" required-message="Ingrese usuario">
+                                <f:ajax event="blur" execute="@this" render="Nomtaq"></f:ajax>
+                            </b:inputText>
+                            <h:message for="Nomtaq" style="color: red" />
+
+                            <h:outputText value="Clave :" />
+                            <b:inputSecret  value="#{taquillaContraviasBean.temporal.claveNodum}" required="true"  tooltip="Ingrese Clave" id="claveNodum" required-message="Ingrese Clave">
+                                <f:ajax event="blur" listener="@this" render="Nomtaq claveNodum growlMsg"></f:ajax>
+                            </b:inputSecret>
+                            <h:message for="claveNodum" style="color: red" />      
+
+
+                            <h:outputText value="Observacion :" />
+                            <b:inputTextarea value="#{taquillaContraviasBean.temporal.observacion}" required="false" id="obs"/>
+                            <h:message for="obs" style="color: red" />
+                                                        
+                        </b:panelGrid>
+                        <br/> 
+                        <b:commandButton id="guardar" styleClass="btn btn-primary btn-sm m" value="Guardar" look="primary" 
+                                         action="#{taquillaContraviasBean.agregarTiquete()}"  update="form:datos, growlMsg"/> 
+                        <a class="btn btn-primary btn-sm m" href="#{taquillaContraviasBean.listEntrega}">Cancelar | Regresar</a>   
+                        <h:commandLink id="print" styleClass="btn btn-primary btn-sm m" value="Imprimir" actionListener="#{taquillaContraviasBean.imprimir(actionEvent)}"
+                                       target="_blank" immediate="true" /> 
+                        
+                    </h:form>  
+                </b:panel>
+
+            </center>
+
+
+        </ui:define>
+
+    </ui:composition>
+
+</html>
+
+

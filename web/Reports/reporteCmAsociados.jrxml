@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporteCmAsociados" language="groovy" pageWidth="1000" pageHeight="672" columnWidth="1000" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="2b36cca6-d69c-447a-bade-e8285dece0f2">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="694"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fechaIni" class="java.lang.String"/>
+	<parameter name="fechaFin" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select distinct d.id_trans, vt.ida_regreso, tv.cant_tiquetes, tv.valor_expal, em.nombre as pagado_a, em.documento as cc_nit,
+     e.nombre as concepto, t.total as valor, d.cm_asoc, t.fecha_mod as fecha_creacion
+from detalle_relacion d
+inner join transaccion t on d.id_trans_conv = t.id_transaccion
+inner join transaccion_viajero tv on t.id_transaccion = tv.id_transaccion
+inner join tbl_viajes_tiquetes vt on vt.id_viaje_tiquete = tv.id_viaje_tiquete
+inner join tbl_empleados em on tv.documento = em.documento
+inner join tbl_empresas e on e.id_empresa = tv.id_empresa
+where d.id_trans in (select id_trans from relacion_recibos where Fecha_Creacion between $P{fechaIni} and $P{fechaFin})
+and d.tabla = 'transaccion'
+UNION ALL
+select d.id_trans, t.ida_regreso, t.cantidad as cant_tiquetes, t.valor as valor_expal, t.nombre as pagado_a, t.documento as cc_nit,
+       t.cliente as concepto, t.total, d.cm_asoc, t.Fecha_Creacion
+from detalle_relacion d
+inner join tbl_usuarioRegistro t on t.id_registro = d.id_trans_conv
+where d.id_trans in (select id_trans from relacion_recibos where Fecha_Creacion between $P{fechaIni} and $P{fechaFin})
+and d.tabla = 'tbl_usuarioRegistro'
+UNION ALL
+select id_transaccion as id_trans, '-' ida_regreso, '' cant_tiquetes, 0 as valor_expal, pagadoa  as pagado_a, cc_nit, concepto, valor, cm_asoc, fecha_creacion
+from recibos_manuales
+where id_transaccion in (select id_trans from relacion_recibos where Fecha_Creacion between $P{fechaIni} and $P{fechaFin})]]>
+	</queryString>
+	<field name="id_trans" class="java.lang.String"/>
+	<field name="ida_regreso" class="java.lang.String"/>
+	<field name="cant_tiquetes" class="java.lang.Integer"/>
+	<field name="valor_expal" class="java.lang.Integer"/>
+	<field name="pagado_a" class="java.lang.String"/>
+	<field name="cc_nit" class="java.lang.String"/>
+	<field name="concepto" class="java.lang.String"/>
+	<field name="valor" class="java.lang.Integer"/>
+	<field name="cm_asoc" class="java.lang.String"/>
+	<field name="fecha_creacion" class="java.sql.Timestamp"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="8cfa9c93-7570-4395-bc40-e1bd87b8de84" x="0" y="0" width="70" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Transaccion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="33df5c6d-425d-4e51-8fb8-104bf08d8c0c" x="135" y="0" width="78" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Documento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b432fe38-b812-447b-84c2-a3faee769ee6" x="213" y="0" width="224" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Usuario]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="67350c84-065d-4dc0-8f3b-4e88817f6cf9" x="437" y="0" width="203" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Empresa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="abb848d1-ecac-40c7-80cc-402b895a9687" x="640" y="0" width="50" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tiquetes]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cc634d68-3053-4f43-8e2e-19c228312499" x="70" y="0" width="65" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[No. CM]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7fd69d4b-9958-4fcb-8f90-dcf840821823" x="690" y="0" width="71" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ida y Vuelta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e804de1f-b942-4836-b6e9-f5dbcbdc0e25" x="761" y="0" width="69" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor Expal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c3d7c5df-4629-4706-9f87-5e011e2a4957" x="830" y="0" width="69" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="05e62119-358d-414b-b8f3-d02658f0a63b" x="899" y="0" width="101" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Entrega]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="e03593ad-de04-469f-ac08-06631bd6a6d6" x="0" y="0" width="70" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{id_trans}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="fff8db5d-3c12-4fa0-8a77-d2b58ecdfecb" x="135" y="0" width="78" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{cc_nit}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="81271c3f-a5e2-44ff-a822-5b80e4af26f9" x="213" y="0" width="224" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{pagado_a}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ff63de27-cc0b-468a-911a-30a1d9ea657d" x="437" y="0" width="203" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{concepto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1eddd5e9-d98a-4ad9-b108-cd4fd1114962" x="640" y="0" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{cant_tiquetes}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="80d2fa90-0a40-4ab4-91dc-4e38fe0e0d5a" x="70" y="0" width="65" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{cm_asoc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8bdea996-1fd0-4c0d-9a6f-7bf35ab34a12" x="690" y="0" width="71" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{ida_regreso}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0">
+				<reportElement uuid="49f68d02-ef5d-4900-8be5-db952921c357" x="761" y="0" width="69" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_expal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="69e81faf-535f-411a-a868-2c908846fb60" x="830" y="0" width="69" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="75623be5-70af-47b8-9a02-78662754b0d2" x="899" y="0" width="101" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fecha_creacion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
