@@ -61,12 +61,13 @@
                         </p:column>
                     </p:dataTable>
                     <br/>             
-                    
-                    <!--<b:commandButton id="mostrar" look="danger" rendered="{empleadosBean.validate}" 
-                    class="btn btn-danger btn-sm m" value="Exportar Errores a Excel" action="{empleadosBean.exportarLogXLS}" immediate="true"><b:iconAwesome name="file-excel-o" /></b:commandButton>
-                    <b:label severity="danger" id="mostrar2" rendered="{empleadosBean.validate}" text="{empleadosBean.msn}" />-->
-                    
                     <a class="btn btn-primary btn-sm m" href="#{usuariosBean.crearEstudiante}">Nuevo Estudiante</a>
+                    
+                    <b:commandButton id="mostrar" look="danger" rendered="#{usuariosBean.validate}" 
+                    class="btn btn-danger btn-sm m" value="Exportar Errores a Excel" action="#{usuariosBean.exportarLogXLS}" immediate="true"><b:iconAwesome name="file-excel-o" /></b:commandButton>
+                    <b:label severity="danger" id="mostrar2" rendered="#{usuariosBean.validate}" text="#{usuariosBean.msn}" />
+                    
+                    
                     <br/><br/>
                     <strong><h:outputText value="Importar Estudiantes Desde Archivo Excel (.xls) -- Nota: Solo compatibilidad Office 97/2003 " /></strong>
                     

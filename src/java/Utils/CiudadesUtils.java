@@ -200,13 +200,15 @@ public class CiudadesUtils {
         boolean result = false;
         try {
             pool.con = pool.dataSource.getConnection();
-            pstm = pool.con.prepareStatement("select * from estudiante_convenios where documento_estudiante = '" + numero_documento + "' AND estado = 'A' ");
+            String sql = "select * from estudiante_convenios where documento_estudiante = '" + numero_documento + "' AND estado = 'A'";
+            System.out.println("sql = "+sql);
+            pstm = pool.con.prepareStatement(sql);
             rs = pstm.executeQuery();
-            if (rs.absolute(1)) {
+            if (rs.next()) {
                 result = true;
             }
-        } catch (Exception e) {
-            System.out.println("error " + e);
+        } catch (SQLException e) {
+            System.out.println("error  camilo n" + e);
         } finally {
             pool.con.close();
         }

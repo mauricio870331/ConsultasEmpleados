@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="LogUsers" language="groovy" pageWidth="805" pageHeight="800" columnWidth="805" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ddaa744c-efb6-497c-a177-df82a9d02c96">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="id_estudiante" class="java.lang.Integer"/>
+	<field name="documento_estudiante" class="java.lang.String"/>
+	<field name="codigo_estudiante" class="java.lang.String"/>
+	<field name="nombre_estudiante" class="java.lang.String"/>
+	<field name="universidad" class="java.lang.String"/>
+	<field name="usuario_mod" class="java.lang.Integer"/>
+	<field name="usuariomod_str" class="java.lang.String"/>
+	<field name="estado" class="java.lang.String"/>
+	<field name="objEstudiante" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="f8f50db0-240c-45d4-bab3-6c81615fe4f0" x="0" y="0" width="805" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Log Estudiantes Con Error]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="0" y="0" width="149" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Documento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="149" y="0" width="114" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="263" y="0" width="223" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62d8206b-43cb-4c00-b941-81dcd84d4c9d" x="486" y="0" width="319" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Universidad]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<textField>
+				<reportElement uuid="6d4ded2f-99c0-4f98-a841-910c16df7c3c" x="0" y="0" width="152" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{documento_estudiante}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0cf78963-2cc7-4f8c-8330-f22c8d4d67f4" x="152" y="0" width="111" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{codigo_estudiante}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7b85ee1a-556b-4c3b-a601-f6df7008db55" x="263" y="0" width="223" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nombre_estudiante}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f532800a-e7a2-4d1a-9bc3-9b8cc6d73e8b" x="486" y="0" width="319" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{universidad}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -25,7 +25,14 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -52,7 +59,7 @@ public class UsuariosBean implements Serializable {
      */
 
     private List<Estudiantes> listEstudiantes = new ArrayList();
-
+    private List<Estudiantes> logUser = new ArrayList();
     private List<Estudiantes> estudiantesInsert = new ArrayList();
    
 
@@ -552,6 +559,7 @@ private List<Ciudad> listCiudaes = new ArrayList();
                     im.add(obj);
                 }
             }
+            
             System.out.println("1**");
 
             if (im.size() > 0) {
@@ -567,10 +575,10 @@ private List<Ciudad> listCiudaes = new ArrayList();
                                 estudiante.setCodigo_estudiante(parts[1]);
                                 estudiante.setNombre_estudiante(parts[2]);
                                 estudiante.setUniversidad(parts[3]);
-
                                 logUsers.add(estudiante);
                                 setEstudiante(null);
                             } else {
+                                
                                   System.out.println("2**");
                                 getEstudiante();
                                 usuario = getUsuarios();
@@ -648,7 +656,7 @@ private List<Ciudad> listCiudaes = new ArrayList();
                     setMsn("Archivo Importado con " + countok + " errores, por favor compare el log con el archivo original\n es posible que los usuarios ya se enncuentren en el sistema, o hay datos vacios..!");
                     setValidate(true);
                     listEstudiantes.clear();
-                    listarEstudiantes();;
+                    listarEstudiantes();
                     countok = 0;
                     FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/universidades/EstudiantesList.xhtml");
                 }
@@ -668,6 +676,26 @@ private List<Ciudad> listCiudaes = new ArrayList();
             }
         }
 
+    }
+    
+       public void exportarLogXLS() throws IOException, JRException {
+        if (this.getLogUsers().size() > 0) {
+            File jasper = new File(FacesContext.getCurrentInstance().getExternalContext().getRealPath("/Reports/LogEstudiantes.jasper"));
+            JasperPrint jp = JasperFillManager.fillReport(jasper.getPath(), null, new JRBeanCollectionDataSource(this.getLogUsers()));
+            HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+            response.addHeader("Content-disposition", "attachment; filename=LogEstudiantes.xls");
+            try (ServletOutputStream stream = response.getOutputStream()) {
+                JRXlsExporter exporter = new JRXlsExporter();
+                exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+                exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.exportReport();
+                stream.flush();
+            }
+            FacesContext.getCurrentInstance().responseComplete();
+            logUsers.clear();
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información", "No has Importado un archivo  ó no se generaron errores..!"));
+        }
     }
     
   
@@ -819,6 +847,14 @@ private List<Ciudad> listCiudaes = new ArrayList();
 
     public void setListUniversidad(List<Tiquete_Estudiante> listUniversidad) {
         this.listUniversidad = listUniversidad;
+    }
+
+    public List<Estudiantes> getLogUsers() {
+        return logUsers;
+    }
+
+    public void setLogUsers(List<Estudiantes> logUsers) {
+        this.logUsers = logUsers;
     }
 
    
