@@ -402,6 +402,30 @@ public class CiudadesUtils {
     }
     
     
+   /*
+    * Método que valida el número de documento del estudiante ingresado en el sistema
+    * con el número de documento que esta en la base de datos
+    */
+    public static boolean validarDocumentoExist(String documento) throws SQLException {
+
+        boolean resp = false;
+        try {
+            String query = "select documento_estudiante from estudiante_convenios where documento_estudiante = '" + documento + "'";
+            pool.con = pool.dataSource.getConnection();
+            pstm = pool.con.prepareStatement(query);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                resp = true;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e);
+        } finally {
+            pool.con.close();
+        }
+        return resp;
+    }
+    
+    
 
     public static boolean editValTrans(int id, int val) throws SQLException {
         boolean resp = false;

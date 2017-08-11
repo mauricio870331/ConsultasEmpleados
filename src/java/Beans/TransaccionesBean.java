@@ -364,8 +364,7 @@ public class TransaccionesBean implements Serializable {
 
     /**
      * Método que Listara los viajes o tiquetes pendientes a entregar a los
-     * empleados
-     *
+     * empleados     
      * @exception SQLException Error de Sql, Ocurre cuando se presenta un error
      * al recuperar los datos de la tabla tbl_ciudades
      * @since incluido desde la version 1.0
@@ -416,8 +415,7 @@ public class TransaccionesBean implements Serializable {
     }
 
     /**
-     * Método que cargara los empleados para la funcion de autocompletar
-     *
+     * Método que cargara los empleados para la funcion de autocompletar     
      * @exception SQLException Error de Sql, Ocurre cuando se presenta un error
      * al recuperar los datos de la tabla tbl_ciudades
      * @since incluido desde la version 1.0
@@ -439,7 +437,6 @@ public class TransaccionesBean implements Serializable {
 
     /**
      * Método que autocompleta a partir de las teclas tipeadas en la vista
-     *
      * @param name
      * @return
      * @since incluido desde la version 1.0
@@ -458,8 +455,7 @@ public class TransaccionesBean implements Serializable {
 
     /**
      * Método que agrega los viajes o tiquetes a entregar a elmpleado en el
-     * array list
-     *
+     * array list     
      * @param tiquete
      * @param opc
      * @throws java.sql.SQLException
@@ -497,8 +493,7 @@ public class TransaccionesBean implements Serializable {
 
     /**
      * Método indica si el viaje ya esta en el array para entregar, si ya existe
-     * se debe eliminar, sino se debe agregar
-     *
+     * se debe eliminar, sino se debe agregar     
      * @param l
      * @param id
      * @return
@@ -531,8 +526,7 @@ public class TransaccionesBean implements Serializable {
     }
 
     /**
-     * Método no usado
-     *
+     * Método no usado     
      * @param l
      * @param id
      * @return
@@ -562,8 +556,7 @@ public class TransaccionesBean implements Serializable {
 
     /**
      * Método que permite eliminar un viaje del array si este ya existe, para no
-     * tener viajes repetidos
-     *
+     * tener viajes repetidos     
      * @param l
      * @param id
      * @return
@@ -594,8 +587,7 @@ public class TransaccionesBean implements Serializable {
     }
 
     /**
-     * Método que permite entregar los viajes o tiquetes a cada empleado
-     *
+     * Método que permite entregar los viajes o tiquetes a cada empleado     
      * @return
      * @throws java.sql.SQLException
      * @throws java.lang.InterruptedException
@@ -707,7 +699,7 @@ public class TransaccionesBean implements Serializable {
         }
     }
     
-    /*
+   /*
     * Método que lista los estudiantes por número de documento
     * o por nombre
     * vista @estudiante - filtra por documento
@@ -732,11 +724,15 @@ public class TransaccionesBean implements Serializable {
         }
 
     }
-
-    /*
+    
+   /**
     * Método que permite guardar el número de tiquetes entregados al estudiante
-    * 
+    * @throws java.sql.SQLException
+    * @throws java.lang.InterruptedException
+    * @throws java.io.IOException
+    * @throws java.text.ParseException
     */
+    
     public String createConvenioEstudiante() throws SQLException, InterruptedException, IOException, ParseException {
 
         tiqs = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("tiqs");
@@ -804,7 +800,7 @@ public class TransaccionesBean implements Serializable {
     }
     
     
-    /*
+   /*
     * Método que valida el número de tiquete del sistema
     * @param numtiquet
     */
@@ -815,8 +811,7 @@ public class TransaccionesBean implements Serializable {
 
     /**
      * Método que permite imprimir el recibo de caja cuando se entregan los
-     * viajes o tiquetes
-     *
+     * viajes o tiquetes 
      * @param evt
      * @throws java.io.IOException
      * @throws net.sf.jasperreports.engine.JRException
@@ -2208,7 +2203,4 @@ public class TransaccionesBean implements Serializable {
     public void setListEstudiantes(List<Estudiantes> listEstudiantes) {
         this.listEstudiantes = listEstudiantes;
     }
-
-  
-
 }

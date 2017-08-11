@@ -4,6 +4,7 @@ import Entities.*;
 import Modelo.ConsultaGeneral;
 import Modelo.CrudObject;
 import Utils.CiudadesUtils;
+import static Utils.CiudadesUtils.validarTiqueteExist;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -53,6 +54,7 @@ public class UsuariosBean implements Serializable {
     private List<Estudiantes> listEstudiantes = new ArrayList();
 
     private List<Estudiantes> estudiantesInsert = new ArrayList();
+   
 
     String ListUsuario = "../Usuarios/UsuarioList.xhtml";
     /**
@@ -93,7 +95,8 @@ public class UsuariosBean implements Serializable {
     private int countok = 0;
     private List<Estudiantes> logUsers = new ArrayList();
     private Estudiantes estudiante;
-
+  
+    
 private List<Ciudad> listCiudaes = new ArrayList();    
 
     private List<Tiquete_Estudiante> listUniversidad = new ArrayList();
@@ -162,7 +165,7 @@ private List<Ciudad> listCiudaes = new ArrayList();
         setSelectUser("");
     }
 
-    /*
+   /*
     * Método que listara los estudiantes para redirigirlos a la vista
     * @exception SQLException Error de Sql, Ocurre cuando se presenta un error
     * al recuperar los datos del estudiante
@@ -252,29 +255,50 @@ private List<Ciudad> listCiudaes = new ArrayList();
         log = null;
     }
     
-    /*
+   /*
     * Método que crea un Estudiante
     * @exception SQLException Error de Sql, Ocurre cuando se presenta un error
     * al intentar insertar los datos del estudiante
     */
 
     public void createEstudiantes() throws SQLException, InterruptedException, IOException, ParseException {
+      
+        System.out.println("doc " + estudiante.getDocumento_estudiante());
+   
         LoginBean log = new LoginBean();
-
+        
         estudiante.setUsuario_mod(log.getIdUserLog());
         estudiante.setEstado("A");
         long a = CrudObject.create(estudiante);
-        if (a >= 1) {
+        if (validarDocumento(estudiante.getDocumento_estudiante())) {
+           
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "El número de documento ya fue guardado"));
+          
+        }
+        else if (a >= 1) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Estudiante Creado"));
             listarEstudiantes();
-        }
+        } 
+     
+        
         estudiante = null;
         log = null;
+      
+    }
+    
+   /*
+    * Método que valida el número de de documento del estudiante ingresado en el sistema
+    * @param documento
+    */
+    
+     public boolean validarDocumento(String documento) throws SQLException {
+        boolean r = CiudadesUtils.validarDocumentoExist(documento);
+        return r;
     }
 
     
     
-    /*
+   /*
     * Método que edita a un estudiante
     *@throws java.sql.SQLException Error de Sql, Ocurre cuando se presenta un
     * error al editar
@@ -311,7 +335,7 @@ private List<Ciudad> listCiudaes = new ArrayList();
         FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Usuarios/UsuarioEditar.xhtml");
     }
 
-    /*
+   /*
     * Método que setea al estudiante actual a editar
     * @param e
     */
@@ -321,13 +345,13 @@ private List<Ciudad> listCiudaes = new ArrayList();
         FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/universidades/EstudiantesEditar.xhtml");
     }
     
-    /*
+   /*
     * Método que elimina al estudiante seleccionado
     * @throws java.sql.SQLException Error que ocurre al intentar eliminar una
-     * un estudiante
-     * @throws java.lang.InterruptedException
-     * @throws java.io.IOException Error que ocurre cuando intenta redirigir a
-     * la vista EstudiantesList.xhtml
+    * un estudiante
+    * @throws java.lang.InterruptedException
+    * @throws java.io.IOException Error que ocurre cuando intenta redirigir a
+    * la vista EstudiantesList.xhtml
     */
 
     public void deleteEstudiante() throws SQLException, InterruptedException, IOException {
@@ -387,7 +411,7 @@ private List<Ciudad> listCiudaes = new ArrayList();
         FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Usuarios/UsuarioConfirmDelete.xhtml");
     }
 
-    /*
+   /*
     * Método que setea al estudiante para ser eliminado
     * @param e
     */
@@ -410,14 +434,14 @@ private List<Ciudad> listCiudaes = new ArrayList();
     }
     
     
-    /*
+   /*
     * Método que cancela la eliminación del Estudiante
     *@throws java.io.IOException Error que ocurre cuando intenta redirigir a
     * la vista EstudiantesList.xhtml
     */
 
     public void cancelDeleteEstudiantes() throws IOException {
-        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Usuarios/EstudiantesList.xhtml");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/universidades/EstudiantesList.xhtml");
         usuario = null;
     }
 
@@ -796,6 +820,8 @@ private List<Ciudad> listCiudaes = new ArrayList();
     public void setListUniversidad(List<Tiquete_Estudiante> listUniversidad) {
         this.listUniversidad = listUniversidad;
     }
+
+   
 
     
 
