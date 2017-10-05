@@ -450,7 +450,7 @@ public class TaquillaContraviasBean implements Serializable {
             case "TULUA":
                 idAgencia = "TU";
                 break;
-            case "CALL-CENTER":
+            case "CALL":
                 idAgencia = "COL";
                 break;
             case "SOACHA":

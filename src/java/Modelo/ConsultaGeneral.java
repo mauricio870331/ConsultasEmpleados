@@ -70,9 +70,8 @@ public class ConsultaGeneral {
     private double doble9;
     private double doble10;
 
-    
     //consulta estudiantes
-    public ConsultaGeneral(int num1,  String str1, String str2, String str3, String str4,int num2, String str5) {
+    public ConsultaGeneral(int num1, String str1, String str2, String str3, String str4, int num2, String str5) {
         this.num1 = num1;
         this.num2 = num2;
         this.str1 = str1;
@@ -81,8 +80,27 @@ public class ConsultaGeneral {
         this.str4 = str4;
         this.str5 = str5;
     }
-    
-    
+
+    //tiquetesAutorzados
+    public ConsultaGeneral(int num1, String str1, String str2, String str3, String str4, String str5, String str6,
+            Date fecha1, String str7, Date fecha2, String str8, String str9, String str10, String str11, String str12, String str13) {
+        this.num1 = num1;
+        this.str1 = str1;
+        this.str2 = str2;
+        this.str3 = str3;
+        this.str4 = str4;
+        this.str5 = str5;
+        this.str6 = str6;
+        this.str7 = str7;
+        this.str8 = str8;
+        this.str9 = str9;
+        this.str10 = str10;
+        this.str11 = str11;
+        this.str12 = str12;
+        this.str13 = str13;
+        this.fecha1 = fecha1;
+        this.fecha2 = fecha2;
+    }
 
     //Constructores
     //Constructor Login
@@ -492,12 +510,8 @@ public class ConsultaGeneral {
         this.str4 = str4;
         this.str5 = str5;
         this.str6 = str6;
-        
-    }
 
-   
-    
-    
+    }
 
     public int getNum1() {
         return num1;

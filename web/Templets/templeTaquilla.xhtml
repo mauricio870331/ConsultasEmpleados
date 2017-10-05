@@ -39,26 +39,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->       
     </h:head>
-    <!--
-    BODY TAG OPTIONS:-->
-    <!--
-    Apply one or more of the following classes to get the
-    desired effect
-    |*********************************************************|
-    | SKINS         | skin-blue                               |
-    |               | skin-black                              |
-    |               | skin-purple                             |
-    |               | skin-yellow                             |
-    |               | skin-red                                |
-    |               | skin-green                              |
-    |*********************************************************|
-    |LAYOUT OPTIONS | fixed                                   |
-    |               | layout-boxed                            |
-    |               | layout-top-nav                          |
-    |               | sidebar-collapse                        |
-    |               | sidebar-mini                            |
-    |*********************************************************|
-    -->
     <h:body class="hold-transition skin-blue sidebar-mini" onload="#{loginBean.validarsession()};#{documentosBean.showalerts()}">
         <div class="wrapper">
             <!-- Main Header -->
@@ -95,6 +75,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                             <li class="dropdown user user-menu">
                                 <!-- Menu Toggle Button -->
+
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <!-- The user image in the navbar-->              
                                     <!-- hidden-xs hides the username on small devices so only the image appears. -->                                   
@@ -163,6 +144,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <li><a href="#{taquillaContraviasBean.registroContravias}">Crear Contravia</a></li>    
                             </ul>
                         </li>
+
+                        <li class="treeview">
+                            <a href="#"><i class="fa fa-users"></i> <span>Entregar Autorizados</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="#{transaccionesBean.listAutorizados}">Consultar</a></li>
+                            </ul>
+                        </li>
+
+
                         <li class="treeview">
                             <a href="#"><i class="fa fa-file"></i> <span>Reportes</span>
                                 <span class="pull-right-container">
@@ -200,7 +194,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <section class="content-header">
                     <h1>
                         <ui:insert name="title">Default Title</ui:insert>
-                    </h1>      
+                    </h1>  
+                    <h4>
+                        <h:form id="form2">
+                            <h:commandLink id="print" style="font-weight: bold;color: red" value="'Ayuda' Click Aqui..!" actionListener="#{taquillaRegistroTiquete.listDocumentos()}" target="_blank" immediate="true" />
+                        </h:form>
+                    </h4>
                 </section>
 
                 <!-- Main content -->

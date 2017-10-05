@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"  
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <ui:composition template="../../Templets/templetAdmon.xhtml">
+        <ui:define name="titleapp">
+            <h:outputText value="Editar Autorización"></h:outputText>
+        </ui:define>
+        <ui:define name="user">
+            <h:outputText value="#{loginBean.nomUserLog}"></h:outputText>
+        </ui:define>
+        <ui:define name="title">
+            <b><h:outputText value="Listado de Tiquetes Autorizados" style="color: #005384"></h:outputText></b>
+        </ui:define>
+        <ui:define name="body">  
+            <b:panel> 
+                <h:form id="form">
+                    <b:growl  id="growl" showDetail="true" placementFrom="bottom" globalOnly="true" />                 
+                    <b:panelGrid colSpans="6,1,5" id="datos">         
+                        <b:inputText value="#{tiquetesAutorizadosBean.selectUser}" name="doc" id="doc"                                     
+                                     placeholder="Documento ó Nombre"
+                                     tooltip="Ingrese Documento o Nombre">                            
+                        </b:inputText>                        
+
+                        <b:commandButton id="refresh" styleClass="iconSx" look="primary" value="" tooltip="Buscar / Refrescar">
+                            <b:iconAwesome name="search" size="1x" />
+                            <f:ajax event="click" listener="#{tiquetesAutorizadosBean.BuascarUser()}"  render="tblempleados growl doc" ></f:ajax>
+                        </b:commandButton>
+
+
+                    </b:panelGrid>
+
+                    <p:dataTable editable="true" editMode="cell" id="tblempleados"
+                                 var="tiquetes" value="#{tiquetesAutorizadosBean.tiquetesAutorizados}" rows="10"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15" >
+
+                        <p:column headerText="Documento"  width="100">
+                            <h:outputText value="#{tiquetes.documento}" />
+                        </p:column>                        
+                        <p:column headerText="Nombre" width="130">
+                            <h:outputText value="#{tiquetes.nombre_completo}" />
+                        </p:column>
+
+                        <p:column headerText="Telefono" width="100">
+                            <h:outputText value="#{tiquetes.telefono}" />
+                        </p:column> 
+
+                        <p:column headerText="Origen" width="90">
+                            <h:outputText value="#{tiquetes.origen}" />
+                        </p:column> 
+
+                        <p:column headerText="Destino" width="90">
+                            <h:outputText value="#{tiquetes.destino}" />
+                        </p:column> 
+
+                        <p:column headerText="Motivo Solicitud" width="150">
+                            <h:outputText id="motivo" value="#{(tiquetes.motivo_solicitud.length() > 20) ? tiquetes.motivo_solicitud.substring(0,20).concat('...') : tiquetes.motivo_solicitud}" />
+                            <p:tooltip id="toolTipContent" 
+                                       style="margin-left: 1%;margin-top: -1%; width: 30%;background-color: black;color: white; text-align: justify" 
+                                       for="motivo" rendered="#{(tiquetes.motivo_solicitud.length() > 20)}">
+                                <b>Motivo de la Solicitud:</b><br/> #{tiquetes.motivo_solicitud}
+                            </p:tooltip>
+                        </p:column> 
+
+                        <p:column headerText="Regreso" width="70">
+                            <h:outputText value="#{tiquetes.idaRegreso}" />
+                        </p:column> 
+
+                        <p:column headerText="Fecha Solicitud">
+                            <h:outputText value="#{tiquetes.fecha_solicitud}"  style="font-size: 10px" />
+                        </p:column> 
+
+                        <p:column headerText="Fecha Entrega">
+                            <h:outputText value="#{tiquetes.fecha_entrega}"  style="font-size: 10px" />
+                        </p:column> 
+
+                        <p:column headerText="Estado" width="80">
+                            <h:outputText value="#{tiquetes.estado}"  style="font-size: 10px" />
+                        </p:column> 
+
+                        <p:column headerText="Acciones" width="110" rendered="#{loginBean.documentoUserLog == 'jpaul'}" style="text-align: center" >
+
+                            <b:commandButton styleClass="iconS" look="primary" value="" tooltip="Editar" action="#{tiquetesAutorizadosBean.prepareEdit(tiquetes)}" ><b:icon name="pencil" /></b:commandButton>
+                            <b:commandButton styleClass="iconS2" look="danger" value="" tooltip="Eliminar" action="#{tiquetesAutorizadosBean.confirmDelete(tiquetes)}" ><b:iconAwesome name="eraser" /></b:commandButton>
+
+                        </p:column> 
+
+                        <!--<p:column headerText="Confirmar" width="80" style="text-align: center">                             
+                            <p:selectBooleanCheckbox  id="confirmar" value="{empleado.selected}">
+                                <p:ajax  listener="{transaccionesBean.addTiqueteToList(empleado, empleado.opc)}" 
+                                         update="tblempleados confirmar form:growl"/>
+                            </p:selectBooleanCheckbox>
+                        </p:column>-->
+
+                    </p:dataTable>
+                    <br/> 
+                    <a class="btn btn-primary btn-sm m" href="#{tiquetesAutorizadosBean.create}">Nueva Autorización</a>
+                </h:form>              
+
+            </b:panel> 
+
+        </ui:define>
+
+    </ui:composition>
+</html>

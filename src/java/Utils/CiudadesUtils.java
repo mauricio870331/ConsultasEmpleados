@@ -4,6 +4,7 @@ import Entities.Estudiantes;
 import Entities.FacturaHistorico;
 import Entities.ReciboDeCaja;
 import Entities.TblRegistroContravias;
+import Entities.TiquetesAutorizados;
 import Modelo.Conexion;
 import Modelo.ConexionPool;
 import Modelo.ConsultaGeneral;
@@ -112,7 +113,7 @@ public class CiudadesUtils {
                 //result = rs.getInt(1);
                 // System.out.println("valor " + result);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("error " + e);
         } finally {
             pool.con.close();
@@ -152,10 +153,11 @@ public class CiudadesUtils {
                     + "when b.Temporada='Alta' then cast(precio2 as numeric) end precio,servicio,SUBSTRING(hora,0,3)+':'+ SUBSTRING(hora,3,5) horario, "
                     + "observaciones from cpp_rutasweb a ,cpt_rutasweb b  where a.nro_trans=b.nro_trans and "
                     + "a.fecha_mod in (select MAX(fecha_mod) from cpp_rutasweb) and origen = '" + origen + "' and destino = '" + destino + "'  order by precio desc";
+            System.out.println("query = " + sql);
             pstm = cn.prepareStatement(sql);
             rs = pstm.executeQuery();
             while (rs.next()) {
-                String cadena = rs.getString(1).trim() + "," + rs.getString(2).trim() + "," + rs.getString(3).trim() + "," + rs.getInt(4) + "," + rs.getString(5).trim() + " " + rs.getString(7).trim();
+                String cadena = rs.getString(1).trim() + "," + rs.getString(2).trim() + "," + rs.getString(3).trim() + "," + rs.getInt(4) + "," + rs.getString(5).trim() + " " + rs.getString(7).trim().replace(",", " -") + "," + rs.getString(5).trim() + " -- " + rs.getString(6);
                 if (!result.contains(cadena)) {
                     result.add(cadena);
                 }
@@ -189,19 +191,18 @@ public class CiudadesUtils {
         }
         return result;
     }
-    
+
     /*
     * Método que compara el número de documento del estudiante ingresado al sistema
     * con el número de documento que se encuentra registrado en la base de datos
     * @param numero_documento
-    */
-
+     */
     public static boolean getExistEstudiante(String numero_documento) throws SQLException {
         boolean result = false;
         try {
             pool.con = pool.dataSource.getConnection();
             String sql = "select * from estudiante_convenios where documento_estudiante = '" + numero_documento + "' AND estado = 'A'";
-            System.out.println("sql = "+sql);
+            System.out.println("sql = " + sql);
             pstm = pool.con.prepareStatement(sql);
             rs = pstm.executeQuery();
             if (rs.next()) {
@@ -377,13 +378,12 @@ public class CiudadesUtils {
         }
         return resp;
     }
-    
+
     /*
     * Método que valida el número de tiquete ingresado en el sistema
     * con el número de tiquete que esta en la base de datos
     * @param numtiquet
-    */
-
+     */
     public static boolean validarTiqueteExist(String numtiquet) throws SQLException {
 
         boolean resp = false;
@@ -402,12 +402,11 @@ public class CiudadesUtils {
         }
         return resp;
     }
-    
-    
-   /*
+
+    /*
     * Método que valida el número de documento del estudiante ingresado en el sistema
     * con el número de documento que esta en la base de datos
-    */
+     */
     public static boolean validarDocumentoExist(String documento) throws SQLException {
 
         boolean resp = false;
@@ -426,8 +425,6 @@ public class CiudadesUtils {
         }
         return resp;
     }
-    
-    
 
     public static boolean editValTrans(int id, int val) throws SQLException {
         boolean resp = false;
@@ -839,6 +836,31 @@ public class CiudadesUtils {
         return recibo;
     }
 
+    public static List<TiquetesAutorizados> reciboDeCajaAutorizados(String arrayIdTrans) throws SQLException {
+        List<TiquetesAutorizados> recibo = new ArrayList();
+        try {
+            pool.con = pool.dataSource.getConnection();
+            String sql = "select * from tiquetes_autorizados where id_carga in (" + arrayIdTrans.substring(0, arrayIdTrans.length() - 1) + ")";
+            System.out.println("sql = " + sql);
+
+            pstm = pool.con.prepareStatement(sql);
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                recibo.add(new TiquetesAutorizados(rs.getInt(1), rs.getString(2),
+                        rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6),
+                        rs.getString(7), rs.getDate(8),
+                        rs.getString(9), rs.getDate(10), rs.getString(11),
+                        rs.getString(12), rs.getString(13), rs.getString(14),
+                        rs.getString(15), rs.getString(16)));
+            }
+        } catch (SQLException e) {
+            System.out.println("error " + e);
+        } finally {
+            pool.con.close();
+        }
+        return recibo;
+    }
+
     public static boolean existEmpresaEmpleado(String documento, int id_empresa) throws SQLException {
         boolean result = false;
         try {
@@ -863,6 +885,22 @@ public class CiudadesUtils {
             String query = "update tbl_usuarioRegistro set cliente = 'anulado', "
                     + "nombre = 'anulado', documento = 'anulado', valor = 0, cantidad = 0, total = 0, cod_bus = '', "
                     + "tiquete = '', taquilla = '', user_mod = '" + documentoUserLog + "' where transaccion = '" + idTransAnular + "'";
+            pstm = pool.con.prepareStatement(query);
+            pstm.executeUpdate();
+            result = true;
+        } catch (SQLException e) {
+            System.out.println("error " + e);
+        } finally {
+            pool.con.close();
+        }
+        return result;
+    }
+
+    public static boolean updateNumberTiquete(TiquetesAutorizados t) throws SQLException {
+        boolean result = false;
+        try {
+            pool.con = pool.dataSource.getConnection();
+            String query = "update tiquetes_autorizados set tiquete = '"+t.getTiquete()+"' where id_carga = " + t.getId_carga() + "";
             pstm = pool.con.prepareStatement(query);
             pstm.executeUpdate();
             result = true;

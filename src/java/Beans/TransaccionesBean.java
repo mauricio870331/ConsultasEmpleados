@@ -47,6 +47,8 @@ public class TransaccionesBean implements Serializable {
      * Variable privada: saldos. Contendra el listado de viajes y tiquetes que
      * se han de entregar a los epleados
      */
+    private List<TiquetesAutorizados> TiquetesAutorizados = new ArrayList();
+    private List<TiquetesAutorizados> tiquetesAutorizadosTolist = new ArrayList();
     private List<TblViajesTiquetes> saldos = new ArrayList();
     /**
      * Variable privada: tiquetesToList. auxiliar para almacenar los viajes y
@@ -58,6 +60,8 @@ public class TransaccionesBean implements Serializable {
      * TblViajesTiquetes actualmente seleccionado
      */
     private TblViajesTiquetes tiquetesCurrrent;
+    private TiquetesAutorizados autorizadosCurrent;
+
     private String ConvenioEstudiantes = "../Taquilla/ConvenioEstudiante.xhtml";
     /**
      * Variable privada: transaccion. almacenara el objeto Transaccion
@@ -128,6 +132,8 @@ public class TransaccionesBean implements Serializable {
      * ListaEntrega.xhtml
      */
     private String listaEntrega = "../Taquilla/ListaEntrega.xhtml";
+
+    private String listAutorizados = "../Taquilla/ListAutorizados.xhtml";
 
     private String user;
     /**
@@ -208,6 +214,8 @@ public class TransaccionesBean implements Serializable {
      *
      */
     private int a = 0;
+
+    private String autorizados = "";
     /**
      * Variable: tempValorGlobal. temporal para almacenar el valor global del
      * convenio para posteriores calculos
@@ -266,8 +274,6 @@ public class TransaccionesBean implements Serializable {
     private String tiqs = "";
 
     private List<Estudiantes> listEstudiantes = new ArrayList();
-    
-     
 
     // private List<TblViajesTiquetes> saldos = new ArrayList();
     public TransaccionesBean() {
@@ -277,6 +283,8 @@ public class TransaccionesBean implements Serializable {
     public void init() {
         growl.setLife(5000);
         saldos.clear();
+        tiquetesAutorizadosTolist.clear();
+        TiquetesAutorizados.clear();
         LoginBean log = new LoginBean();
         if (log.getRol().equals("EMPRESA")) {
             listarAutocomplete();
@@ -364,7 +372,8 @@ public class TransaccionesBean implements Serializable {
 
     /**
      * Método que Listara los viajes o tiquetes pendientes a entregar a los
-     * empleados     
+     * empleados
+     *
      * @exception SQLException Error de Sql, Ocurre cuando se presenta un error
      * al recuperar los datos de la tabla tbl_ciudades
      * @since incluido desde la version 1.0
@@ -414,8 +423,40 @@ public class TransaccionesBean implements Serializable {
         setSelectUser("");
     }
 
+    public void saldoActualAutorizados() throws SQLException {
+        tiqs = "";
+        tiquetesAutorizadosTolist.clear();
+        if (FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("doc") != null) {
+            setSelectUser(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("doc"));
+        }
+        setUsuarioNodum(null);
+        setClaveNodum(null);
+        setUsuarioTaquilla("");
+        setDisable(true);
+        if (!selectUser.equals("")) {
+            TiquetesAutorizados.clear();
+            ArrayList<ConsultaGeneral> l = new ArrayList<>();
+            l = (ArrayList) CrudObject.getSelectSql("findtiqAutorizados", 1, "" + selectUser + "");
+            if (!l.isEmpty()) {
+                for (ConsultaGeneral obj : l) {
+                    TiquetesAutorizados.add(new TiquetesAutorizados(obj.getNum1(), obj.getStr1(), obj.getStr2(), obj.getStr3(),
+                            obj.getStr4(), obj.getStr5(), obj.getStr6(), obj.getFecha1(), obj.getStr7(), obj.getFecha2(),
+                            obj.getStr8(), obj.getStr9(), obj.getStr10(), obj.getStr11(), obj.getStr12(), obj.getStr13()));
+                }
+            } else {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Info", "No hay resultados para la consulta"));
+            }
+
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "Ingrese Numero de documento"));
+            TiquetesAutorizados.clear();
+        }
+        setSelectUser("");
+    }
+
     /**
-     * Método que cargara los empleados para la funcion de autocompletar     
+     * Método que cargara los empleados para la funcion de autocompletar
+     *
      * @exception SQLException Error de Sql, Ocurre cuando se presenta un error
      * al recuperar los datos de la tabla tbl_ciudades
      * @since incluido desde la version 1.0
@@ -437,6 +478,7 @@ public class TransaccionesBean implements Serializable {
 
     /**
      * Método que autocompleta a partir de las teclas tipeadas en la vista
+     *
      * @param name
      * @return
      * @since incluido desde la version 1.0
@@ -455,7 +497,8 @@ public class TransaccionesBean implements Serializable {
 
     /**
      * Método que agrega los viajes o tiquetes a entregar a elmpleado en el
-     * array list     
+     * array list
+     *
      * @param tiquete
      * @param opc
      * @throws java.sql.SQLException
@@ -491,9 +534,18 @@ public class TransaccionesBean implements Serializable {
 
     }
 
+    public void addTiqueteAutorizados(TiquetesAutorizados tiquete) throws SQLException {
+        if (existEnArray3(tiquetesAutorizadosTolist, tiquete.getId_carga())) {
+            eliminardelarray3(tiquetesAutorizadosTolist, tiquete.getId_carga());
+        } else {
+            tiquetesAutorizadosTolist.add(tiquete);
+        }
+    }
+
     /**
      * Método indica si el viaje ya esta en el array para entregar, si ya existe
-     * se debe eliminar, sino se debe agregar     
+     * se debe eliminar, sino se debe agregar
+     *
      * @param l
      * @param id
      * @return
@@ -525,8 +577,22 @@ public class TransaccionesBean implements Serializable {
         return saber;
     }
 
+    public boolean existEnArray3(List<TiquetesAutorizados> l, int id) {
+        boolean saber = false;
+        Iterator<TiquetesAutorizados> lpt = l.iterator();
+        while (lpt.hasNext()) {
+            TiquetesAutorizados borrar = lpt.next();
+            if (borrar.getId_carga() == id) {
+                saber = true;
+                break;
+            }
+        }
+        return saber;
+    }
+
     /**
-     * Método no usado     
+     * Método no usado
+     *
      * @param l
      * @param id
      * @return
@@ -556,7 +622,8 @@ public class TransaccionesBean implements Serializable {
 
     /**
      * Método que permite eliminar un viaje del array si este ya existe, para no
-     * tener viajes repetidos     
+     * tener viajes repetidos
+     *
      * @param l
      * @param id
      * @return
@@ -586,8 +653,21 @@ public class TransaccionesBean implements Serializable {
         return eliminado;
     }
 
+    public boolean eliminardelarray3(List<TiquetesAutorizados> l, int id) {
+        boolean eliminado = false;
+        int j = 0;
+        for (int i = 0; i < l.size(); i++) {
+            if (l.get(i).getId_carga() == id) {
+                l.remove(i);
+                eliminado = true;
+            }
+        }
+        return eliminado;
+    }
+
     /**
-     * Método que permite entregar los viajes o tiquetes a cada empleado     
+     * Método que permite entregar los viajes o tiquetes a cada empleado
+     *
      * @return
      * @throws java.sql.SQLException
      * @throws java.lang.InterruptedException
@@ -698,14 +778,65 @@ public class TransaccionesBean implements Serializable {
             return "ListaEntrega";
         }
     }
-    
-   /*
+
+    public String entregarAutorizados() throws SQLException, InterruptedException, IOException, ParseException {
+        if (tiquetesAutorizadosTolist.isEmpty()) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "No has seleccionado registros para entregar"));
+            return "ListAutorizados";
+        }        
+        if (getUsuarioNodum() == null && getClaveNodum() == null) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "El usuario y la clave no debe estar vacio..!"));
+            return "ListAutorizados";
+        } else if (!validarTquillaNodum()) {
+            setUsuarioNodum("");
+            setClaveNodum("");
+            setUsuarioTaquilla("");
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "No Tienes Permisos Para Entregar Convenios"));
+            return "ListAutorizados";
+        }
+        if (getTiquetesAutorizadosTolist().size() > 0) {
+            if (!getUsuarioNodum().equals("") && !getClaveNodum().equals("")) {
+                LoginBean log = new LoginBean();
+                StringBuilder Object = new StringBuilder();
+                StringBuilder sb = new StringBuilder();
+                tiquetesAutorizadosTolist.forEach((next) -> {
+                    sb.append(next.getId_carga()).append(",");
+                });
+                setAutorizados(sb.toString());
+                Object.append(format.format(new Date())).append(",").append(log.getNomUserLog()).append(",").append(getUsuarioTaquilla());
+                setA((int) CrudObject.createAutorizacion(Object.toString(), getTiquetesAutorizadosTolist()));
+                if (getA() >= 1) {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Informacion", "Transaccion realizada con exito"));
+                    tiquetesAutorizadosTolist.clear();
+                    TiquetesAutorizados.clear();
+                    setUsuarioNodum("");
+                    setClaveNodum("");
+                    setUsuarioTaquilla("");
+                    log = null;                    
+                    Object = null;
+                    return "ListAutorizados";
+                } else {
+                    return "ListAutorizados";
+                }
+            } else {
+                tiquetesAutorizadosTolist.clear();
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "El usuario y la clave no debe estar vacio..!"));
+                return "ListAutorizados";
+            }
+        } else {
+            tiquetesAutorizadosTolist.clear();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso", "No has seleccionado nada para entregar..!"));
+            return "ListAutorizados";
+        }
+    }
+
+
+    /*
     * Método que lista los estudiantes por número de documento
     * o por nombre
     * vista @estudiante - filtra por documento
     * vista @estudiantef -  filtra por nombre
-    */
-
+     */
     public void listarEstudiantes() throws SQLException {
         if (FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("doc") != null) {
             setSelectUser(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("doc"));
@@ -724,35 +855,34 @@ public class TransaccionesBean implements Serializable {
         }
 
     }
-    
-   /**
-    * Método que permite guardar el número de tiquetes entregados al estudiante
-    * @throws java.sql.SQLException
-    * @throws java.lang.InterruptedException
-    * @throws java.io.IOException
-    * @throws java.text.ParseException
-    */
-    
+
+    /**
+     * Método que permite guardar el número de tiquetes entregados al estudiante
+     *
+     * @throws java.sql.SQLException
+     * @throws java.lang.InterruptedException
+     * @throws java.io.IOException
+     * @throws java.text.ParseException
+     */
     public String createConvenioEstudiante() throws SQLException, InterruptedException, IOException, ParseException {
 
         tiqs = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("tiqs");
         selectUser = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("doc");
-        
-        System.out.println("tiqs + selectUser" + tiqs +" "+ selectUser );
+
+        System.out.println("tiqs + selectUser" + tiqs + " " + selectUser);
 
         if (validarTiquete(tiqs)) {
-           
+
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "El número de tiquete ya fue guardado"));
             return "ConvenioEstudiante";
         }
 
-        
         if (tiqs.equals("") || selectUser.equals("")) {
-            System.out.println("tiqs1 + selectUser1 " + tiqs +" "+ selectUser );
+            System.out.println("tiqs1 + selectUser1 " + tiqs + " " + selectUser);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "El campo Número de tiquetes y usuario no debe estar vacio..!"));
             return "ConvenioEstudiante";
         }
-       
+
         if (getUsuarioNodum() == null && getClaveNodum() == null) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "El usuario y la clave no debe estar vacio..!"));
             return "ConvenioEstudiante";
@@ -798,12 +928,11 @@ public class TransaccionesBean implements Serializable {
         }
 
     }
-    
-    
-   /*
+
+    /*
     * Método que valida el número de tiquete del sistema
     * @param numtiquet
-    */
+     */
     public boolean validarTiquete(String numtiquet) throws SQLException {
         boolean r = CiudadesUtils.validarTiqueteExist(numtiquet);
         return r;
@@ -811,7 +940,8 @@ public class TransaccionesBean implements Serializable {
 
     /**
      * Método que permite imprimir el recibo de caja cuando se entregan los
-     * viajes o tiquetes 
+     * viajes o tiquetes
+     *
      * @param evt
      * @throws java.io.IOException
      * @throws net.sf.jasperreports.engine.JRException
@@ -837,6 +967,32 @@ public class TransaccionesBean implements Serializable {
             FacesContext.getCurrentInstance().responseComplete();
             setA(0);
             saldos.clear();
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso..!", "No se han entregado tiquetes"));
+        }
+
+    }
+
+    public void imprimirReciboAutorizados(ActionEvent evt) throws IOException, JRException, SQLException {
+        if (getA() > 0) {
+            File jasper = new File(FacesContext.getCurrentInstance().getExternalContext().getRealPath("/Reports/reciboAutorizacion.jasper"));
+
+//            Map parametros = new HashMap();
+            AutorizadosDataSource rdatasource = new AutorizadosDataSource();
+            rdatasource.setListaRecibo(CiudadesUtils.reciboDeCajaAutorizados(getAutorizados()));           
+            byte[] jp = JasperRunManager.runReportToPdf(jasper.getPath(), null, rdatasource);
+            HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+            response.setContentType("application/pdf");
+            response.setContentLength(jp.length);
+            try (ServletOutputStream outStream = response.getOutputStream()) {
+                outStream.write(jp, 0, jp.length);
+                outStream.flush();
+                outStream.close();
+            }
+            FacesContext.getCurrentInstance().responseComplete();
+            setA(0);
+            tiquetesAutorizadosTolist.clear();
+            setAutorizados("");
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso..!", "No se han entregado tiquetes"));
         }
@@ -2202,5 +2358,47 @@ public class TransaccionesBean implements Serializable {
 
     public void setListEstudiantes(List<Estudiantes> listEstudiantes) {
         this.listEstudiantes = listEstudiantes;
+    }
+
+    public String getListAutorizados() {
+        tiquetesAutorizadosTolist.clear();
+        TiquetesAutorizados.clear();
+        return listAutorizados;
+    }
+
+    public void setListAutorizados(String listAutorizados) {
+        this.listAutorizados = listAutorizados;
+    }
+
+    public List<TiquetesAutorizados> getTiquetesAutorizados() {
+        return TiquetesAutorizados;
+    }
+
+    public void setTiquetesAutorizados(List<TiquetesAutorizados> TiquetesAutorizados) {
+        this.TiquetesAutorizados = TiquetesAutorizados;
+    }
+
+    public TiquetesAutorizados getAutorizadosCurrent() {
+        return autorizadosCurrent;
+    }
+
+    public void setAutorizadosCurrent(TiquetesAutorizados autorizadosCurrent) {
+        this.autorizadosCurrent = autorizadosCurrent;
+    }
+
+    public List<TiquetesAutorizados> getTiquetesAutorizadosTolist() {
+        return tiquetesAutorizadosTolist;
+    }
+
+    public void setTiquetesAutorizadosTolist(List<TiquetesAutorizados> tiquetesAutorizadosTolist) {
+        this.tiquetesAutorizadosTolist = tiquetesAutorizadosTolist;
+    }
+
+    public String getAutorizados() {
+        return autorizados;
+    }
+
+    public void setAutorizados(String autorizados) {
+        this.autorizados = autorizados;
     }
 }

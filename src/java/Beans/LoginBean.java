@@ -39,7 +39,6 @@ public class LoginBean implements Serializable {
     private Date createAt = null;
     Growl growl = new Growl();
     private String logOUT;
- 
 
     @PostConstruct
     public void init() {
@@ -126,6 +125,14 @@ public class LoginBean implements Serializable {
                     } else {
                         FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Auditoria/ListRelacion.xhtml");
                     }
+                    user = null;
+                }
+                if (l.get(0).getStr4().equals("CARGATIQUETE")) {
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Tiquetes/ListTiquetesEntregados.xhtml");
+                    user = null;
+                }                
+                if (l.get(0).getStr4().equals("VERAUTORIZADOS")) {
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Tiquetes/viewAutorizados.xhtml");
                     user = null;
                 }
 

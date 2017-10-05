@@ -47,7 +47,7 @@ public class ConexionPool {
     public Connection getconecion() {
         return con;
     }
- 
+
     public void setCon(Connection con) {
         this.con = con;
     }

@@ -750,7 +750,7 @@ public class TaquillaRegistroTiquete implements Serializable {
         this.documentos = documentos;
     }
 
-    public ArrayList<String> getServicio() {
+    public ArrayList<String> getServicio() {          
         return servicio;
     }
 

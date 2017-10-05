@@ -42,7 +42,7 @@ public class CrudObject {
      */
     public static long create(Object x) throws SQLException, ParseException {
         String tbl = "tablas";
-        SimpleDateFormat format2 = new SimpleDateFormat("yyyy-M-dd H:m:s");
+        SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd H:m:s");
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         boolean validacion = false;
         Estados estado = null;
@@ -62,6 +62,7 @@ public class CrudObject {
         Docs documento = null;
         Alertas alertas = null;
         CmGenerado cmgen = null;
+        TiquetesAutorizados tiquetesAutorizados = null;
         String preparet = "";
         long mns = 0;
         if (x instanceof Estados) {
@@ -204,7 +205,6 @@ public class CrudObject {
                         default:
                             break;
                     }
-
                 }
             }
             validacion = true;
@@ -224,8 +224,25 @@ public class CrudObject {
                     + "\",\"" + tiquete.getUsuario_taquilla() + "\")";
             System.out.println(preparet);
             validacion = true;
+        } else if (x instanceof TiquetesAutorizados) {
+            tiquetesAutorizados = (TiquetesAutorizados) x;
+            preparet = "insert into tiquetes_autorizados values(\"" + tiquetesAutorizados.getDocumento()
+                    + "\",\"" + tiquetesAutorizados.getNombre_completo()
+                    + "\",\"" + tiquetesAutorizados.getTelefono()
+                    + "\",\"" + tiquetesAutorizados.getOrigen()
+                    + "\",\"" + tiquetesAutorizados.getDestino()
+                    + "\",\"" + tiquetesAutorizados.getMotivo_solicitud()
+                    + "\",\"" + format2.format(tiquetesAutorizados.getFecha_solicitud())
+                    + "\",\"" + tiquetesAutorizados.getEstado()
+                    + "\"," + tiquetesAutorizados.getFecha_entrega()
+                    + ",\"" + tiquetesAutorizados.getTipo_servicio()
+                    + "\",\"" + tiquetesAutorizados.getTaquilla_entrega()
+                    + "\",\"" + tiquetesAutorizados.getUsuario_taquilla()
+                    + "\",\"" + tiquetesAutorizados.getUsaurio_solicita()
+                    + "\",\"" + tiquetesAutorizados.getTiquete()
+                    + "\",\"" + tiquetesAutorizados.getIdaRegreso() + "\")";
+            validacion = true;
         }
-
         if (validacion) {
             try {
                 System.out.println("preparet " + preparet);
@@ -484,6 +501,49 @@ public class CrudObject {
         return mns;
     }
 
+    public static long createAutorizacion(String x, List<TiquetesAutorizados> l) throws SQLException, ParseException {
+        String tbl = "tablas";
+        boolean validacion = false;
+        String[] trans = x.split(",");
+        String preparet = "";
+        long mns = 0;
+        preparet = "";
+        for (TiquetesAutorizados next : l) {
+
+            preparet += "UPDATE tiquetes_autorizados SET fecha_entrega = \"" + trans[0]
+                    + "\", taquilla_entrega = \"" + trans[1]
+                    + "\", usuario_taquilla = \"" + trans[2]                    
+                    + "\", estado = 'Entregado' WHERE id_carga = " + next.getId_carga();
+            validacion = true;
+
+        }
+
+        if (validacion) {
+            try {
+                System.out.println("preparet " + preparet);
+                pool.con = pool.dataSource.getConnection();
+                cstmt = pool.con.prepareCall("{call CrudObject (?,?,?)}");
+                cstmt.setString(1, preparet);
+                cstmt.setInt(2, 0);
+                cstmt.setString(3, tbl);
+                ResultSet rst = cstmt.executeQuery();
+                int result = 0;
+                while (rst.next()) {
+                    result = rst.getInt(1);
+                }
+                mns = result;
+                System.out.println(" mns " + mns);
+            } catch (SQLException ex) {
+                System.out.println("transaccion " + ex);
+            } finally {
+                pool.con.close();
+            }
+        } else {
+            mns = -1;
+        }
+        return mns;
+    }
+
     /**
      * Método estatico que permite editar en la base de datos apartir del objeto
      * pasado como parametro, valida el tipo de instancia a la que se refiere el
@@ -531,6 +591,33 @@ public class CrudObject {
         return mns;
     }
 
+    public static int editPass(Usuarios x) throws SQLException {
+        String tbl = "tablas";
+        String preparet = "";
+        int mns = 0;
+        preparet = "UPDATE usuarios SET clave  = \"" + x.getClave() + "\" WHERE documento = '" + x.getDocumento() + "'";
+        System.out.println("preparet " + preparet);
+        try {
+            pool.con = pool.dataSource.getConnection();
+            cstmt = pool.con.prepareCall("{call CrudObject (?,?,?)}");
+            cstmt.setString(1, preparet);
+            cstmt.setInt(2, 0);
+            cstmt.setString(3, tbl);
+            ResultSet rs = cstmt.executeQuery();
+            int result = 0;
+            while (rs.next()) {
+                result = rs.getInt(1);
+            }
+            mns = result;
+        } catch (SQLException ex) {
+            System.out.println("error " + ex);
+        } finally {
+            pool.con.close();
+        }
+        System.out.println("msn = " + mns);
+        return mns;
+    }
+
     public static int edit(Object x) throws SQLException {
         SimpleDateFormat format2 = new SimpleDateFormat("yyyy-M-dd H:m:s");
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -549,6 +636,7 @@ public class CrudObject {
         TblRegistroContravias contravias = null;
         Alertas alerta = null;
         String preparet = "";
+        TiquetesAutorizados tiqueteAutorizado = null;
         int mns = 0;
         if (x instanceof Estados) {
             estado = (Estados) x;
@@ -641,6 +729,17 @@ public class CrudObject {
                     + "nombre_estudiante = \"" + estudiantes.getNombre_estudiante() + "\","
                     + "universidad = \"" + estudiantes.getUniversidad() + "\","
                     + "usuario_mod = " + estudiantes.getUsuario_mod() + " WHERE id_estudiante = " + estudiantes.getId_estudiante();
+            validacion = true;
+        } else if (x instanceof TiquetesAutorizados) {
+            tiqueteAutorizado = (TiquetesAutorizados) x;
+            preparet = "UPDATE tiquetes_autorizados  set documento = \"" + tiqueteAutorizado.getDocumento() + "\","
+                    + "nombre_completo = \"" + tiqueteAutorizado.getNombre_completo() + "\","
+                    + "telefono = \"" + tiqueteAutorizado.getTelefono() + "\","
+                    + "origen = \"" + tiqueteAutorizado.getOrigen() + "\","
+                    + "destino = \"" + tiqueteAutorizado.getDestino() + "\","
+                    + "motivo_solicitud = \"" + tiqueteAutorizado.getMotivo_solicitud() + "\","
+                    + "idaRegreso = \"" + tiqueteAutorizado.getIdaRegreso() + "\""
+                    + " WHERE id_carga = " + tiqueteAutorizado.getId_carga();
             validacion = true;
         }
         System.out.println("preparet " + preparet);
@@ -834,6 +933,7 @@ public class CrudObject {
         TblViajesTiquetes viajesTiquetes = null;
         Docs documento = null;
         Alertas alertas = null;
+        TiquetesAutorizados tiquetes = null;
         String preparet = "";
         int mns = 0;
         if (x instanceof Estados) {//pendiente por crud estados
@@ -890,7 +990,11 @@ public class CrudObject {
             estudiantes = (Estudiantes) x;
             preparet = "UPDATE estudiante_convenios set estado = 'I'  WHERE id_estudiante = " + estudiantes.getId_estudiante() + "";
             validacion = true;
-        }//delete estudiantes 
+        } else if (x instanceof TiquetesAutorizados) {//delete estudiantes
+            tiquetes = (TiquetesAutorizados) x;
+            preparet = "delete from tiquetes_autorizados  WHERE id_carga = " + tiquetes.getId_carga() + "";
+            validacion = true;
+        }//delete TiquetesAutorizados
 
 //        System.out.println("preparet " + preparet);
         if (validacion) {
@@ -1273,14 +1377,32 @@ public class CrudObject {
                         l.add(new ConsultaGeneral(rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getBoolean(5), rs.getInt(6)));
                     }
                 } else if (vista.equalsIgnoreCase("estudiante") || vista.equalsIgnoreCase("estudiantef")) {
-                    if (opc == 1) {                 
+                    if (opc == 1) {
                         l.add(new ConsultaGeneral(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6), rs.getString(8)));
                     }
                 } else if (vista.equalsIgnoreCase("estudiantefecha") || vista.equalsIgnoreCase("estudiantefecha2")) {
                     if (opc == 1) {
                         // id_entrega,  documento,         nombres,       fecha,       taquilla_entrega, usuario_taquilla, universidad,   nombre_estudiante    
-                       
+
                         l.add(new ConsultaGeneral(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8)));
+                    }
+                } else if (vista.equalsIgnoreCase("tiquAutorizados")
+                        || vista.equalsIgnoreCase("tiquAutorizadosId") || vista.equalsIgnoreCase("findtiqAutorizados")
+                        || vista.equalsIgnoreCase("tiquAutorizadosMon") || vista.equalsIgnoreCase("tiquAutorizadosView")) {
+                    if (opc == 1) {
+                        l.add(new ConsultaGeneral(rs.getInt(1),
+                                rs.getString(2),
+                                rs.getString(3),
+                                rs.getString(4),
+                                rs.getString(5),
+                                rs.getString(6),
+                                rs.getString(7),
+                                rs.getDate(8),
+                                rs.getString(9),
+                                rs.getDate(10),
+                                rs.getString(11),
+                                rs.getString(12),
+                                rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16)));
                     }
                 }
             }
