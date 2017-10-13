@@ -84,7 +84,7 @@
                                 </f:facet>
                                 <f:selectItem itemLabel="Seleccione Destino" itemValue=""/>
                                 <f:selectItems value="#{taquillaRegistroTiquete.list_destino}" var="c" itemValue="#{c.cod_ciudad}" itemLabel="#{c.ciudad}"></f:selectItems>   
-                                <f:ajax event="change" listener="#{taquillaRegistroTiquete.getRutasweb()}"   render="valor tot serv"></f:ajax>
+                                <f:ajax event="change" listener="#{taquillaRegistroTiquete.getRutasweb()}"   render="valor tot serv growlMsg"></f:ajax>
                             </b:selectOneMenu>
                             <h:message for="destino" style="color: red" />
 

@@ -28,17 +28,23 @@ public class TiquetesAutorizados implements Serializable {
     private String taquilla_entrega;
     private String usuario_taquilla;
     private String usaurio_solicita;
+    private String usuarioSolicitaString;
     private String tiquete = "";
-    private String idaRegreso;
-    private int codCiudadOrigen;
-    private int codCiudadDestino;
+    private String idaRegreso;   
     private boolean selected = false;
 
     public TiquetesAutorizados() {
 
     }
 
-    public TiquetesAutorizados(int id_carga, String documento, String nombre_completo, String telefono, String origen, String destino, String motivo_solicitud, Date fecha_solicitud, String estado, Date fecha_entrega, String tipo_servicio, String taquilla_entrega, String usuario_taquilla, String usaurio_solicita, String tiquete, String idaRegreso) {
+    public TiquetesAutorizados(String documento, String nombre_completo, String telefono) {
+        this.documento = documento;
+        this.nombre_completo = nombre_completo;
+        this.telefono = telefono;
+    }
+
+    
+    public TiquetesAutorizados(int id_carga, String documento, String nombre_completo, String telefono, String origen, String destino, String motivo_solicitud, Date fecha_solicitud, String estado, Date fecha_entrega, String tipo_servicio, String taquilla_entrega, String usuario_taquilla, String usaurio_solicita, String tiquete, String idaRegreso, String usuarioSolicitaString) {
         this.id_carga = id_carga;
         this.documento = documento;
         this.nombre_completo = nombre_completo;
@@ -55,6 +61,7 @@ public class TiquetesAutorizados implements Serializable {
         this.usaurio_solicita = usaurio_solicita;
         this.tiquete = tiquete;
         this.idaRegreso = idaRegreso;
+        this.usuarioSolicitaString = usuarioSolicitaString;
     }
 
     @Override
@@ -190,28 +197,21 @@ public class TiquetesAutorizados implements Serializable {
         this.destino = destino;
     }
 
-    public int getCodCiudadOrigen() {
-        return codCiudadOrigen;
-    }
-
-    public void setCodCiudadOrigen(int codCiudadOrigen) {
-        this.codCiudadOrigen = codCiudadOrigen;
-    }
-
-    public int getCodCiudadDestino() {
-        return codCiudadDestino;
-    }
-
-    public void setCodCiudadDestino(int codCiudadDestino) {
-        this.codCiudadDestino = codCiudadDestino;
-    }
-
+  
     public boolean isSelected() {
         return selected;
     }
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public String getUsuarioSolicitaString() {
+        return usuarioSolicitaString;
+    }
+
+    public void setUsuarioSolicitaString(String usuarioSolicitaString) {
+        this.usuarioSolicitaString = usuarioSolicitaString;
     }
 
 }

@@ -11,16 +11,19 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.component.growl.Growl;
+import org.primefaces.event.data.PageEvent;
 
 /**
  * @author Mauricio Herrera - Juan Castrillon
@@ -40,6 +43,8 @@ public class TiquetesAutorizadosBean implements Serializable {
     private Usuarios user;
 
     private ArrayList<String> servicio = new ArrayList();
+    private ArrayList<Ciudad> list_origen = new ArrayList();
+    private ArrayList<Ciudad> list_destino = new ArrayList();
 
     /**
      * Variable: format. Variable para formatear las fechas con hora
@@ -54,6 +59,7 @@ public class TiquetesAutorizadosBean implements Serializable {
      * vistas
      */
     Growl growl = new Growl();
+    private int first = 0;
 
     /**
      * Variable: selecFecha. contendra la fecha seleccionada para consultas
@@ -64,8 +70,12 @@ public class TiquetesAutorizadosBean implements Serializable {
      * ListaEntrega.xhtml
      */
     private String List = "../Tiquetes/ListTiquetesEntregados.xhtml";
+    private String ListA = "../../Tiquetes/ListTiquetesEntregados.xhtml";
     private String Create = "../Tiquetes/RegistroTiquete.xhtml";
+    private String CreateA = "../../Tiquetes/RegistroTiquete.xhtml";
     private String ChangePass = "../Tiquetes/CambiarClave.xhtml";
+    private String ChangePassA = "../../Tiquetes/CambiarClave.xhtml";
+    private String RegresarA = "../Admin/Empresas/EmpresasList.xhtml";
 
     /**
      * Variable: selectUser. contendra el usuario seleccionado para consultas
@@ -111,7 +121,7 @@ public class TiquetesAutorizadosBean implements Serializable {
         for (ConsultaGeneral obj : l) {
             TiquetesAutorizados.add(new TiquetesAutorizados(obj.getNum1(), obj.getStr1(), obj.getStr2(), obj.getStr3(),
                     obj.getStr4(), obj.getStr5(), obj.getStr6(), obj.getFecha1(), obj.getStr7(), obj.getFecha2(),
-                    obj.getStr8(), obj.getStr9(), obj.getStr10(), obj.getStr11(), obj.getStr12(), obj.getStr13()));
+                    obj.getStr8(), obj.getStr9(), obj.getStr10(), obj.getStr11(), obj.getStr12(), obj.getStr13(), obj.getStr14()));
         }
     }
 
@@ -130,7 +140,7 @@ public class TiquetesAutorizadosBean implements Serializable {
         for (ConsultaGeneral obj : l) {
             TiquetesAutorizados.add(new TiquetesAutorizados(obj.getNum1(), obj.getStr1(), obj.getStr2(), obj.getStr3(),
                     obj.getStr4(), obj.getStr5(), obj.getStr6(), obj.getFecha1(), obj.getStr7(), obj.getFecha2(),
-                    obj.getStr8(), obj.getStr9(), obj.getStr10(), obj.getStr11(), obj.getStr12(), obj.getStr13()));
+                    obj.getStr8(), obj.getStr9(), obj.getStr10(), obj.getStr11(), obj.getStr12(), obj.getStr13(), obj.getStr14()));
         }
 
     }
@@ -145,16 +155,26 @@ public class TiquetesAutorizadosBean implements Serializable {
             for (ConsultaGeneral obj : l) {
                 TiquetesAutorizados.add(new TiquetesAutorizados(obj.getNum1(), obj.getStr1(), obj.getStr2(), obj.getStr3(),
                         obj.getStr4(), obj.getStr5(), obj.getStr6(), obj.getFecha1(), obj.getStr7(), obj.getFecha2(),
-                        obj.getStr8(), obj.getStr9(), obj.getStr10(), obj.getStr11(), obj.getStr12(), obj.getStr13()));
+                        obj.getStr8(), obj.getStr9(), obj.getStr10(), obj.getStr11(), obj.getStr12(), obj.getStr13(), obj.getStr14()));
             }
         } else {
             ListarTiquetesEntregados();
         }
     }
 
-    public void prepareEdit(TiquetesAutorizados T) throws IOException {
+    public void prepareEdit(TiquetesAutorizados T) throws IOException, SQLException {
         setCurrenTiquete(T);
+        getRutasweb();
         FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Tiquetes/EditTiquete.xhtml");
+    }
+
+    public void setUserExist() throws SQLException {
+//        System.out.println("-- " + currenTiquete.getDocumento());
+        String doc = currenTiquete.getDocumento();
+        currenTiquete = Utils.CiudadesUtils.getUserExist(doc);
+        if (currenTiquete==null) {
+            getCurrenTiquete().setDocumento(doc);
+        }
     }
 
     public void edit() throws SQLException, IOException {
@@ -172,7 +192,7 @@ public class TiquetesAutorizadosBean implements Serializable {
     public void updateNumberTiquete(TiquetesAutorizados t) throws SQLException, IOException {
         boolean a = Utils.CiudadesUtils.updateNumberTiquete(t);
 //        if (a) {
-//            FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Tiquetes/ListTiquetesEntregados.xhtml");
+//            FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Tiquetes/viewAutorizados.xhtml");
 //        }        
     }
 
@@ -266,6 +286,26 @@ public class TiquetesAutorizadosBean implements Serializable {
         }
     }
 
+    public void cargarDatos() throws SQLException {
+        list_origen.clear();
+        try {
+            ArrayList<ConsultaGeneral> l = new ArrayList<>();
+            l = (ArrayList) CrudObject.getSelectSql("registroTiquete", 1, "nada");
+            for (ConsultaGeneral consultaGeneral : l) {
+                list_origen.add(new Ciudad(consultaGeneral.getNum1(), consultaGeneral.getStr1()));
+            }
+            list_destino = (ArrayList<Ciudad>) list_origen.stream().collect(Collectors.toList());
+            LoginBean log = new LoginBean();
+            if (log.getNomUserLog().contains("Yolanda")) {
+                l = (ArrayList) CrudObject.getSelectSql("registroTiquete", 3, "nada");
+            } else {
+                l = (ArrayList) CrudObject.getSelectSql("registroTiquete", 2, "nada");
+            }
+        } catch (SQLException ex) {
+            System.out.println("error " + ex);
+        }
+    }
+
     public boolean validateIsnroTrans(String id_trans) {
 //        Comprobar si el String cadena no empieza por un dígito
         LoginBean log = new LoginBean();
@@ -342,6 +382,12 @@ public class TiquetesAutorizadosBean implements Serializable {
     public String getList() throws SQLException {
         ListarTiquetesEntregados();
         return List;
+
+    }
+
+    public String getListA() throws SQLException {
+        ListarTiquetesEntregados();
+        return ListA;
     }
 
     public void setList(String listaEntrega) {
@@ -373,21 +419,30 @@ public class TiquetesAutorizadosBean implements Serializable {
     }
 
     public String getCreate() {
+        try {
+            cargarDatos();
+        } catch (SQLException ex) {
+            System.out.println("error  " + ex);
+        }
         return Create;
+    }
+
+    public String getCreateA() {
+        return CreateA;
     }
 
     public void setCreate(String Create) {
         this.Create = Create;
     }
 
-    public TiquetesAutorizados getCurrenTiquete() {
+    public TiquetesAutorizados getCurrenTiquete() {        
         if (currenTiquete == null) {
             currenTiquete = new TiquetesAutorizados();
         }
         return currenTiquete;
     }
 
-    public void setCurrenTiquete(TiquetesAutorizados currenTiquete) {
+    public void setCurrenTiquete(TiquetesAutorizados currenTiquete) {       
         this.currenTiquete = currenTiquete;
     }
 
@@ -403,6 +458,10 @@ public class TiquetesAutorizadosBean implements Serializable {
         return ChangePass;
     }
 
+    public String getChangePassA() {
+        return ChangePassA;
+    }
+
     public void setChangePass(String ChangePass) {
         this.ChangePass = ChangePass;
     }
@@ -416,6 +475,43 @@ public class TiquetesAutorizadosBean implements Serializable {
 
     public void setUser(Usuarios user) {
         this.user = user;
+    }
+
+    public int getFirst() {
+        return first;
+    }
+
+    public void setFirst(int first) {
+        this.first = first;
+    }
+
+    public void onPageChange(PageEvent event) {
+        this.setFirst(((DataTable) event.getSource()).getFirst());
+
+    }
+
+    public String getRegresarA() {
+        return RegresarA;
+    }
+
+    public void setRegresarA(String RegresarA) {
+        this.RegresarA = RegresarA;
+    }
+
+    public ArrayList<Ciudad> getList_origen() {
+        return list_origen;
+    }
+
+    public void setList_origen(ArrayList<Ciudad> list_origen) {
+        this.list_origen = list_origen;
+    }
+
+    public ArrayList<Ciudad> getList_destino() {
+        return list_destino;
+    }
+
+    public void setList_destino(ArrayList<Ciudad> list_destino) {
+        this.list_destino = list_destino;
     }
 
 }

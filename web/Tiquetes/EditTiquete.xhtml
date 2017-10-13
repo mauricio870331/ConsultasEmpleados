@@ -48,7 +48,7 @@
                                     <b:iconAwesome name="list" />
                                 </f:facet>
                                 <f:selectItem itemLabel="Seleccione Origen" itemValue=""/>
-                                <f:selectItems value="#{taquillaRegistroTiquete.list_origen}" var="c" itemValue="#{c.ciudad}" itemLabel="#{c.ciudad}"/>
+                                <f:selectItems value="#{tiquetesAutorizadosBean.list_origen}" var="c" itemValue="#{c.ciudad}" itemLabel="#{c.ciudad}"/>
                                 <f:ajax event="change" execute="@this" render="origen"></f:ajax>
                             </b:selectOneMenu>
                             <h:message for="origen" style="color: red" />
@@ -60,7 +60,7 @@
                                     <b:iconAwesome name="list" />
                                 </f:facet>
                                 <f:selectItem itemLabel="Seleccione Destino" itemValue=""/>
-                                <f:selectItems value="#{taquillaRegistroTiquete.list_destino}" var="c" itemValue="#{c.ciudad}" itemLabel="#{c.ciudad}"></f:selectItems>   
+                                <f:selectItems value="#{tiquetesAutorizadosBean.list_destino}" var="c" itemValue="#{c.ciudad}" itemLabel="#{c.ciudad}"></f:selectItems>   
                                 <f:ajax event="change" listener="#{tiquetesAutorizadosBean.getRutasweb()}"   render="serv growlMsg"></f:ajax>
                             </b:selectOneMenu>
                             <h:message for="destino" style="color: red" />
@@ -90,8 +90,8 @@
                                     <b:iconAwesome name="list" />
                                 </f:facet>
                                 <f:selectItem itemLabel="Seleccione" itemValue=""/>
-                                <f:selectItem itemLabel="Si" itemValue="Si"/>
-                                <f:selectItem itemLabel="No" itemValue="No"/>                               
+                                <f:selectItem itemLabel="SI" itemValue="SI"/>
+                                <f:selectItem itemLabel="NO" itemValue="NO"/>                               
                             </b:selectOneMenu>
                             <h:message for="ida" style="color: red" />
 

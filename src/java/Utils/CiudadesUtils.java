@@ -162,7 +162,7 @@ public class CiudadesUtils {
                     result.add(cadena);
                 }
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("error " + e);
         } finally {
             cn.close();
@@ -840,9 +840,8 @@ public class CiudadesUtils {
         List<TiquetesAutorizados> recibo = new ArrayList();
         try {
             pool.con = pool.dataSource.getConnection();
-            String sql = "select * from tiquetes_autorizados where id_carga in (" + arrayIdTrans.substring(0, arrayIdTrans.length() - 1) + ")";
+            String sql = "select t.*, u.nombres+''+u.apellidos from tiquetes_autorizados t , usuarios u where u.documento = t.usuario_solicita and t.id_carga in (" + arrayIdTrans.substring(0, arrayIdTrans.length() - 1) + ")";
             System.out.println("sql = " + sql);
-
             pstm = pool.con.prepareStatement(sql);
             rs = pstm.executeQuery();
             while (rs.next()) {
@@ -851,7 +850,7 @@ public class CiudadesUtils {
                         rs.getString(7), rs.getDate(8),
                         rs.getString(9), rs.getDate(10), rs.getString(11),
                         rs.getString(12), rs.getString(13), rs.getString(14),
-                        rs.getString(15), rs.getString(16)));
+                        rs.getString(15), rs.getString(16), rs.getString(17)));
             }
         } catch (SQLException e) {
             System.out.println("error " + e);
@@ -900,7 +899,8 @@ public class CiudadesUtils {
         boolean result = false;
         try {
             pool.con = pool.dataSource.getConnection();
-            String query = "update tiquetes_autorizados set tiquete = '"+t.getTiquete()+"' where id_carga = " + t.getId_carga() + "";
+            String query = "update tiquetes_autorizados set tiquete = '" + t.getTiquete() + "' where id_carga = " + t.getId_carga() + "";
+            System.out.println("query " + query);
             pstm = pool.con.prepareStatement(query);
             pstm.executeUpdate();
             result = true;
@@ -910,6 +910,26 @@ public class CiudadesUtils {
             pool.con.close();
         }
         return result;
+    }
+
+    public static TiquetesAutorizados getUserExist(String documento) throws SQLException {
+        TiquetesAutorizados object = null;
+        try {
+            pool.con = pool.dataSource.getConnection();
+            String query = "select top 1 documento, nombre_completo, telefono from tiquetes_autorizados\n"
+                    + "where documento = '" + documento + "'";
+//            System.out.println("query " + query);
+            pstm = pool.con.prepareStatement(query);
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                object= new TiquetesAutorizados(rs.getString(1), rs.getString(2), rs.getString(3));
+            }
+        } catch (SQLException e) {
+            System.out.println("error " + e);
+        } finally {
+            pool.con.close();
+        }
+        return object;
     }
 
 }

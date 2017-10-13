@@ -28,9 +28,11 @@
                                  delay="10000" escape="true" /> 
                         <br></br>
                         <b:panelGrid colSpans="2,8,2" id="datos">
-                            
+
                             <h:outputText value="Cedula :" />
-                            <b:inputText value="#{tiquetesAutorizadosBean.currenTiquete.documento}" required="true"  id="cc" required-message="Ingrese Cedula"/>
+                            <b:inputText value="#{tiquetesAutorizadosBean.currenTiquete.documento}" required="true"  id="cc" required-message="Ingrese Cedula">
+                                <f:ajax event="blur" execute="@this" listener="#{tiquetesAutorizadosBean.setUserExist()}" render="cc name Bus"></f:ajax>
+                            </b:inputText>
                             <h:message for="cc" style="color: red" />
 
                             <h:outputText value="Nombre :" />
@@ -48,7 +50,7 @@
                                     <b:iconAwesome name="list" />
                                 </f:facet>
                                 <f:selectItem itemLabel="Seleccione Origen" itemValue=""/>
-                                <f:selectItems value="#{taquillaRegistroTiquete.list_origen}" var="c" itemValue="#{c.ciudad}" itemLabel="#{c.ciudad}"/>
+                                <f:selectItems value="#{tiquetesAutorizadosBean.list_origen}" var="c" itemValue="#{c.ciudad}" itemLabel="#{c.ciudad}"/>
                                 <f:ajax event="change" execute="@this" render="origen"></f:ajax>
                             </b:selectOneMenu>
                             <h:message for="origen" style="color: red" />
@@ -60,7 +62,7 @@
                                     <b:iconAwesome name="list" />
                                 </f:facet>
                                 <f:selectItem itemLabel="Seleccione Destino" itemValue=""/>
-                                <f:selectItems value="#{taquillaRegistroTiquete.list_destino}" var="c" itemValue="#{c.ciudad}" itemLabel="#{c.ciudad}"></f:selectItems>   
+                                <f:selectItems value="#{tiquetesAutorizadosBean.list_destino}" var="c" itemValue="#{c.ciudad}" itemLabel="#{c.ciudad}"></f:selectItems>   
                                 <f:ajax event="change" listener="#{tiquetesAutorizadosBean.getRutasweb()}"   render="serv growlMsg"></f:ajax>
                             </b:selectOneMenu>
                             <h:message for="destino" style="color: red" />
@@ -79,7 +81,7 @@
 
                             <h:outputText value="Motivo Solicitud" />
                             <b:inputTextarea value="#{tiquetesAutorizadosBean.currenTiquete.motivo_solicitud}" 
-                                         required="true" id="descripcion" required-message="Ingrese Motivo de Solicitud"/>
+                                             required="true" id="descripcion" required-message="Ingrese Motivo de Solicitud"/>
                             <h:message for="descripcion" style="color: red" />
 
 
@@ -95,14 +97,16 @@
                             </b:selectOneMenu>
                             <h:message for="ida" style="color: red" />
 
-
                         </b:panelGrid>
                         <br/>                                         
 
                         <b:commandButton id="guardar" styleClass="btn btn-primary btn-sm m" value="Guardar" look="primary" 
-                                  action="#{tiquetesAutorizadosBean.createTransaccion()}" update="form:datos, growlMsg"/>                        
-                        <a class="btn btn-primary btn-sm m" href="#{tiquetesAutorizadosBean.list}">Cancelar | Regresar</a>                       
-                       
+                                         action="#{tiquetesAutorizadosBean.createTransaccion()}"  update="form:datos, growlMsg"/>                        
+                        <a class="btn btn-primary btn-sm m" href="#{tiquetesAutorizadosBean.list}">
+                            Cancelar | Regresar
+
+                        </a>                       
+
                     </h:form>  
                 </b:panel>
 

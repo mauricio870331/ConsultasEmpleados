@@ -226,7 +226,7 @@ public class CrudObject {
             validacion = true;
         } else if (x instanceof TiquetesAutorizados) {
             tiquetesAutorizados = (TiquetesAutorizados) x;
-            preparet = "insert into tiquetes_autorizados values(\"" + tiquetesAutorizados.getDocumento()
+            preparet = "insert into tiquetes_autorizados values(\"" + tiquetesAutorizados.getDocumento().replace(".", "")
                     + "\",\"" + tiquetesAutorizados.getNombre_completo()
                     + "\",\"" + tiquetesAutorizados.getTelefono()
                     + "\",\"" + tiquetesAutorizados.getOrigen()
@@ -732,7 +732,7 @@ public class CrudObject {
             validacion = true;
         } else if (x instanceof TiquetesAutorizados) {
             tiqueteAutorizado = (TiquetesAutorizados) x;
-            preparet = "UPDATE tiquetes_autorizados  set documento = \"" + tiqueteAutorizado.getDocumento() + "\","
+            preparet = "UPDATE tiquetes_autorizados  set documento = \"" + tiqueteAutorizado.getDocumento().replace(".", "") + "\","
                     + "nombre_completo = \"" + tiqueteAutorizado.getNombre_completo() + "\","
                     + "telefono = \"" + tiqueteAutorizado.getTelefono() + "\","
                     + "origen = \"" + tiqueteAutorizado.getOrigen() + "\","
@@ -1402,7 +1402,7 @@ public class CrudObject {
                                 rs.getDate(10),
                                 rs.getString(11),
                                 rs.getString(12),
-                                rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16)));
+                                rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17)));
                     }
                 }
             }

@@ -29,7 +29,9 @@ import java.sql.Connection;
 import java.text.DateFormat;
 import java.util.List;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -157,11 +159,15 @@ public class TaquillaRegistroTiquete implements Serializable {
 
     @PostConstruct
     public void init() {
-        try {
-            cargarDatos();
-        } catch (SQLException ex) {
-            Logger.getLogger(TaquillaRegistroTiquete.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+////            HttpServletRequest origRequest = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+////            String url = origRequest.getRequestURL().toString();
+////            if (url.contains("RegistroTiquete.xhtml")) {
+//                cargarDatos();
+//           
+//        } catch (SQLException ex) {
+//            Logger.getLogger(TaquillaRegistroTiquete.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     /**
@@ -173,6 +179,7 @@ public class TaquillaRegistroTiquete implements Serializable {
      * @since incluido desde la version 1.0
      */
     public void cargarDatos() throws SQLException {
+        list_origen.clear();
         try {
             ArrayList<ConsultaGeneral> l = new ArrayList<>();
             l = (ArrayList) CrudObject.getSelectSql("registroTiquete", 1, "nada");
@@ -401,17 +408,23 @@ public class TaquillaRegistroTiquete implements Serializable {
     }
 
     public void getRutasweb() throws SQLException {
-        ArrayList<String> l = new ArrayList<>();
-        l = (ArrayList<String>) CiudadesUtils.getRutasWeb(getCiudadById(temporal.getCodCiudadOrigen()), getCiudadById(temporal.getCodCiudadDestino()));
-        if (l.size() > 0) {
-            getServicio(l);
+//        System.out.println("orig " + temporal.getCodCiudadOrigen() + "-- dest" + temporal.getCodCiudadDestino());
+        if (temporal.getCodCiudadOrigen() > 0) {
+            ArrayList<String> l = new ArrayList<>();
+            l = (ArrayList<String>) CiudadesUtils.getRutasWeb(getCiudadById(temporal.getCodCiudadOrigen()), getCiudadById(temporal.getCodCiudadDestino()));
+            if (l.size() > 0) {
+                getServicio(l);
+            } else {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso..!", "La empresa no tiene este convenio, verifique las rutas"));
+                temporal.setValor(0);
+                temporal.setTotal(0);
+                temporal.setValorSin(0);
+                temporal.setTotalsin(0);
+            }
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso..!", "La empresa no tiene este convenio, verifique las rutas"));
-            temporal.setValor(0);
-            temporal.setTotal(0);
-            temporal.setValorSin(0);
-            temporal.setTotalsin(0);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso..!", "Seleccione Un Origen Por fvor.!"));
         }
+
     }
 
     public void getServicio(ArrayList<String> l) {
@@ -576,12 +589,11 @@ public class TaquillaRegistroTiquete implements Serializable {
         return print;
     }
 
-    
     /*
     *Método buscarEstudianteUniversidad busca un estudiante a partir 
     *de una fecha inicial, fecha final
     * ó también por documento de identidad
-    */
+     */
     public void buscarEstudianteUniversidad() throws SQLException {
         if (selecFechaIni != null && selecFechaFin != null) {
             if (!universidad.equals("")) {
@@ -617,12 +629,11 @@ public class TaquillaRegistroTiquete implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "Ingrese un rango de fechas"));
         }
     }
-    
-    
+
     /*
     * Método reporteTiqueteEstudiantes genera un archivo .xls
     * con los datos filtrados por el método buscarEstudianteUniversidad()
-    */
+     */
     public void reporteTiqueteEstudiantes() throws IOException, JRException, SQLException {
         if (list_entregasestudiantes.isEmpty()) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Info", "No hay resultados para Exportar"));
@@ -637,7 +648,7 @@ public class TaquillaRegistroTiquete implements Serializable {
                 report = "/Reports/tiqueteEstudianteDocumento.jasper";
             }
 
-            System.out.println("datos report = " + format2.format(selecFechaIni) + "  " + format2.format(selecFechaFin) + "  " + getUniversidad()+ "  " + getSelectUser());
+            System.out.println("datos report = " + format2.format(selecFechaIni) + "  " + format2.format(selecFechaFin) + "  " + getUniversidad() + "  " + getSelectUser());
             ConexionPool pool = new ConexionPool();
             pool.con = pool.dataSource.getConnection();
             File jasper = new File(FacesContext.getCurrentInstance().getExternalContext().getRealPath(report));
@@ -671,7 +682,8 @@ public class TaquillaRegistroTiquete implements Serializable {
         this.list_destino = list_destino;
     }
 
-    public ArrayList<Empresas> getList_empresas() {
+    public ArrayList<Empresas> getList_empresas() throws SQLException {
+        cargarDatos();
         return list_empresas;
     }
 
@@ -712,6 +724,11 @@ public class TaquillaRegistroTiquete implements Serializable {
     }
 
     public String getRegistroTiquete() {
+        try {
+            cargarDatos();
+        } catch (SQLException ex) {
+            System.out.println("error " + ex);
+        }
         return registroTiquete;
     }
 
@@ -750,7 +767,7 @@ public class TaquillaRegistroTiquete implements Serializable {
         this.documentos = documentos;
     }
 
-    public ArrayList<String> getServicio() {          
+    public ArrayList<String> getServicio() {
         return servicio;
     }
 

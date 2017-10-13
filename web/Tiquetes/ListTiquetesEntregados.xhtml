@@ -86,17 +86,20 @@
                             <h:outputText value="#{tiquetes.estado}"  style="font-size: 10px" />
                         </p:column> 
 
-                        <p:column headerText="Tiquetes" width="150" style="text-align: center" >
-                            <p:inputText style="width: 130px;height: 25px;" value="#{tiquetes.tiquete}" >  
+                        <!--<p:column headerText="Tiquetes" width="200" style="text-align: center">
+                            <p:inputText style="width: 150px;height: 25px;" value="{tiquetes.tiquete}" disabled="{loginBean.rol != 'VERAUTORIZADOS'}">  
                                 <f:ajax event="blur"                                        
                                         execute="@this" 
-                                        listener="#{tiquetesAutorizadosBean.updateNumberTiquete(tiquetes)}"
+                                        listener="{tiquetesAutorizadosBean.updateNumberTiquete(tiquetes)}"
                                         render="@this growl"
                                         />
                             </p:inputText>
-                        </p:column> 
+                        </p:column>-->                         
+                        <p:column headerText="Tiquete" width="200" style="text-align: center">
+                            <h:outputText value="#{tiquetes.tiquete}" />
+                        </p:column>  
 
-                        <p:column headerText="Acciones" width="110" rendered="#{loginBean.documentoUserLog == 'jpaul'}" style="text-align: center" >
+                        <p:column headerText="Acciones" width="110" rendered="#{loginBean.rol== 'CARGATIQUETE'}" style="text-align: center" >
 
                             <b:commandButton styleClass="iconS" look="primary" value="" tooltip="Editar" action="#{tiquetesAutorizadosBean.prepareEdit(tiquetes)}" ><b:icon name="pencil" /></b:commandButton>
                             <b:commandButton styleClass="iconS2" look="danger" value="" tooltip="Eliminar" action="#{tiquetesAutorizadosBean.confirmDelete(tiquetes)}" ><b:iconAwesome name="eraser" /></b:commandButton>
@@ -112,7 +115,7 @@
 
                     </p:dataTable>
                     <br/> 
-                    <a class="btn btn-primary btn-sm m" href="#{tiquetesAutorizadosBean.create}">Nueva Autorización</a>
+                    <a class="btn btn-primary btn-sm m" href="#{tiquetesAutorizadosBean.create}" actionListener="#{tiquetesAutorizadosBean.setCurrenTiquete(null)}">Nueva Autorización</a>
                 </h:form>              
 
             </b:panel> 

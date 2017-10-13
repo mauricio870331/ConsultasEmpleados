@@ -83,7 +83,7 @@ public class ConsultaGeneral {
 
     //tiquetesAutorzados
     public ConsultaGeneral(int num1, String str1, String str2, String str3, String str4, String str5, String str6,
-            Date fecha1, String str7, Date fecha2, String str8, String str9, String str10, String str11, String str12, String str13) {
+            Date fecha1, String str7, Date fecha2, String str8, String str9, String str10, String str11, String str12, String str13, String str14) {
         this.num1 = num1;
         this.str1 = str1;
         this.str2 = str2;
@@ -98,6 +98,7 @@ public class ConsultaGeneral {
         this.str11 = str11;
         this.str12 = str12;
         this.str13 = str13;
+        this.str14 = str14;
         this.fecha1 = fecha1;
         this.fecha2 = fecha2;
     }

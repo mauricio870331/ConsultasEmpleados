@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.inject.Named;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -39,7 +40,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
-import org.primefaces.context.RequestContext;
 
 /**
  * @author Mauricio Herrera - Juan Castrillon
@@ -210,11 +210,15 @@ public class TaquillaContraviasBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        try {
-            cargarDatos();
-        } catch (SQLException ex) {
-            Logger.getLogger(TaquillaContraviasBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            HttpServletRequest origRequest = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+//            String url = origRequest.getRequestURL().toString();
+//            if (url.contains("RegistroContravias.xhtml")) {
+//                cargarDatos();
+//            }
+//        } catch (SQLException ex) {
+//            Logger.getLogger(TaquillaContraviasBean.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     /**
@@ -255,7 +259,7 @@ public class TaquillaContraviasBean implements Serializable {
                 list_taquillas.add(new Usuarios(obj.getNum1(), obj.getStr1(), obj.getStr2(), obj.getStr3()));
             }
 
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             System.out.println("error " + ex);
         }
     }
@@ -284,7 +288,7 @@ public class TaquillaContraviasBean implements Serializable {
                 if (!temporal.getOrigen().equals(temporal.getDestino())) {
                     ArrayList<String> l = new ArrayList<>();
                     l = (ArrayList<String>) CiudadesUtils.getRutasWeb(temporal.getOrigen(), temporal.getDestino());
-                    System.out.println("**********" + l.size());
+//                    System.out.println("**********" + l.size());
                     if (l.size() > 0) {
                         getServicio(l);
                     } else {
@@ -318,6 +322,7 @@ public class TaquillaContraviasBean implements Serializable {
             temporal.setValor(0);
             temporal.setTotal(0);
             servicios.clear();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso..!", "Seleccione Un Origen Por fvor.!"));
         }
 
     }
@@ -565,7 +570,7 @@ public class TaquillaContraviasBean implements Serializable {
                 outStream.flush();
                 outStream.close();
             }
-            FacesContext.getCurrentInstance().responseComplete();            
+            FacesContext.getCurrentInstance().responseComplete();
             setTrans("");
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "No se ha creado una contravia"));
@@ -1171,6 +1176,11 @@ public class TaquillaContraviasBean implements Serializable {
 
     public String getRegistroContravias() {
         servicio.clear();
+        try {
+            cargarDatos();
+        } catch (SQLException ex) {
+            System.out.println("error " + ex);
+        }
         return registroContravias;
     }
 

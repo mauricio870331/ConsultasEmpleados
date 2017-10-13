@@ -2250,7 +2250,7 @@ public class EmpleadosBean implements Serializable {
 
     public String getListFacturaVentaAdmon() throws SQLException {
         setSelecFechaIni(null);
-        setSelecFechaFin(null);
+        setSelecFechaFin(null);        
         FacturaVenta.clear();
         idEmpresa = 0;
         return ListFacturaVentaAdmon;
