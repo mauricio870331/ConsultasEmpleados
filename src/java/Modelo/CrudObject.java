@@ -153,7 +153,7 @@ public class CrudObject {
             preparet = "insert into tbl_viajes_tiquetes values(\"" + viajesTiquetes.getDocumento() + "\",\"" + viajesTiquetes.getIdEmpresa() + "\",\"" + viajesTiquetes.getDetalleConvPk()
                     + "\",\"" + viajesTiquetes.getIdConvenio() + "\",\"" + format.format(viajesTiquetes.getFechaInicial())
                     + "\",\"" + format.format(viajesTiquetes.getFechaFinal()) + "\",\"" + viajesTiquetes.getIdaRegreso() + "\",\"" + Integer.parseInt(viajesTiquetes.getStrtTquetesAsignados())
-                    + "\",\"" + viajesTiquetes.getTiquetesEntregados() + "\",\"" + viajesTiquetes.getUserMod() + "\",\"" + format.format(viajesTiquetes.getFechaMod()) + "\",\"" + 1 + "\",\"" + viajesTiquetes.getOs() + "\")";
+                    + "\",\"" + viajesTiquetes.getTiquetesEntregados() + "\",\"" + viajesTiquetes.getUserMod() + "\",\"" + format2.format(viajesTiquetes.getFechaMod()) + "\",\"" + 1 + "\",\"" + viajesTiquetes.getOs() + "\")";
             validacion = true;
         } else if (x instanceof TblRegistroContravias) {
             contravias = (TblRegistroContravias) x;
@@ -175,7 +175,10 @@ public class CrudObject {
             cmgen = (CmGenerado) x;
             preparet = "insert into relacion_recibos values(\"" + cmgen.getId_trans()
                     + "\",\"" + cmgen.getAgencia()
-                    + "\",\"" + format2.format(cmgen.getFecha_creacion()) + "\"," + 0 + ")";
+                    + "\",\"" + format2.format(cmgen.getFecha_creacion())
+                    + "\"," + 0
+                    + "," + "NULL"
+                    + "," + 0 + "," + 0 + ")";
             if (cmgen.getListDetalleCm().size() > 0) {
                 for (DetalleCm next : cmgen.getListDetalleCm()) {
                     if (next.getTabla().equals("Manual")) {
@@ -352,11 +355,11 @@ public class CrudObject {
         long mns = 0;
         for (Estudiantes estudiante : l) {
 
-            preparet = "insert into estudiante_convenios values(\"" + estudiante.getDocumento_estudiante()
+            preparet = "insert into estudiante_convenios values(\"" + estudiante.getDocumento_estudiante().replace(",", "")
                     + "\",\"" + estudiante.getCodigo_estudiante()
                     + "\",\"" + estudiante.getNombre_estudiante()
                     + "\",\"" + estudiante.getUniversidad() + "\"," + estudiante.getUsuario_mod() + ",\"" + estudiante.getEstado() + "\")";
-            System.out.println("preparet" + preparet);
+
             try {
                 System.out.println("preparet " + preparet);
                 pool.con = pool.dataSource.getConnection();
@@ -461,7 +464,7 @@ public class CrudObject {
                             + "," + next.getDetalleConvenio().getValorExpal() + ",\"#1"
                             + "\"," + next.getCantidadAEntregar() + "," + 0 + ")";
 //                trans.getTempTipoContrato()
-                    preparet += ";UPDATE tbl_viajes_tiquetes SET tiquetes_entregados = \"" + (next.getTiquetesEntregados() + next.getCantidadAEntregar()) + "\", fecha_mod = \"" + format2.format(trans.getFechaMod()) + "\" WHERE id_viaje_tiquete = " + next.getId_Viaje_tiquete();
+                    preparet += ";UPDATE tbl_viajes_tiquetes SET tiquetes_entregados = tiquetes_entregados +\"" + next.getCantidadAEntregar() + "\", fecha_mod = \"" + format2.format(trans.getFechaMod()) + "\" WHERE id_viaje_tiquete = " + next.getId_Viaje_tiquete();
                     validacion = true;
                 } else {
                     validacion = false;
@@ -485,7 +488,7 @@ public class CrudObject {
                 }
                 if (result > 0) {
                     if (CiudadesUtils.updateTotalTransbyId(result)) {
-                        System.out.println(CiudadesUtils.updateTotalTransTiq(result));
+                        CiudadesUtils.updateTotalTransTiq(result);
                     }
                 }
                 mns = result;
@@ -512,7 +515,7 @@ public class CrudObject {
 
             preparet += "UPDATE tiquetes_autorizados SET fecha_entrega = \"" + trans[0]
                     + "\", taquilla_entrega = \"" + trans[1]
-                    + "\", usuario_taquilla = \"" + trans[2]                    
+                    + "\", usuario_taquilla = \"" + trans[2]
                     + "\", estado = 'Entregado' WHERE id_carga = " + next.getId_carga();
             validacion = true;
 
@@ -1282,7 +1285,7 @@ public class CrudObject {
                                 rs.getString(4), rs.getString(5),
                                 rs.getString(6), rs.getString(7),
                                 rs.getString(8), rs.getString(9),
-                                rs.getInt(10), rs.getInt(11),
+                                rs.getInt(10), rs.getFloat(11),
                                 rs.getInt(12), rs.getInt(13),
                                 rs.getInt(14), rs.getInt(15), rs.getInt(16), rs.getInt(17), rs.getString(18)));
                     }
@@ -1372,9 +1375,10 @@ public class CrudObject {
                                 rs.getInt(7), rs.getString(8), rs.getInt(9), rs.getString(10)));
                     }
                 } else if (vista.equalsIgnoreCase("cmGen") || vista.equalsIgnoreCase("cmGenAdmin")
-                        || vista.equalsIgnoreCase("cmGenAdminF") || vista.equalsIgnoreCase("cmGenAdminU")) {
+                        || vista.equalsIgnoreCase("cmGenAdminF") || vista.equalsIgnoreCase("cmGenAdminU")
+                        || vista.equalsIgnoreCase("cmGenAdminByCm")) {
                     if (opc == 1) {
-                        l.add(new ConsultaGeneral(rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getBoolean(5), rs.getInt(6)));
+                        l.add(new ConsultaGeneral(rs.getString(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getBoolean(5), rs.getInt(6), rs.getString(7), rs.getInt(8), rs.getInt(9)));
                     }
                 } else if (vista.equalsIgnoreCase("estudiante") || vista.equalsIgnoreCase("estudiantef")) {
                     if (opc == 1) {

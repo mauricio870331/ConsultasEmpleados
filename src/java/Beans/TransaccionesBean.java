@@ -72,7 +72,10 @@ public class TransaccionesBean implements Serializable {
     private String emprsa = "";
 
     private String[] selectedEmpresas;
+
+    private String selectEmpresa;
     /**
+     *
      * Variable privada: impresionesDia. auxiliar para almacenar los tiquetes
      * entregados al dia
      */
@@ -136,6 +139,8 @@ public class TransaccionesBean implements Serializable {
     private String listAutorizados = "../Taquilla/ListAutorizados.xhtml";
 
     private String user;
+
+    private String numeroCm = "";
     /**
      * Variable: impresiones. Variable para la navegacion vista
      * ImpresionesRealizadas.xhtml
@@ -295,8 +300,16 @@ public class TransaccionesBean implements Serializable {
             } catch (SQLException e) {
                 System.out.println("error " + e);
             }
-
         }
+        if (log.getRol().equals("REVISIONRELACION")) {
+            try {
+                cargarUsuarios();
+                listarCms("cmGenAdmin");
+            } catch (SQLException e) {
+                System.out.println("error " + e);
+            }
+        }
+
     }
 
     public void listarCms(String vista) throws SQLException {
@@ -309,33 +322,51 @@ public class TransaccionesBean implements Serializable {
         }
         l = (ArrayList) CrudObject.getSelectSql(vista, 1, param);
         for (ConsultaGeneral obj : l) {
-            CmgeneradoList.add(new CmGenerado(obj.getStr1(), obj.getStr2(), obj.getStr3(), obj.getFecha1(), obj.isBool1(), obj.getNum1()));
+            CmgeneradoList.add(new CmGenerado(obj.getStr1(), obj.getStr2(), obj.getStr3(), obj.getFecha1(), obj.isBool1(), obj.getNum1(), obj.getStr4(), obj.getNum2(), obj.getNum3()));
         }
     }
 
     public void listarCmsAdmin(String vista) throws SQLException {
-        System.out.println("vista");
+        System.out.println("vista" + vista + "selecFechaIni " + selecFechaIni + " selecFechaFin " + selecFechaFin);
         CmgeneradoList.clear();
+        numeroCm = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("numeroCm");
         ArrayList<ConsultaGeneral> l = new ArrayList<>();
         String param = "";
         if (vista.equals("cmGenAdminF")) {
-            if (selecFechaIni != null && selecFechaFin != null) {
-                param += format2.format(selecFechaIni) + " 00:00:00," + format2.format(selecFechaFin) + " 23:59:59";
-                if (!user.equals("")) {
-                    param += "," + user;
-                    vista = "cmGenAdminU";
-                }
+            if (!numeroCm.equals("")) {
+                param = numeroCm;
+                vista = "cmGenAdminByCm";
             } else {
-                vista = "cmGenAdmin";
+                if (selecFechaIni != null && selecFechaFin != null) {
+                    param += format2.format(selecFechaIni) + " 00:00:00," + format2.format(selecFechaFin) + " 23:59:59";
+                    if (!user.equals("")) {
+                        param += "," + user;
+                        vista = "cmGenAdminU";
+                    }
+                } else {
+                    vista = "cmGenAdmin";
+                }
             }
         }
         l = (ArrayList) CrudObject.getSelectSql(vista, 1, param);
         for (ConsultaGeneral obj : l) {
-            CmgeneradoList.add(new CmGenerado(obj.getStr1(), obj.getStr2(), obj.getStr3(), obj.getFecha1(), obj.isBool1(), obj.getNum1()));
+            CmgeneradoList.add(new CmGenerado(obj.getStr1(), obj.getStr2(), obj.getStr3(), obj.getFecha1(), obj.isBool1(), obj.getNum1(), obj.getStr4(), obj.getNum2(), obj.getNum3()));
         }
+//        numeroCm = "";
+//        selecFechaIni = null;
+//        selecFechaFin = null;
         if (CmgeneradoList.isEmpty()) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Info", "No hay resultados para la consulta"));
         }
+    }
+    
+    
+     public void clearCmsAdmin() throws SQLException {        
+        CmgeneradoList.clear();
+        numeroCm = "";
+        selecFechaIni= null;
+        selecFechaFin=null;
+        user="";      
     }
 
     public void verificarCmAsoc(String consecutivo, boolean verificado) throws SQLException {
@@ -398,7 +429,7 @@ public class TransaccionesBean implements Serializable {
                                 obj.getStr2(), obj.getStr3(),
                                 obj.getStr4(), obj.getStr5(),
                                 obj.getStr6(), obj.getStr7(),
-                                obj.getNum3(), obj.getNum4(),
+                                obj.getNum3(), obj.getFloat1(),
                                 obj.getNum5(), obj.getNum6(),
                                 obj.getNum7(), obj.getNum8(), obj.getNum9(), obj.getNum10(), obj.getStr8()));
                     }
@@ -783,7 +814,7 @@ public class TransaccionesBean implements Serializable {
         if (tiquetesAutorizadosTolist.isEmpty()) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "No has seleccionado registros para entregar"));
             return "ListAutorizados";
-        }        
+        }
         if (getUsuarioNodum() == null && getClaveNodum() == null) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "El usuario y la clave no debe estar vacio..!"));
             return "ListAutorizados";
@@ -812,7 +843,7 @@ public class TransaccionesBean implements Serializable {
                     setUsuarioNodum("");
                     setClaveNodum("");
                     setUsuarioTaquilla("");
-                    log = null;                    
+                    log = null;
                     Object = null;
                     return "ListAutorizados";
                 } else {
@@ -979,7 +1010,7 @@ public class TransaccionesBean implements Serializable {
 
 //            Map parametros = new HashMap();
             AutorizadosDataSource rdatasource = new AutorizadosDataSource();
-            rdatasource.setListaRecibo(CiudadesUtils.reciboDeCajaAutorizados(getAutorizados()));           
+            rdatasource.setListaRecibo(CiudadesUtils.reciboDeCajaAutorizados(getAutorizados()));
             byte[] jp = JasperRunManager.runReportToPdf(jasper.getPath(), null, rdatasource);
             HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
             response.setContentType("application/pdf");
@@ -1550,43 +1581,50 @@ public class TransaccionesBean implements Serializable {
             LoginBean log = new LoginBean();
             ArrayList<ConsultaGeneral> l = new ArrayList<>();
             String[] parts = log.getNomUserLog().split(" ");
-            int contain = 0;
-            String list = "";
-            if (selectedEmpresas == null) {
-                contain = 1;
-            } else {
-                for (String selectedEmpresa : selectedEmpresas) {
-                    if (selectedEmpresa.equals("Todas")) {
-                        contain += 1;
-                    } else {
-                        list += selectedEmpresa + "*";
-                    }
+            String empresa = selectEmpresa;
+            System.out.println("empresa selec = " + selectEmpresa);
+            if (selectEmpresa != null && !selectEmpresa.equals("")) {
+                //            int contain = 0;
+//            String list = "";
+//            if (selectedEmpresas == null) {
+//                contain = 1;
+//            } else {
+//                for (String selectedEmpresa : selectedEmpresas) {
+//                    if (selectedEmpresa.equals("Todas")) {
+//                        contain += 1;
+//                    } else {
+//                        list += selectedEmpresa + "*";
+//                    }
+//                }
+//            }
+////            System.out.println(list.length());
+////            System.out.println(list.substring(0, list.length() - 1));
+////            System.out.println("list " + list);
+//            if (contain > 0) {
+//                System.out.println("23");
+//                l = (ArrayList) CrudObject.getSelectSql("cmgenConvenios", 1, "" + format2.format(selecFechaIni) + " 00:00:00," + format2.format(selecFechaFin) + " 23:59:59" + "," + parts[1] + "");
+//            } else {
+//                System.out.println("4");
+                l = (ArrayList) CrudObject.getSelectSql("cmgenConvenios2", 1, "" + format2.format(selecFechaIni) + " 00:00:00," + format2.format(selecFechaFin) + " 23:59:59" + "," + parts[1] + "," + empresa + "");
+//            }
+                for (ConsultaGeneral obj : l) {
+                    detalleCmList2.add(new DetalleCm(0,
+                            obj.getStr4(),
+                            obj.getStr1(),
+                            obj.getStr5(),
+                            obj.getStr3(),
+                            obj.getNum2(),
+                            obj.getNum3(),
+                            obj.getStr6()));
                 }
-            }
-//            System.out.println(list.length());
-//            System.out.println(list.substring(0, list.length() - 1));
-//            System.out.println("list " + list);
-            if (contain > 0) {
-                System.out.println("23");
-                l = (ArrayList) CrudObject.getSelectSql("cmgenConvenios", 1, "" + format2.format(selecFechaIni) + " 00:00:00," + format2.format(selecFechaFin) + " 23:59:59" + "," + parts[1] + "");
+                selectEmpresa = "";
+////            selectedEmpresas = null;
+//            contain = 0;
+                if (detalleCmList2.isEmpty()) {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Info", "No hay resultados para la consulta"));
+                }
             } else {
-                System.out.println("4");
-                l = (ArrayList) CrudObject.getSelectSql("cmgenConvenios2", 1, "" + format2.format(selecFechaIni) + " 00:00:00," + format2.format(selecFechaFin) + " 23:59:59" + "," + parts[1] + "," + list + "");
-            }
-            for (ConsultaGeneral obj : l) {
-                detalleCmList2.add(new DetalleCm(0,
-                        obj.getStr4(),
-                        obj.getStr1(),
-                        obj.getStr5(),
-                        obj.getStr3(),
-                        obj.getNum2(),
-                        obj.getNum3(),
-                        obj.getStr6()));
-            }
-            selectedEmpresas = null;
-            contain = 0;
-            if (detalleCmList2.isEmpty()) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Info", "No hay resultados para la consulta"));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "Seleccione una empresa"));
             }
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "Ingrese un rango de fechas"));
@@ -1624,6 +1662,14 @@ public class TransaccionesBean implements Serializable {
             }
         }
 
+    }
+
+    public void setFacuraCMS(CmGenerado cms) throws SQLException {
+        Utils.CiudadesUtils.updateNumeroFacturaCms(cms);
+    }
+
+    public void chekRecibido(CmGenerado cms, int opc) throws SQLException {
+        Utils.CiudadesUtils.chekRecibido(cms, opc);
     }
 
     /**
@@ -1871,6 +1917,81 @@ public class TransaccionesBean implements Serializable {
         }
     }
 
+    public void exportarXLSRelacionCMS() throws IOException, JRException, SQLException {
+        LoginBean log = new LoginBean();
+        ConexionPool pool = new ConexionPool();
+        pool.con = pool.dataSource.getConnection();
+        File jasper = null;
+        Map parametros = new HashMap();
+        if (!numeroCm.equals("")) {
+            System.out.println("filter 1");
+            parametros.put("numeroCm", numeroCm);
+            jasper = jasper = new File(FacesContext.getCurrentInstance().getExternalContext().getRealPath("/Reports/ExportCmsByNumCm.jasper"));
+            JasperPrint jp = JasperFillManager.fillReport(jasper.getPath(), parametros, pool.con);
+            HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+            response.addHeader("Content-disposition", "attachment; filename=ListadoRelacionXCM.xls");
+            try (ServletOutputStream stream = response.getOutputStream()) {
+                JRXlsExporter exporter = new JRXlsExporter();
+                exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+                exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.exportReport();
+                stream.flush();
+            } catch (JRException e) {
+                System.out.println("error " + e);
+            }
+            FacesContext.getCurrentInstance().responseComplete();
+        } else if (selecFechaIni != null && selecFechaFin != null) {
+            System.out.println("fechas 2");
+            parametros.put("fechaIni", format2.format(selecFechaIni) + " 00:00:00");
+            parametros.put("fechaFin", format2.format(selecFechaFin) + " 23:59:59");
+            if (user.equals("")) {
+                jasper = new File(FacesContext.getCurrentInstance().getExternalContext().getRealPath("/Reports/ExportCmsAllFechas.jasper"));
+            } else {
+                jasper = new File(FacesContext.getCurrentInstance().getExternalContext().getRealPath("/Reports/ExportCmsAllFechasU.jasper"));
+                parametros.put("agencia", user);
+            }
+            JasperPrint jp = JasperFillManager.fillReport(jasper.getPath(), parametros, pool.con);
+            HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+            response.addHeader("Content-disposition", "attachment; filename=ListadoRelacionXFechas.xls");
+            try (ServletOutputStream stream = response.getOutputStream()) {
+                JRXlsExporter exporter = new JRXlsExporter();
+                exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+                exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.exportReport();
+                stream.flush();
+                numeroCm = "";
+                selecFechaIni = null;
+                selecFechaFin = null;
+                CmgeneradoList.clear();
+                user = "";
+            } catch (JRException e) {
+                System.out.println("error " + e);
+            }
+            FacesContext.getCurrentInstance().responseComplete();
+        } else {
+            System.out.println("3");
+            jasper = new File(FacesContext.getCurrentInstance().getExternalContext().getRealPath("/Reports/ExportCmsAll.jasper"));
+            JasperPrint jp = JasperFillManager.fillReport(jasper.getPath(), parametros, pool.con);
+            HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+            response.addHeader("Content-disposition", "attachment; filename=ListadoRelacion.xls");
+            try (ServletOutputStream stream = response.getOutputStream()) {
+                JRXlsExporter exporter = new JRXlsExporter();
+                exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+                exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.exportReport();
+                stream.flush();
+                selecFechaIni = null;
+                selecFechaFin = null;
+                CmgeneradoList.clear();
+                user = "";
+                numeroCm = "";
+            } catch (JRException e) {
+                System.out.println("error " + e);
+            }
+            FacesContext.getCurrentInstance().responseComplete();
+        }
+    }
+
     public Growl getGrowl() {
         return growl;
     }
@@ -2099,12 +2220,21 @@ public class TransaccionesBean implements Serializable {
         this.impresionesCtra = impresionesCtra;
     }
 
-    public String getImpresionesCtravias() {
+    public String getImpresionesCtravias() throws IOException {
         setSelecFechaIni(null);
         setSelecFechaFin(null);
         saldos.clear();
         setSelectUser("");
         return impresionesCtravias;
+    }
+
+    public void urlmpresionesCtravias() throws IOException {
+        setSelecFechaIni(null);
+        setSelecFechaFin(null);
+        saldos.clear();
+        setSelectUser("");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Reportes/ImpresionesRealizadasC.xhtml");
+
     }
 
     public void setImpresionesCtravias(String impresionesCtravias) {
@@ -2305,6 +2435,31 @@ public class TransaccionesBean implements Serializable {
         return listRelacion;
     }
 
+    public void urlListRelacion() throws SQLException, IOException {
+        cmgenerado = null;
+        detalleCm = null;
+        detalleCmList.clear();
+        detalleCmList2.clear();
+        selectedEmpresas = null;
+        cargarUsuarios();
+        selectEmpresa = "";
+        listarCms("cmGenAdmin");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Reportes/ListRelacion.xhtml");
+
+    }
+
+    public void urlRevisarRelacion() throws SQLException, IOException {
+        cmgenerado = null;
+        detalleCm = null;
+        detalleCmList.clear();
+        detalleCmList2.clear();
+        selectedEmpresas = null;
+        selectEmpresa = "";
+        cargarUsuarios();
+        listarCms("cmGenAdmin");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Reportes/RevisionRelacion.xhtml");
+    }
+
     public void setListRelacion(String listRelacion) {
         this.listRelacion = listRelacion;
     }
@@ -2401,4 +2556,21 @@ public class TransaccionesBean implements Serializable {
     public void setAutorizados(String autorizados) {
         this.autorizados = autorizados;
     }
+
+    public String getSelectEmpresa() {
+        return selectEmpresa;
+    }
+
+    public void setSelectEmpresa(String selectEmpresa) {
+        this.selectEmpresa = selectEmpresa;
+    }
+
+    public String getNumeroCm() {
+        return numeroCm;
+    }
+
+    public void setNumeroCm(String numeroCm) {
+        this.numeroCm = numeroCm;
+    }
+
 }

@@ -1,5 +1,6 @@
 package Utils;
 
+import Entities.CmGenerado;
 import Entities.Estudiantes;
 import Entities.FacturaHistorico;
 import Entities.ReciboDeCaja;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Mauricio Herrera - Juan Castrillon
@@ -32,6 +35,7 @@ public class CiudadesUtils {
     static ResultSet rs;
     static CallableStatement cstmt;
     static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    static SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     public static List<ConsultaGeneral> getSelectSql(String vista, int opc, String params) throws SQLException {
         ArrayList<ConsultaGeneral> l = new ArrayList<>();
@@ -751,7 +755,7 @@ public class CiudadesUtils {
             pstm = pool.con.prepareStatement(sql);
             rs = pstm.executeQuery();
             if (rs.next()) {
-                String query = "update transaccion set cant_tiquetes = " + rs.getInt(1) + " "
+                String query = "update transaccion set cant_tiquetes = " + rs.getFloat(1) + " "
                         + "where id_transaccion = " + idTrans;
 //                System.out.println("query " +query);
                 pstm = pool.con.prepareStatement(query);
@@ -922,7 +926,7 @@ public class CiudadesUtils {
             pstm = pool.con.prepareStatement(query);
             rs = pstm.executeQuery();
             while (rs.next()) {
-                object= new TiquetesAutorizados(rs.getString(1), rs.getString(2), rs.getString(3));
+                object = new TiquetesAutorizados(rs.getString(1), rs.getString(2), rs.getString(3));
             }
         } catch (SQLException e) {
             System.out.println("error " + e);
@@ -930,6 +934,167 @@ public class CiudadesUtils {
             pool.con.close();
         }
         return object;
+    }
+
+    public static boolean cargarAutorizadosExcel(ArrayList<String> lista, String Autoriza) throws SQLException {
+        boolean respuesta = false;
+        Date fechaSolicitud = new Date();
+        String estado = "Pendiente";
+        try {
+            pool.con = pool.dataSource.getConnection();
+            lista.forEach((String next) -> {
+                String datos[] = next.split(",");
+                String query = "insert into tiquetes_autorizados values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                try {
+//                System.out.println("query " + query);
+                    pstm = pool.con.prepareStatement(query);
+                    pstm.setString(1, datos[0].replace(".", ""));
+                    pstm.setString(2, datos[1] + " " + datos[2]);
+                    pstm.setString(3, datos[3]);
+                    pstm.setString(4, datos[4]);
+                    pstm.setString(5, datos[5]);
+                    pstm.setString(6, datos[6]);
+                    pstm.setString(7, format2.format(fechaSolicitud));
+                    pstm.setString(8, estado);
+                    pstm.setString(9, null);
+                    pstm.setString(10, datos[7]);
+                    pstm.setString(11, null);
+                    pstm.setString(12, null);
+                    pstm.setString(13, Autoriza);
+                    pstm.setString(14, null);
+                    pstm.setString(15, datos[8]);
+                    pstm.executeUpdate();
+                } catch (SQLException ex) {
+                    System.out.println("error " + ex);
+                }
+            });
+            respuesta = true;
+        } catch (SQLException e) {
+            System.out.println("error " + e);
+        } finally {
+            pool.con.close();
+        }
+        return respuesta;
+    }
+
+    public static boolean existEstudinte(String doc, String universidad) throws SQLException {
+        boolean respuesta = false;
+        String queryS = "select * from estudiante_convenios "
+                + "where documento_estudiante like '%" + doc.replace(".", "").replace(",", "") + "%' "
+                + "and universidad like '%" + universidad + "%'";
+        try {
+            pool.con = pool.dataSource.getConnection();
+            pstm = pool.con.prepareStatement(queryS);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                respuesta = true;
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error " + ex);
+        } finally {
+            pool.con.close();
+        }
+        return respuesta;
+
+    }
+
+    public static boolean cargarEstudiantesExcel(ArrayList<String> lista, int usuario) throws SQLException {
+        boolean respuesta = false;
+//        System.out.println("lista tam = " + lista.size());
+        try {
+            pool.con = pool.dataSource.getConnection();
+            lista.forEach((String next) -> {
+                String datos[] = next.split(",");
+                String query = "insert into estudiante_convenios values(?,?,?,?,?,?)";
+//                String queryS = "insert into estudiante_convenios values('"+datos[0].replace(".", "").replace(",", "")+"'"
+//                        + ",'"+datos[1]+"','"+datos[2]+"','"+datos[3]+"',"+usuario+",'A')";
+
+                try {
+//                    System.out.println("query " + queryS);
+                    pstm = pool.con.prepareStatement(query);
+                    pstm.setString(1, datos[0].replace(".", "").replace(",", ""));
+                    pstm.setString(2, datos[1]);
+                    pstm.setString(3, datos[2]);
+                    pstm.setString(4, datos[3]);
+                    pstm.setInt(5, usuario);
+                    pstm.setString(6, "A");
+                    pstm.executeUpdate();
+                } catch (SQLException ex) {
+                    System.out.println("error insert" + ex);
+                }
+            });
+            respuesta = true;
+        } catch (SQLException e) {
+            System.out.println("error " + e);
+        } finally {
+            pool.con.close();
+        }
+        return respuesta;
+    }
+
+    public static boolean updateNumeroFacturaCms(CmGenerado cms) throws SQLException {
+        boolean result = false;
+        try {
+            pool.con = pool.dataSource.getConnection();
+            String query = "update relacion_recibos set no_factura = '" + cms.getNo_factura() + "' where id_trans = '" + cms.getId_trans() + "'";
+            System.out.println("query " + query);
+            pstm = pool.con.prepareStatement(query);
+            pstm.executeUpdate();
+            result = true;
+        } catch (SQLException e) {
+            System.out.println("error " + e);
+        } finally {
+            pool.con.close();
+        }
+        return result;
+    }
+
+    public static boolean chekRecibido(CmGenerado cms, int opc) throws SQLException {
+        boolean result = false;
+        try {
+            pool.con = pool.dataSource.getConnection();
+            int val = 0;
+            String query = "";
+            if (opc == 1) {
+                if (cms.isRecibido()) {
+                    val = 1;
+                }
+                query = "update relacion_recibos set recibido = " + val + " where id_trans = '" + cms.getId_trans() + "'";
+            } else {
+                if (cms.isEn_contabilidad()) {
+                    val = 1;
+                }
+                query = "update relacion_recibos set en_contabilidad = " + val + " where id_trans = '" + cms.getId_trans() + "'";
+            }
+
+//            System.out.println("query " + query);
+            pstm = pool.con.prepareStatement(query);
+            pstm.executeUpdate();
+            result = true;
+        } catch (SQLException e) {
+            System.out.println("error " + e);
+        } finally {
+            pool.con.close();
+        }
+        return result;
+    }
+
+    public static float getCantTiqEntregados(int id_Viaje_tiquete) throws SQLException {
+        float result = 0;
+        try {
+            pool.con = pool.dataSource.getConnection();
+            String queryS = "select tiquetes_entregados from tbl_viajes_tiquetes where id_viaje_tiquete = "+id_Viaje_tiquete;
+            pstm = pool.con.prepareStatement(queryS);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                result = rs.getFloat(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("error " + e);
+        } finally {
+            pool.con.close();
+        }
+        return result;
     }
 
 }

@@ -9,7 +9,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
        xmlns:f="http://xmlns.jcp.org/jsf/core"
        xmlns:b="http://bootsfaces.net/ui"
        xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-       >
+
+       xmlns:jsf="http://xmlns.jcp.org/jsf">
     <h:head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -199,81 +200,205 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <li class="header">MENÚ</li>
                         <!-- Optionally, you can add icons to the links -->
 
-                        <li class="treeview">
+                        <li class="treeview" jsf:rendered="#{(loginBean.rol == 'ADMIN')}">
                             <a href="#"><i class="fa fa-cogs"></i> <span>Maestros</span>
                                 <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="#{empresaBean.listEmp}">Maestro Empresas</a></li>
-                                <li><a href="#{ciudadesBean.listCiu}">Maestro Ciudades</a></li>
-                                <li><a href="#{usuariosBean.listUsuario}">Maestro Usuarios</a></li>
-                                <li><a href="#{rolesBean.listRol}">Maestro Rol</a></li>                                 
-                                <li><a href="#{serviciosBean.listServicio}">Maestro Servicios </a></li>
-                                <li><a href="#{documentosBean.listDocs}">Maestro Documentos</a></li>
-                                <li><a href="#{documentosBean.listAlertasAdmin}">Maestro Alertas</a></li>
-                                <li><a href="#{usuariosBean.listaEstudiantes}">Maestro Estudiantes</a></li>
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{empresaBean.listarEmpresasLink()}">Maestro Empresas</a> 
+                                        <div class="separated"></div>
+                                    </h:form>
+                                </li>
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu"  href="javascript:void(0)" jsf:action="#{ciudadesBean.redirectCiudadesList()}">Maestro Ciudades</a>
+                                        <div class="separated"></div>
+                                    </h:form>
+                                </li>
+                                <li>
+                                    <h:form >
+                                        <div class="separated"></div>
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{usuariosBean.ListUsuarioLink()}">Maestro Usuarios</a>
+                                        <div class="separated"></div>
+                                    </h:form>
+                                </li>
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{rolesBean.urlListRoles()}">Maestro Rol</a>
+                                        <div class="separated"></div>
+                                    </h:form>                                 
+                                </li>                                 
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{serviciosBean.urlListServicios()}">Maestro Servicios</a>
+                                        <div class="separated"></div>
+                                    </h:form>   
+                                </li>
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{documentosBean.urlListDocs()}">Maestro Documentos</a>
+                                        <div class="separated"></div>
+                                    </h:form>  
+                                </li>
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{documentosBean.urlAlertasAdmin()}">Maestro Alertas</a>
+                                        <div class="separated"></div>
+                                    </h:form>  
+                                </li>
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{usuariosBean.urlListaEstudiantes()}">Maestro Estudiantes</a>
+                                        <div class="separated"></div>
+                                    </h:form>                                     
+                                </li>
                             </ul>
                         </li>
-                        <li class="treeview">
+                        
+                        <li class="treeview" jsf:rendered="#{(loginBean.rol == 'ADMIN')}">
                             <a href="#"><i class="fa fa-book"></i> <span>Formularios</span>
                                 <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="#{tarifasBean.listTarifa}">Convenio</a></li>
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{tarifasBean.urlListTarifa()}">Convenio</a>
+                                        <div class="separated"></div>
+                                    </h:form> 
+                                </li>
                             </ul>
                         </li>
 
-                        <li class="treeview">
+                        <li class="treeview" jsf:rendered="#{(loginBean.rol == 'ADMIN')}">
                             <a href="#"><i class="fa fa-credit-card"></i> <span>Autorizar Tiquetes</span>
                                 <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="#{tiquetesAutorizadosBean.listA}">Tiquetes Entregados</a></li>
-                                <li><a href="#{tiquetesAutorizadosBean.createA}">Autorizar Tiquetes</a></li> 
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{tiquetesAutorizadosBean.urlListA()}">Tiquetes Entregados</a>
+                                        <div class="separated"></div>
+                                    </h:form>                                     
+                                </li>
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{tiquetesAutorizadosBean.urlCreateA()}">Autorizar Tiquetes</a>
+                                        <div class="separated"></div>
+                                    </h:form>                                      
+                                </li> 
                             </ul>
                         </li>
 
 
 
-                        <li class="treeview">
+                        <li class="treeview" jsf:rendered="#{(loginBean.rol == 'ADMIN')}">
                             <a href="#"><i class="fa fa-file"></i> <span>Reportes</span>
                                 <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="#{empleadosBean.listFacturaVentaAdmon}" >Factura de Venta</a></li>
-                                <li><a href="#{empleadosBean.listSaldosViajesAdmon}">Saldo Actual</a></li>
-                                <li><a href="#{transaccionesBean.impresionesCtravias}">Reimprimir Recibo de caja</a></li>  
-                                <li><a href="#{taquillaRegistroTiquete.estudiante_universidades}">Tiquete Estudiantes</a></li>
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{empleadosBean.urlListFacturaVentaAdmon()}">Factura de Venta</a>
+                                        <div class="separated"></div>
+                                    </h:form> 
+                                </li>
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{empleadosBean.urlListSaldosViajesAdmon()}">Saldo Actual</a>
+                                        <div class="separated"></div>
+                                    </h:form>                                    
+                                </li>
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{transaccionesBean.urlmpresionesCtravias()}">Reimprimir Recibo de caja</a>
+                                        <div class="separated"></div>
+                                    </h:form> 
+                                </li>  
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{taquillaRegistroTiquete.url_universidades()}">Tiquete Estudiantes</a>
+                                        <div class="separated"></div>
+                                    </h:form> 
+                                </li>
                             </ul>
                         </li>
-                        <li class="treeview">
-                            <a href="#"><i class="fa fa-history"></i> <span>Reportes Historico</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li><a href="#{empleadosBean.listFacturaVentaAdmonHisrory}" >Factura de Venta Historico</a></li>
-                            </ul>
-                        </li>
-                        <li class="treeview">
+                        
+                        <li class="treeview" jsf:rendered="#{(loginBean.rol == 'REVISIONRELACION')}">
                             <a href="#"><i class="fa fa-book"></i> <span>CM´S Asociados</span>
                                 <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="#{transaccionesBean.listRelacion}">Verificar Cm Asociado</a></li>                                
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{transaccionesBean.urlRevisarRelacion()}">Revisar</a>
+                                        <div class="separated"></div>
+                                    </h:form> 
+                                </li>                                
+                            </ul>   
+                        </li>
+                        
+                        
+                        <li class="treeview" jsf:rendered="#{(loginBean.rol == 'ADMIN')}">
+                            <a href="#"><i class="fa fa-history"></i> <span>Reportes Historico</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{empleadosBean.urltListFacturaVentaAdmonHisrory()}">Factura de Venta Historico</a>
+                                        <div class="separated"></div>
+                                    </h:form> 
+                                </li>
+                            </ul>
+                        </li>
+                        
+                        <li class="treeview" jsf:rendered="#{(loginBean.rol == 'ADMIN')}">
+                            <a href="#"><i class="fa fa-book"></i> <span>CM´S Asociados</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{transaccionesBean.urlListRelacion()}">Verificar Cm Asociado</a>
+                                        <div class="separated"></div>
+                                    </h:form> 
+                                </li>                                
                             </ul>                            
                         </li>
+                        
                         <li class="treeview">
                             <a href="#"><i class="fa fa-gears"></i> <span>Configuración</span>
                                 <span class="pull-right-container">
@@ -281,7 +406,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="#{tiquetesAutorizadosBean.changePassA}">Cambiar Contraseña</a></li>
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{tiquetesAutorizadosBean.urlChangePassA()}">Cambiar Contraseña</a>
+                                        <div class="separated"></div>
+                                    </h:form> 
+                                </li>
                             </ul>
                         </li>
                     </ul>

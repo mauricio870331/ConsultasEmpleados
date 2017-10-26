@@ -21,7 +21,7 @@
         <ui:define name="body">  
             <b:panel> 
                 <h:form id="form">
-                    <b:growl  id="growl" showDetail="true" placementFrom="bottom" globalOnly="true" />                 
+                    <!--<b:growl  id="growl" showDetail="true" placementFrom="bottom" globalOnly="true" />-->                 
                     <b:panelGrid colSpans="6,1,5" id="datos">         
                         <b:inputText value="#{tiquetesAutorizadosBean.selectUser}" name="doc" id="doc"                                     
                                      placeholder="Documento ó Nombre"
@@ -35,12 +35,14 @@
 
 
                     </b:panelGrid>
-
+                    <img id="ajaxloader" src="../resources/ajaxloader.gif" style="display: none;" />
                     <p:dataTable editable="true" editMode="cell" id="tblempleados"
                                  var="tiquetes" value="#{tiquetesAutorizadosBean.tiquetesAutorizados}" rows="10"
                                  paginator="true"
                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                 rowsPerPageTemplate="5,10,15" >
+                                 rowsPerPageTemplate="5,10,15"
+                                 first="#{tiquetesAutorizadosBean.first}">
+                        <p:ajax event="page" process="@this" listener="#{tiquetesAutorizadosBean.onPageChange}" />
 
                         <p:column headerText="Documento"  width="90">
                             <h:outputText value="#{tiquetes.documento}" />
@@ -106,16 +108,27 @@
 
                         </p:column> 
 
-                        <!--<p:column headerText="Confirmar" width="80" style="text-align: center">                             
-                            <p:selectBooleanCheckbox  id="confirmar" value="{empleado.selected}">
-                                <p:ajax  listener="{transaccionesBean.addTiqueteToList(empleado, empleado.opc)}" 
-                                         update="tblempleados confirmar form:growl"/>
-                            </p:selectBooleanCheckbox>
-                        </p:column>-->
 
                     </p:dataTable>
                     <br/> 
                     <a class="btn btn-primary btn-sm m" href="#{tiquetesAutorizadosBean.create}" actionListener="#{tiquetesAutorizadosBean.setCurrenTiquete(null)}">Nueva Autorización</a>
+                    <a class="btn btn-primary btn-sm m" rendered="#{loginBean.rol== 'ADMIN'}" href="#{tiquetesAutorizadosBean.regresarA}" actionListener="#{tiquetesAutorizadosBean.setCurrenTiquete(null)}">Regresar</a>
+                    <b:iconAwesome name="lightbulb-o" styleClass="bulb" id="content" tooltip="Ejemplo de Archivo a Subir"/>                    
+                    <p:tooltip id="toolTipContent" for="content" pt:position="top">
+                        <p:graphicImage name="/example.PNG" />
+                    </p:tooltip>
+                    <br/><br/>
+                    <strong>
+                        <h:outputText value="Importar Autorizacion Desde Archivo Excel (.xls) -- Nota: Solo compatibilidad Office 97/2003" />
+                    </strong>  
+                    <br/>                    
+                    <p:fileUpload fileUploadListener="#{tiquetesAutorizadosBean.handleFileUpload}"
+                                  mode="advanced" update="growl" auto="true" sizeLimit="10000000"
+                                  allowTypes="/(\.|\/)(xls|xlsx)$/" label="Seleccione" />
+                    <b:growl  id="growl" showDetail="true" placementFrom="bottom" globalOnly="true" />
+
+                    <h:commandButton class="btn btn-primary btn-sm m" action="#{tiquetesAutorizadosBean.cargarArchivo()}"
+                                     value="Cargar" />
                 </h:form>              
 
             </b:panel> 

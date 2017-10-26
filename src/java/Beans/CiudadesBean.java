@@ -39,6 +39,7 @@ public class CiudadesBean implements Serializable {
      * Variable: ListCiu. Variable para la navegacion. vista CiudadesList.xhtml
      */
     String ListCiu = "../Ciudades/CiudadesList.xhtml";
+
     /**
      * Variable: CreaCiu. Variable para la navegacion vista CiudadesCrear.xhtml
      */
@@ -218,6 +219,10 @@ public class CiudadesBean implements Serializable {
      */
     public String getListCiu() {
         return ListCiu;
+    }
+
+    public void redirectCiudadesList() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Ciudades/CiudadesList.xhtml");
     }
 
     /**

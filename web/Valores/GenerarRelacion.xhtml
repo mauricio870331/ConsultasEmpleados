@@ -24,7 +24,8 @@
                     <p:tabView>                        
                         <p:tab title="Convenios" >
                             <b:growl  id="growl" showDetail="true" placementFrom="bottom" globalOnly="true" />  
-                            <b:panelGrid colSpans="1,2,1,2,5,1" id="datos" >                  
+                            <b:panelGrid colSpans="1,2,1,2,1,4,1" id="datos" >   
+
                                 <h:outputText value="F. Inicial:" />
                                 <p:calendar id="fechaIni" alt="Seleccione fecha" value="#{transaccionesBean.selecFechaIni}" pattern="dd/MM/yy" >                              
                                     <f:ajax event="dateSelect" execute="@this" ></f:ajax>
@@ -35,12 +36,16 @@
                                     <f:ajax event="dateSelect" execute="@this" ></f:ajax>
                                 </p:calendar>   
 
-
-                                <p:selectCheckboxMenu id="empresa"  value="#{transaccionesBean.selectedEmpresas}" label="Todas las Empresas"
-                                                      filter="true" filterMatchMode="startsWith" panelStyle="width:310px">                                    
+                                <h:outputText value="Empresa:" />
+                                <b:selectOneMenu value="#{transaccionesBean.selectEmpresa}" id="empresa" 
+                                                 tooltip="Selecione Empresa" >
+                                    <f:facet name="append">
+                                        <b:iconAwesome name="list" />
+                                    </f:facet>
+                                    <f:selectItem itemLabel="Seleccione" itemValue="Todas"/>
                                     <f:selectItems value="#{transaccionesBean.list_empresas}" var="a" itemValue="#{a.nombre}" itemLabel="#{a.nombre}" />
                                     <f:ajax event="change" execute="@this" ></f:ajax>
-                                </p:selectCheckboxMenu>
+                                </b:selectOneMenu>
 
                                 <b:commandButton id="refresh" styleClass="iconSx" look="primary" value="" tooltip="Buscar">
                                     <b:iconAwesome name="search" size="1x" />

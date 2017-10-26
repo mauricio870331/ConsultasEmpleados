@@ -199,7 +199,7 @@ public class ServiciosBean implements Serializable {
         if (a == 1) {
             FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Servicios/ServiciosList.xhtml");
             listarServicios();
-        } else {           
+        } else {
             FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Servicios/ServiciosList.xhtml");
         }
         servicio = null;
@@ -208,6 +208,11 @@ public class ServiciosBean implements Serializable {
     public String getListServicio() throws SQLException {
         listarServicios();
         return ListServicio;
+    }
+
+    public void urlListServicios() throws IOException, SQLException {
+        listarServicios();
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Servicios/ServiciosList.xhtml");
     }
 
     public void setListServicio(String ListServicio) {

@@ -4,13 +4,19 @@ import Entities.*;
 import Modelo.ConsultaGeneral;
 import Modelo.CrudObject;
 import Utils.CiudadesUtils;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,9 +27,15 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.component.growl.Growl;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.data.PageEvent;
+import org.primefaces.model.UploadedFile;
 
 /**
  * @author Mauricio Herrera - Juan Castrillon
@@ -41,10 +53,13 @@ public class TiquetesAutorizadosBean implements Serializable {
 
     private TiquetesAutorizados currenTiquete;
     private Usuarios user;
+    
+    private List<String> users = new ArrayList();
 
     private ArrayList<String> servicio = new ArrayList();
     private ArrayList<Ciudad> list_origen = new ArrayList();
     private ArrayList<Ciudad> list_destino = new ArrayList();
+    private UploadedFile uploadedFile;
 
     /**
      * Variable: format. Variable para formatear las fechas con hora
@@ -76,6 +91,7 @@ public class TiquetesAutorizadosBean implements Serializable {
     private String ChangePass = "../Tiquetes/CambiarClave.xhtml";
     private String ChangePassA = "../../Tiquetes/CambiarClave.xhtml";
     private String RegresarA = "../Admin/Empresas/EmpresasList.xhtml";
+    private String viewCms = "../Tiquetes/RevisionRelacionAdmin.xhtml";
 
     /**
      * Variable: selectUser. contendra el usuario seleccionado para consultas
@@ -172,7 +188,7 @@ public class TiquetesAutorizadosBean implements Serializable {
 //        System.out.println("-- " + currenTiquete.getDocumento());
         String doc = currenTiquete.getDocumento();
         currenTiquete = Utils.CiudadesUtils.getUserExist(doc);
-        if (currenTiquete==null) {
+        if (currenTiquete == null) {
             getCurrenTiquete().setDocumento(doc);
         }
     }
@@ -217,6 +233,7 @@ public class TiquetesAutorizadosBean implements Serializable {
     }
 
     public void getRutasweb() throws SQLException {
+        System.out.println("rutasweb");
         if (currenTiquete.getOrigen() == null || currenTiquete.getOrigen().equals("")) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso..!", "Aviso..!\nSeleccione primero el origen"));
         } else {
@@ -355,6 +372,69 @@ public class TiquetesAutorizadosBean implements Serializable {
 //            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Info", "Debes seleccionar un rango de fechas"));
 //        }
 //    }
+    public void handleFileUpload(FileUploadEvent event) {
+        FacesMessage msg = new FacesMessage("Aviso", event.getFile().getFileName() + " esta cargado..!");
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+        uploadedFile = event.getFile();
+    }
+
+    public String cargarArchivo() throws IOException, SQLException {
+        if (uploadedFile != null) {
+            LoginBean log = new LoginBean();
+            HSSFWorkbook workbook;
+            // Get the workbook instance for XLS file
+            InputStream input = uploadedFile.getInputstream();
+            workbook = new HSSFWorkbook(input);
+            // Get first sheet from the workbook
+            System.out.println("numero de hojas =" + workbook.getNumberOfSheets());
+            ArrayList<String> lista = new ArrayList();
+            for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+                HSSFSheet sheet = workbook.getSheetAt(i);
+                // Iterate through each rows from first sheet
+                Iterator<Row> rowIterator = sheet.rowIterator();
+                while (rowIterator.hasNext()) {
+                    Row row = rowIterator.next();
+                    if (row.getRowNum() > 0) {
+                        StringBuilder sb = new StringBuilder();
+                        // For each row, iterate through each columns
+                        Iterator<Cell> cellIterator = row.cellIterator();
+                        while (cellIterator.hasNext()) {
+                            Cell cell = cellIterator.next();
+                            switch (cell.getCellType()) {
+                                case Cell.CELL_TYPE_BOOLEAN:
+                                    System.out.print(cell.getBooleanCellValue());
+                                    break;
+                                case Cell.CELL_TYPE_NUMERIC:
+//                                System.out.print(Integer.toString((int) cell.getNumericCellValue()));
+                                    sb.append(Integer.toString((int) cell.getNumericCellValue())).append(",");
+                                    break;
+                                case Cell.CELL_TYPE_STRING:
+//                                System.out.print(cell.getStringCellValue());
+                                    sb.append(cell.getStringCellValue().trim()).append(",");
+                                    break;
+                            }
+                        }
+                        lista.add(sb.toString().substring(0, sb.toString().length() - 1));
+                    }
+
+                }
+            }
+//        lista.forEach((next) -> {
+//            System.out.println("next " + next);
+//        });
+
+            if (!Utils.CiudadesUtils.cargarAutorizadosExcel(lista, log.getDocumentoUserLog())) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso", "Error al cargar el archivo");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
+            ListarTiquetesEntregados();
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso", "Debes seleccionar primero un archivo..!"));
+        }
+        return "ListTiquetesEntregados";
+    }
+    
+
     public Growl getGrowl() {
         return growl;
     }
@@ -388,6 +468,12 @@ public class TiquetesAutorizadosBean implements Serializable {
     public String getListA() throws SQLException {
         ListarTiquetesEntregados();
         return ListA;
+    }
+
+    public void urlListA() throws SQLException, IOException {
+        ListarTiquetesEntregados();
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Tiquetes/ListTiquetesEntregados.xhtml");
+
     }
 
     public void setList(String listaEntrega) {
@@ -431,18 +517,39 @@ public class TiquetesAutorizadosBean implements Serializable {
         return CreateA;
     }
 
+    public void urlCreateA() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Tiquetes/RegistroTiquete.xhtml");
+
+    }
+    
+    
+    public void urlRegresarAdmin() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Empresas/EmpresasList.xhtml");
+
+    }
+    
+    public void cargarUsuarios() throws SQLException {
+        try {
+            users.clear();
+            setUsers(Utils.CiudadesUtils.cargarUsers());
+        } catch (SQLException ex) {
+            System.out.println("error " + ex);
+        }
+    }
+
     public void setCreate(String Create) {
         this.Create = Create;
     }
 
-    public TiquetesAutorizados getCurrenTiquete() {        
+    public TiquetesAutorizados getCurrenTiquete() {
+        System.out.println("aqui curren tiq");
         if (currenTiquete == null) {
             currenTiquete = new TiquetesAutorizados();
         }
         return currenTiquete;
     }
 
-    public void setCurrenTiquete(TiquetesAutorizados currenTiquete) {       
+    public void setCurrenTiquete(TiquetesAutorizados currenTiquete) {
         this.currenTiquete = currenTiquete;
     }
 
@@ -460,6 +567,10 @@ public class TiquetesAutorizadosBean implements Serializable {
 
     public String getChangePassA() {
         return ChangePassA;
+    }
+
+    public void urlChangePassA() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Tiquetes/CambiarClave.xhtml");
     }
 
     public void setChangePass(String ChangePass) {
@@ -512,6 +623,23 @@ public class TiquetesAutorizadosBean implements Serializable {
 
     public void setList_destino(ArrayList<Ciudad> list_destino) {
         this.list_destino = list_destino;
+    }
+
+    public String getViewCms() throws SQLException {
+        cargarUsuarios();
+        return viewCms;
+    }
+
+    public void setViewCms(String viewCms) {
+        this.viewCms = viewCms;
+    }
+
+    public List<String> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<String> users) {
+        this.users = users;
     }
 
 }

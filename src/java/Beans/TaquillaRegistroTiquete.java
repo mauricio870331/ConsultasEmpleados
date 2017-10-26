@@ -180,6 +180,7 @@ public class TaquillaRegistroTiquete implements Serializable {
      */
     public void cargarDatos() throws SQLException {
         list_origen.clear();
+        list_empresas.clear();
         try {
             ArrayList<ConsultaGeneral> l = new ArrayList<>();
             l = (ArrayList) CrudObject.getSelectSql("registroTiquete", 1, "nada");
@@ -836,6 +837,13 @@ public class TaquillaRegistroTiquete implements Serializable {
         list_universidades.clear();
         setList_universidades(CiudadesUtils.listarUniversidades());
         return estudiante_universidades;
+    }
+    
+    
+    public void url_universidades() throws SQLException, IOException {
+        list_universidades.clear();
+        setList_universidades(CiudadesUtils.listarUniversidades());
+        FacesContext.getCurrentInstance().getExternalContext().redirect(estudiante_universidades);        
     }
 
     public void setEstudiante_universidades(String estudiante_universidades) {

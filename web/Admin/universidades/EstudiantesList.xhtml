@@ -77,10 +77,14 @@
                     </p:tooltip>
                     <br/>
                     
-                    <p:fileUpload fileUploadListener="#{usuariosBean.handleFileUploadEstudiantes}" mode="advanced" dragDropSupport="false" 
-                                  label="Seleccione" uploadLabel="Importar" cancelLabel="Cancelar"
-                                  update="growl,tblempleados"  fileLimit="3" allowTypes="/(\.|\/)(xls)$/" />
+                    <p:fileUpload fileUploadListener="#{usuariosBean.handleFileUpload}"
+                                  mode="advanced" update="growl" auto="true" sizeLimit="10000000"
+                                  allowTypes="/(\.|\/)(xls|xlsx)$/" label="Seleccione" />
                     <b:growl  id="growl" showDetail="true" placementFrom="bottom" globalOnly="true" />
+
+                    <h:commandButton class="btn btn-primary btn-sm m" action="#{usuariosBean.cargarArchivo()}"
+                                     value="Cargar" />
+                    
                 </h:form>              
 
             </b:panel>

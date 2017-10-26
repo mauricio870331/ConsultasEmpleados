@@ -40,6 +40,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.primefaces.component.growl.Growl;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 
 /**
  * @author Mauricio Herrera - Juan Castrillon
@@ -61,7 +62,7 @@ public class UsuariosBean implements Serializable {
     private List<Estudiantes> listEstudiantes = new ArrayList();
     private List<Estudiantes> logUser = new ArrayList();
     private List<Estudiantes> estudiantesInsert = new ArrayList();
-   
+    private UploadedFile uploadedFile;
 
     String ListUsuario = "../Usuarios/UsuarioList.xhtml";
     /**
@@ -76,7 +77,7 @@ public class UsuariosBean implements Serializable {
      * UsuarioEditar.xhtml
      */
     String EditarUsuario = "../Usuarios/UsuarioEditar.xhtml";
-     private String selectUser = "";
+    private String selectUser = "";
     /**
      * Variable privada: selectUser. Se almacenara el usuario documento del
      * usuario seleccionado
@@ -84,15 +85,14 @@ public class UsuariosBean implements Serializable {
 
     private String ListaEstudiantes = "../universidades/EstudiantesList.xhtml";
 
-   
     String fec = "";
-    
-     private Usuarios usuario;
+
+    private Usuarios usuario;
     /**
      * Variable privada: usuario. almacenara el objeto Usuarios actualmente
      * seleccionado
      */
-   
+
     private String msn = "";
     private boolean validate = false;
     /**
@@ -102,9 +102,8 @@ public class UsuariosBean implements Serializable {
     private int countok = 0;
     private List<Estudiantes> logUsers = new ArrayList();
     private Estudiantes estudiante;
-  
-    
-private List<Ciudad> listCiudaes = new ArrayList();    
+
+    private List<Ciudad> listCiudaes = new ArrayList();
 
     private List<Tiquete_Estudiante> listUniversidad = new ArrayList();
     /**
@@ -172,16 +171,15 @@ private List<Ciudad> listCiudaes = new ArrayList();
         setSelectUser("");
     }
 
-   /*
+    /*
     * Método que listara los estudiantes para redirigirlos a la vista
     * @exception SQLException Error de Sql, Ocurre cuando se presenta un error
     * al recuperar los datos del estudiante
-    */
+     */
     public void listarEstudiantes() throws SQLException {
         if (FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("selectUser") != null) {
             setSelectUser(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("selectUser"));
         }
-        LoginBean log = new LoginBean();      
         listEstudiantes.clear();
         ArrayList<ConsultaGeneral> l = new ArrayList<>();
         if (selectUser.equals("")) {
@@ -261,58 +259,52 @@ private List<Ciudad> listCiudaes = new ArrayList();
         usuario = null;
         log = null;
     }
-    
-   /*
+
+    /*
     * Método que crea un Estudiante
     * @exception SQLException Error de Sql, Ocurre cuando se presenta un error
     * al intentar insertar los datos del estudiante
-    */
-
+     */
     public void createEstudiantes() throws SQLException, InterruptedException, IOException, ParseException {
-      
+
         System.out.println("doc " + estudiante.getDocumento_estudiante());
-   
+
         LoginBean log = new LoginBean();
-        
+
         estudiante.setUsuario_mod(log.getIdUserLog());
         estudiante.setEstado("A");
         long a = CrudObject.create(estudiante);
         if (validarDocumento(estudiante.getDocumento_estudiante())) {
-           
+
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "El número de documento ya fue guardado"));
-          
-        }
-        else if (a >= 1) {
+
+        } else if (a >= 1) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Estudiante Creado"));
             listarEstudiantes();
-        } 
-     
-        
+        }
+
         estudiante = null;
         log = null;
-      
+
     }
-    
-   /*
+
+    /*
     * Método que valida el número de de documento del estudiante ingresado en el sistema
     * @param documento
-    */
-    
-     public boolean validarDocumento(String documento) throws SQLException {
+     */
+    public boolean validarDocumento(String documento) throws SQLException {
         boolean r = CiudadesUtils.validarDocumentoExist(documento);
         return r;
     }
 
-    
-    
-   /*
+    /*
     * Método que edita a un estudiante
     *@throws java.sql.SQLException Error de Sql, Ocurre cuando se presenta un
     * error al editar
     * @throws java.lang.InterruptedException
     * @throws java.io.IOException Error que ocurre al intentar redirigir a la
     * vista EstudiantesList.xhtml
-    */
+     */
     public void editEstudiantes() throws SQLException, InterruptedException, IOException, ParseException {
         LoginBean log = new LoginBean();
         estudiante.setUsuario_mod(log.getIdUserLog());
@@ -342,25 +334,24 @@ private List<Ciudad> listCiudaes = new ArrayList();
         FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Usuarios/UsuarioEditar.xhtml");
     }
 
-   /*
+    /*
     * Método que setea al estudiante actual a editar
     * @param e
-    */
+     */
     public void prepareEditEstudiante(Estudiantes e) throws IOException {
         System.out.println("e" + e.toString());
         setEstudiante(e);
         FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/universidades/EstudiantesEditar.xhtml");
     }
-    
-   /*
+
+    /*
     * Método que elimina al estudiante seleccionado
     * @throws java.sql.SQLException Error que ocurre al intentar eliminar una
     * un estudiante
     * @throws java.lang.InterruptedException
     * @throws java.io.IOException Error que ocurre cuando intenta redirigir a
     * la vista EstudiantesList.xhtml
-    */
-
+     */
     public void deleteEstudiante() throws SQLException, InterruptedException, IOException {
         LoginBean log = new LoginBean();
         estudiante.setUsuario_mod(log.getIdUserLog());
@@ -418,10 +409,10 @@ private List<Ciudad> listCiudaes = new ArrayList();
         FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Usuarios/UsuarioConfirmDelete.xhtml");
     }
 
-   /*
+    /*
     * Método que setea al estudiante para ser eliminado
     * @param e
-    */
+     */
     public void confirmDeleteEstudiantes(Estudiantes e) throws IOException {
         System.out.println("estudiantes" + e.toString());
         setEstudiante(e);
@@ -439,14 +430,12 @@ private List<Ciudad> listCiudaes = new ArrayList();
         FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Usuarios/UsuarioList.xhtml");
         usuario = null;
     }
-    
-    
-   /*
+
+    /*
     * Método que cancela la eliminación del Estudiante
     *@throws java.io.IOException Error que ocurre cuando intenta redirigir a
     * la vista EstudiantesList.xhtml
-    */
-
+     */
     public void cancelDeleteEstudiantes() throws IOException {
         FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/universidades/EstudiantesList.xhtml");
         usuario = null;
@@ -477,208 +466,148 @@ private List<Ciudad> listCiudaes = new ArrayList();
         }
         usuario = null;
     }
-    
-    /**
-     * Método que Importa los estudiantes desde archivo .xls compatibilidad office
-     * 97-2003. Se encarga de leer el archivo local que contiene los registros,
-     * una vez lo lee, crea un archivo en el servidor y lo guarda temporalmente,
-     * luego lee el archivo temporal y apartir de este realiza las inserciones
-     * en la base de datos, al finalizar las validaciones y la insercion de
-     * datos el archivo temporal es eliminado.
-     *
-     * @param event
-     * @throws java.io.IOException
-     * @throws org.apache.poi.openxml4j.exceptions.InvalidFormatException
-     * @throws java.sql.SQLException
-     * @throws java.text.ParseException
-     * @throws net.sf.jasperreports.engine.JRException
-     * 
-     */
 
-    public void handleFileUploadEstudiantes(FileUploadEvent event) throws IOException, InvalidFormatException, SQLException, ParseException, JRException {
-        String ruta = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/Reports/");
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddHHmmss");
-        InputStream inputStream = null;
-        OutputStream outputStream = null;
-        try {
-            inputStream = event.getFile().getInputstream(); //leemos el fichero local
-            // write the inputStream to a FileOutputStream
-            fec = fmt.format(new Date());
-            outputStream = new FileOutputStream(new File(ruta + "/" + fec + event.getFile().getFileName()));
-            int read = 0;
-            byte[] bytes = new byte[1024];
-            while ((read = inputStream.read(bytes)) != -1) {
-                outputStream.write(bytes, 0, read);
-            }
-            outputStream.close();
-            inputStream.close();
-            InputStream input = new FileInputStream(new File(ruta + "/" + fec + event.getFile().getFileName()));
-            HSSFWorkbook workbook = new HSSFWorkbook(input);
-            HSSFSheet sheet = workbook.getSheetAt(0);
-            Iterator<Row> rowIterator = sheet.rowIterator();
-            int indiceFila = -1;
-            ArrayList<String> im = new ArrayList<>();
-            while (rowIterator.hasNext()) {
-                indiceFila++;
-                Row row = rowIterator.next();
-                Iterator<Cell> cellIterator = row.iterator();
-                String obj = "";
-                int indiceColumna = -1;
-                String s = ",";
-                while (cellIterator.hasNext()) {
-                    indiceColumna++;
-                    Cell cell = cellIterator.next();
-                    if (indiceFila == 0) {
-                        System.out.println("columna =" + cell.getStringCellValue());
-                    } else if (cell != null) {
-                        if (indiceColumna == 3) {
-                            s = "";
-                        }
-                        switch (cell.getCellType()) {
-                            case Cell.CELL_TYPE_NUMERIC:
-                                obj += Integer.toString((int) cell.getNumericCellValue()) + s;
-                                break;
-                            case Cell.CELL_TYPE_STRING:
-                                obj += cell.getStringCellValue() + s;
-                                break;
-                        }
-                    }
-                }
-                if (!obj.equals("")) {
-                    String[] valid = obj.split(",");
-
-                    if (valid.length == 3) {
-                        obj += ",Vacio,Vacio";
-                    }
-                    if (valid.length == 2) {
-                        obj += ",Vacio,Vacio,Vacio";
-                    }
-                    if (valid.length == 1) {
-                        obj += ",Vacio,Vacio,Vacio,Vacio";
-                    }
-                    im.add(obj);
-                }
-            }
-            
-            System.out.println("1**");
-
-            if (im.size() > 0) {
-                if (im.size() > 1) {
-                    im.stream().forEach((string) -> {
-                        String[] parts = string.split(",");
-                        LoginBean log = new LoginBean();
-                        try {
-                            if (parts[0].equals("Vacio") || parts[1].equals("Vacio") || parts[2].equals("Vacio") || parts[3].equals("Vacio") || CiudadesUtils.getExistEstudiante(parts[0])) {
-                                countok++;
-                                getEstudiante();
-                                estudiante.setDocumento_estudiante(parts[0]);
-                                estudiante.setCodigo_estudiante(parts[1]);
-                                estudiante.setNombre_estudiante(parts[2]);
-                                estudiante.setUniversidad(parts[3]);
-                                logUsers.add(estudiante);
-                                setEstudiante(null);
-                            } else {
-                                
-                                  System.out.println("2**");
-                                getEstudiante();
-                                usuario = getUsuarios();
-                                estudiante.setDocumento_estudiante(parts[0]);
-                                estudiante.setCodigo_estudiante(parts[1]);
-                                estudiante.setNombre_estudiante(parts[2]);
-                                estudiante.setUniversidad(parts[3]);
-                                estudiante.setUsuario_mod(log.getIdUserLog());
-                                estudiante.setEstado("A");
-
-                                estudiantesInsert.add(estudiante);
-
-                                setEstudiante(null);
-
-                                log = null;
-                            }
-                        } catch (SQLException ex) {
-                            System.out.println("error " + ex);
-                        }
-                    });
-                } else {
-                      System.out.println("3**");
-                    String[] parts = im.get(0).split(",");
-                    usuario = getUsuarios();
-                    LoginBean log = new LoginBean();
-                    getEstudiante();
-                    usuario = getUsuarios();
-                    estudiante.setDocumento_estudiante(parts[0]);
-                    estudiante.setCodigo_estudiante(parts[1]);
-                    estudiante.setNombre_estudiante(parts[2]);
-                    estudiante.setUniversidad(parts[3]);
-                    estudiante.setUsuario_mod(log.getIdUserLog());
-                    estudiante.setEstado("A");
-
-                    estudiantesInsert.add(estudiante);
-
-                    setEstudiante(null);
-
-                    log = null;
-                }
-                  System.out.println("4**");
-                input.close();
-                File fichero = new File(ruta + "/" + fec + event.getFile().getFileName());
-                FileReader fr = new FileReader(fichero);
-                try {
-                    if (null != fr) {
-                        fr.close();
-                    }
-                    fichero.delete();
-                    System.err.println("Eliminado");
-                } catch (IOException ex) {
-                    System.err.println("Error en el cierre del archivo");
-                }
-                im.clear();
-                try {
-                     System.out.println("5**");
-                     System.out.println("estudiantesInsert.size() "+estudiantesInsert.size());
-                    if (estudiantesInsert.size() > 0) {
-                          System.out.println("6**");
-                        long a = CrudObject.create3(estudiantesInsert);
-                        setEstudiante(null);
-                        estudiantesInsert.clear();
-                    }
-                } catch (SQLException | ParseException e) {
-                    System.out.println("error " + e);
-                }
-                System.out.println("7**");
-                if (countok == 0) {//falta
-                    setMsn("Archivo Importado");
-                    FacesMessage message = new FacesMessage("Información", event.getFile().getFileName() + " " + getMsn());
-                    FacesContext.getCurrentInstance().addMessage(null, message);
-                    listEstudiantes.clear();
-                    listarEstudiantes();
-                } else {
-                    setMsn("Archivo Importado con " + countok + " errores, por favor compare el log con el archivo original\n es posible que los usuarios ya se enncuentren en el sistema, o hay datos vacios..!");
-                    setValidate(true);
-                    listEstudiantes.clear();
-                    listarEstudiantes();
-                    countok = 0;
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/universidades/EstudiantesList.xhtml");
-                }
-
-            } else {
-                FacesMessage message = new FacesMessage("Información", event.getFile().getFileName() + "Archivo vacio");
-                FacesContext.getCurrentInstance().addMessage(null, message);
-            }
-        } catch (IOException e) {
-            System.out.println("error " + e);
-        } finally {
-            if (inputStream != null) {
-                inputStream.close();
-            }
-            if (outputStream != null) {
-                outputStream.close();
-            }
-        }
-
+//    public void handleFileUploadEstudiantes(FileUploadEvent event) throws SQLException, IOException {
+//        FacesMessage msg = new FacesMessage("Aviso", event.getFile().getFileName() + " esta cargado..!");
+//        uploadedFile = event.getFile();
+//        if (uploadedFile != null) {
+//            LoginBean log = new LoginBean();
+//            HSSFWorkbook workbook;
+//            // Get the workbook instance for XLS file
+//            InputStream input = uploadedFile.getInputstream();
+//            workbook = new HSSFWorkbook(input);
+//            // Get first sheet from the workbook
+//            HSSFSheet hoja = workbook.getSheetAt(0);
+//
+//            System.out.println("numero de hojas =" + workbook.getNumberOfSheets() + " ultima fila = " + hoja.getLastRowNum());
+//            ArrayList<String> lista = new ArrayList();
+//            for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+//                HSSFSheet sheet = workbook.getSheetAt(i);
+//                // Iterate through each rows from first sheet
+//                Iterator<Row> rowIterator = sheet.rowIterator();
+//                while (rowIterator.hasNext()) {
+//                    Row row = rowIterator.next();
+//                    if (row.getRowNum() > 0) {
+//                        System.out.println("num fila = " + row.getRowNum());
+//                        String objeto = "";
+//                        // For each row, iterate through each columns
+//                        Iterator<Cell> cellIterator = row.cellIterator();
+//                        while (cellIterator.hasNext()) {
+//                            Cell cell = cellIterator.next();
+//                            switch (cell.getCellType()) {
+//                                case Cell.CELL_TYPE_BOOLEAN:
+//                                    System.out.print(cell.getBooleanCellValue());
+//                                    break;
+//                                case Cell.CELL_TYPE_NUMERIC:
+////                                System.out.print(Integer.toString((int) cell.getNumericCellValue()));                                    
+//                                    objeto += "" + Integer.toString((int) cell.getNumericCellValue()).replace(",", "").replace(".", "") + ",";
+//                                    break;
+//                                case Cell.CELL_TYPE_STRING:
+////                                System.out.print(cell.getStringCellValue());
+//                                    objeto += cell.getStringCellValue().trim() + ",";
+//                                    break;
+//                                case Cell.CELL_TYPE_BLANK:
+////                                System.out.print(cell.getStringCellValue());
+//                                    objeto += "Error fila: " + row.getRowNum() + ",";
+//                                    break;
+//                            }
+//                        }
+//                        lista.add(objeto.substring(0, objeto.length() - 1));
+//                    }
+//
+//                }
+//            }
+//
+//            for (int j = 0; j < lista.size(); j++) {
+//                System.out.println(j + " obj " + lista.get(j));
+//            }
+//
+//            //            if (!Utils.CiudadesUtils.cargarEstudiantesExcel(lista, log.getIdUserLog())) {
+//            //                FacesMessage msge = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso", "Error al cargar el archivo");
+//            //                FacesContext.getCurrentInstance().addMessage(null, msge);
+//            //            }
+//            FacesContext.getCurrentInstance().addMessage(null, msg);
+//            FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/universidades/EstudiantesList.xhtml");
+//            lista.clear();
+////            log = null;
+//        } else {
+//            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso", "Debes seleccionar primero un archivo..!"));
+//        }
+//
+//    }
+    public void handleFileUpload(FileUploadEvent event) {
+        FacesMessage msg = new FacesMessage("Aviso", event.getFile().getFileName() + " esta seleccionado, por favor presione cargar..!");
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+        uploadedFile = event.getFile();
     }
-    
-       public void exportarLogXLS() throws IOException, JRException {
+
+    public String cargarArchivo() throws IOException, SQLException {
+        if (uploadedFile != null) {
+            LoginBean log = new LoginBean();
+            HSSFWorkbook workbook;
+            // Get the workbook instance for XLS file
+            InputStream input = uploadedFile.getInputstream();
+            workbook = new HSSFWorkbook(input);
+            HSSFSheet hoja = workbook.getSheetAt(0);
+//
+//            System.out.println("numero de hojas =" + workbook.getNumberOfSheets() + " ultima fila = " + hoja.getLastRowNum());
+            // Get first sheet from the workbook           
+            ArrayList<String> lista = new ArrayList();
+            for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+                HSSFSheet sheet = workbook.getSheetAt(i);
+                // Iterate through each rows from first sheet
+                Iterator<Row> rowIterator = sheet.rowIterator();
+                while (rowIterator.hasNext()) {
+                    Row row = rowIterator.next();
+                    if (row.getRowNum() > 0) {
+                        String objeto = "";
+                        // For each row, iterate through each columns
+                        Iterator<Cell> cellIterator = row.cellIterator();
+                        while (cellIterator.hasNext()) {
+                            Cell cell = cellIterator.next();
+                            switch (cell.getCellType()) {
+                                case Cell.CELL_TYPE_BOOLEAN:
+                                    System.out.print(cell.getBooleanCellValue());
+                                    break;
+                                case Cell.CELL_TYPE_NUMERIC:
+//                                System.out.print(Integer.toString((int) cell.getNumericCellValue()));                                    
+                                    objeto += "" + Integer.toString((int) cell.getNumericCellValue()).replace(",", "").replace(".", "") + ",";
+                                    break;
+                                case Cell.CELL_TYPE_STRING:
+//                                System.out.print(cell.getStringCellValue());
+                                    objeto += cell.getStringCellValue().trim() + ",";
+                                    break;
+                                case Cell.CELL_TYPE_BLANK:
+//                                System.out.print(cell.getStringCellValue());
+                                    objeto += "Error fila: " + row.getRowNum() + ",";
+                                    break;
+                            }
+                        }
+                        String datos[] = objeto.split(",");
+                        if (!Utils.CiudadesUtils.existEstudinte(datos[0], datos[3])) {
+                            lista.add(objeto.substring(0, objeto.length() - 1));
+                        }
+                    }
+                }
+            }
+
+            if (!Utils.CiudadesUtils.cargarEstudiantesExcel(lista, log.getIdUserLog())) {
+                FacesMessage msge = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso", "Error al cargar el archivo");
+                FacesContext.getCurrentInstance().addMessage(null, msge);
+            } else {
+                FacesMessage msge = new FacesMessage(FacesMessage.SEVERITY_INFO, "Información: ", "Archivo cargado con exito");
+                FacesContext.getCurrentInstance().addMessage(null, msge);
+            }
+            lista.clear();
+            log = null;
+            listarEstudiantes();
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso", "Debes seleccionar primero un archivo..!"));
+        }
+        return "EstudiantesList";
+    }
+
+    public void exportarLogXLS() throws IOException, JRException {
         if (this.getLogUsers().size() > 0) {
             File jasper = new File(FacesContext.getCurrentInstance().getExternalContext().getRealPath("/Reports/LogEstudiantes.jasper"));
             JasperPrint jp = JasperFillManager.fillReport(jasper.getPath(), null, new JRBeanCollectionDataSource(this.getLogUsers()));
@@ -697,8 +626,6 @@ private List<Ciudad> listCiudaes = new ArrayList();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información", "No has Importado un archivo  ó no se generaron errores..!"));
         }
     }
-    
-  
 
     public String getEditarUsuario() {
         return EditarUsuario;
@@ -722,6 +649,14 @@ private List<Ciudad> listCiudaes = new ArrayList();
         listarUsuarios();
         listEmpresas();
         return ListUsuario;
+
+    }
+
+    public void ListUsuarioLink() throws SQLException, IOException {
+        listUsuarios.clear();
+        listarUsuarios();
+        listEmpresas();
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Usuarios/UsuarioList.xhtml");
     }
 
     public void setListUsuario(String ListUsuario) {
@@ -802,6 +737,13 @@ private List<Ciudad> listCiudaes = new ArrayList();
         return ListaEstudiantes;
     }
 
+    public void urlListaEstudiantes() throws SQLException, IOException {
+        listarEstudiantes();
+        setEstudiante(null);
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/universidades/EstudiantesList.xhtml");
+
+    }
+
     public void setListaEstudiantes(String ListaEstudiantes) {
         this.ListaEstudiantes = ListaEstudiantes;
     }
@@ -856,9 +798,5 @@ private List<Ciudad> listCiudaes = new ArrayList();
     public void setLogUsers(List<Estudiantes> logUsers) {
         this.logUsers = logUsers;
     }
-
-   
-
-    
 
 }

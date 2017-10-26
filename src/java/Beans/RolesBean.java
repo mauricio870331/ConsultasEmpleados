@@ -213,6 +213,12 @@ public class RolesBean implements Serializable {
         listarRoles();
         return ListRol;
     }
+    
+    
+    public void urlListRoles() throws SQLException, IOException {
+        listarRoles();
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Roles/RolesList.xhtml");
+    }
 
     public void setListRol(String ListRol) {
         this.ListRol = ListRol;

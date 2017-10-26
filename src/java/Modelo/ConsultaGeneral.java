@@ -69,6 +69,7 @@ public class ConsultaGeneral {
     private double doble8;
     private double doble9;
     private double doble10;
+    private float float1;
 
     //consulta estudiantes
     public ConsultaGeneral(int num1, String str1, String str2, String str3, String str4, int num2, String str5) {
@@ -104,14 +105,16 @@ public class ConsultaGeneral {
     }
 
     //Constructores
-    //Constructor Login
-    public ConsultaGeneral(String str1, String str2, String str3, Date fecha1, boolean bool1, int num1) {
+    public ConsultaGeneral(String str1, String str2, String str3, Date fecha1, boolean bool1, int num1, String str4, int num2, int num3) {
         this.str1 = str1;
         this.str2 = str2;
         this.str3 = str3;
+        this.str4 = str4;
         this.bool1 = bool1;
         this.fecha1 = fecha1;
         this.num1 = num1;
+        this.num2 = num2;
+        this.num3 = num3;
     }
 
     public ConsultaGeneral(int num1, String str1, String str2, String str3, int num2, String str4, int num3) {
@@ -177,13 +180,13 @@ public class ConsultaGeneral {
             String str2, String str3,
             String str4, String str5,
             String str6, String str7,
-            int num3, int num4,
+            int num3, float float1,
             int num5, int num6,
             int num7, int num8, int num9, int num10, String str8) {
         this.num1 = num1;
         this.num2 = num2;
         this.num3 = num3;
-        this.num4 = num4;
+        this.float1 = float1;
         this.num5 = num5;
         this.num6 = num6;
         this.num7 = num7;
@@ -952,6 +955,14 @@ public class ConsultaGeneral {
 
     public void setStr15(String str15) {
         this.str15 = str15;
+    }
+
+    public float getFloat1() {
+        return float1;
+    }
+
+    public void setFloat1(float float1) {
+        this.float1 = float1;
     }
 
 }

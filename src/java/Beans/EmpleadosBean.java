@@ -911,7 +911,7 @@ public class EmpleadosBean implements Serializable {
         setUsuariosTiquetes(e);
         getUsuariosTiquetes().getEmpleado().setNomDoc(getUsuariosTiquetes().getEmpleado().getDocumento() + " " + getUsuariosTiquetes().getEmpleado().getNombre());
 
-        getUsuariosTiquetes().setStrtTquetesAsignados(Integer.toString(getUsuariosTiquetes().getTiquetesAsignados()));
+        getUsuariosTiquetes().setStrtTquetesAsignados(Float.toString(getUsuariosTiquetes().getTiquetesAsignados()));
         getUsuariosTiquetes().getDetalleConvenio().setId_detalle_fk(Utils.CiudadesUtils.getDetalleConvPk(getUsuariosTiquetes().getId_Viaje_tiquete()));
         FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Empresa/Tiquetes/EmpleadosEditarTiquetes.xhtml");
     }
@@ -1069,8 +1069,6 @@ public class EmpleadosBean implements Serializable {
         setUsuarios(e);
         FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Empresa/Empleados/EmpleadosConfirmDelete.xhtml");
     }
-    
-    
 
     /**
      * Método que establece el viaje seleccionado para la eliminación y redirige
@@ -1095,11 +1093,9 @@ public class EmpleadosBean implements Serializable {
         FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Empresa/Empleados/EmpleadosList.xhtml");
         usuario = null;
     }
-    
-     
-    
+
     //método que cancela la eliminación de un estudiante
-     public void cancelDeleteEstudiantes() throws IOException {
+    public void cancelDeleteEstudiantes() throws IOException {
         FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Empresa/Empleados/EstudiantesList.xhtml");
         usuario = null;
     }
@@ -1714,9 +1710,6 @@ public class EmpleadosBean implements Serializable {
 
     }
 
-    
-        
-
     /**
      * Método que obtiene la ruta real de la imagen que sirve como ejemplo para
      * el archivo de carga de empleados
@@ -2244,16 +2237,32 @@ public class EmpleadosBean implements Serializable {
         return ListSaldosViajesAdmon;
     }
 
+    public void urlListSaldosViajesAdmon() throws SQLException, IOException {
+        setSelecFechaIni(null);
+        setSelecFechaFin(null);
+        saldos.clear();
+        setSelectUser("");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Reportes/EmpleadosSaldoActual.xhtml");
+    }
+
     public void setListSaldosViajesAdmon(String ListSaldosViajesAdmon) {
         this.ListSaldosViajesAdmon = ListSaldosViajesAdmon;
     }
 
     public String getListFacturaVentaAdmon() throws SQLException {
         setSelecFechaIni(null);
-        setSelecFechaFin(null);        
+        setSelecFechaFin(null);
         FacturaVenta.clear();
         idEmpresa = 0;
         return ListFacturaVentaAdmon;
+    }
+
+    public void urlListFacturaVentaAdmon() throws SQLException, IOException {
+        setSelecFechaIni(null);
+        setSelecFechaFin(null);
+        FacturaVenta.clear();
+        idEmpresa = 0;
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Reportes/EmpleadosViajesProgramados.xhtml");
     }
 
     public void setListFacturaVentaAdmon(String ListFacturaVentaAdmon) {
@@ -2275,6 +2284,16 @@ public class EmpleadosBean implements Serializable {
         setSelectUser("");
         FacturaVentaHistorico.clear();
         return ListFacturaVentaAdmonHisrory;
+    }
+
+    public void urltListFacturaVentaAdmonHisrory() throws SQLException, IOException {
+        setSelecFechaIni(null);
+        setSelecFechaFin(null);
+        saldos.clear();
+        setSelectUser("");
+        FacturaVentaHistorico.clear();
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Reportes/EmpleadosViajesProgramadosHistorico.xhtml");
+
     }
 
     public void setListFacturaVentaAdmonHisrory(String ListFacturaVentaAdmonHisrory) {
@@ -2340,12 +2359,13 @@ public class EmpleadosBean implements Serializable {
 
     public void subirViajes(Empresas e) throws IOException, SQLException {
         setE(e);
-        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Empresa/Tiquetes/EmpleadosTiquetesList.xhtml");
         empleadosTiquetes = null;
         listDetalleConvenio.clear();
         listarUsuariosTiquetes();
         listarAutocomplete();
         listarOrigenDestino();
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Empresa/Tiquetes/EmpleadosTiquetesList.xhtml");
+
     }
 
     public String getRegeresar() {

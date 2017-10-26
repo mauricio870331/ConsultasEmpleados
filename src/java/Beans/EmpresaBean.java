@@ -59,7 +59,7 @@ public class EmpresaBean implements Serializable {
     /**
      * Variable: ListEmp. Variable para la navegacion vista EmpresasList.xhtml
      */
-    String ListEmp = "../Empresas/EmpresasList.xhtml";
+    private String ListEmp = "../Empresas/EmpresasList.xhtml"; 
     /**
      * Variable: CrearEmp. Variable para la navegacion vista EmpresasCrear.xhtml
      */
@@ -119,6 +119,7 @@ public class EmpresaBean implements Serializable {
      * @since incluido desde la version 1.0
      */
     private void listarEmpresas() throws SQLException {
+        System.out.println("estoy cargando empresas");
         listEmpresas.clear();
         listCiudaes.clear();
         lisEstados.clear();
@@ -271,12 +272,12 @@ public class EmpresaBean implements Serializable {
         empresa = null;
     }
     
-    public String getListEmp() throws SQLException {
+    public void listarEmpresasLink() throws SQLException, IOException {
         listEmpresas.clear();
         listCiudaes.clear();
         lisEstados.clear();
         listarEmpresas();
-        return ListEmp;
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Empresas/EmpresasList.xhtml");
     }
     
     public String getCrearEmp() {
@@ -333,6 +334,15 @@ public class EmpresaBean implements Serializable {
     
     public void setLisEstados(List<Estados> lisEstados) {
         this.lisEstados = lisEstados;
+    }
+
+    public String getListEmp() throws SQLException {
+        listarEmpresas();
+        return ListEmp;
+    }
+
+    public void setListEmp(String ListEmp) {
+        this.ListEmp = ListEmp;
     }
     
 

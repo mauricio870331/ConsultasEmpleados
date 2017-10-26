@@ -608,6 +608,19 @@ public class TarifasBean implements Serializable {
         return ListTarifa;
     }
 
+    public void urlListTarifa() throws SQLException, IOException {
+        if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("idconvenio") != null) {
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("idconvenio");
+        }
+        if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("idEmpresa") != null) {
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("idEmpresa");
+        }
+        listEmpresas();
+        listarTarifas();
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Tarifas/TarifasList.xhtml");
+
+    }
+
     /**
      * Método que elimina una tarifa seleccionada
      *

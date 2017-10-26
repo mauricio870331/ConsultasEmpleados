@@ -23,7 +23,7 @@
                 <h:form id="form">
                     <b:growl  id="growl" showDetail="true" placementFrom="bottom" globalOnly="true" />  
 
-                    <b:panelGrid colSpans="1,2,1,2,3,3" id="datos" >                  
+                    <b:panelGrid colSpans="1,2,1,2,3,2,1" id="datos" >                  
                         <h:outputText value="F. Inicial:" />
                         <p:calendar id="fechaIni" alt="Seleccione fecha" value="#{transaccionesBean.selecFechaIni}" pattern="dd/MM/yy" >                              
                             <f:ajax event="dateSelect" execute="@this" ></f:ajax>
@@ -46,9 +46,15 @@
                                     render="@this"></f:ajax>
                         </b:selectOneMenu>
 
+
+                        <b:inputText value="#{transaccionesBean.numeroCm}" required="true" name="numeroCm" id="numeroCm"
+                                     placeholder="CM Asociado"
+                                     tooltip="Ingrese Numero de Cm a Buscar">                            
+                        </b:inputText>   
+
                         <b:commandButton id="refresh" styleClass="iconSx" look="primary" value="" tooltip="Buscar">
                             <b:iconAwesome name="search" size="1x" />
-                            <f:ajax event="click" listener="#{transaccionesBean.listarCmsAdmin('cmGenAdminF')}" render="tablecms growl fechaIni fechaFin" ></f:ajax>
+                            <f:ajax event="click" listener="#{transaccionesBean.listarCmsAdmin('cmGenAdminF')}" render="tablecms growl fechaIni fechaFin numeroCm" ></f:ajax>
                         </b:commandButton>                       
 
                     </b:panelGrid>                     
@@ -58,42 +64,51 @@
                                  paginator="true"
                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  rowsPerPageTemplate="5,10,15">  
-                        <p:column headerText="Consecutivo"  width="100" style="text-align: center">
+
+                        <p:column headerText="Consecutivo"  width="100" style="text-align: center; #{cms.en_contabilidad ? 'background-color: #6BD821;font-weight: bold':''}">
                             <h:outputText value="#{cms.id_trans}" />
                         </p:column>   
 
-                        <p:column headerText="Agencia"  width="100" style="text-align: center">
+                        <p:column headerText="Agencia"  width="100" style="text-align: center; #{cms.en_contabilidad ? 'background-color: #6BD821;font-weight: bold':''}">
                             <h:outputText value="#{cms.agencia}" />
                         </p:column>  
 
-                        <p:column headerText="Cm asociado"  width="70" style="text-align: center">
+                        <p:column headerText="Cm asociado"  width="70" style="text-align: center; #{cms.en_contabilidad ? 'background-color: #6BD821;font-weight: bold':''}">
                             <h:outputText value="#{cms.cm_asoc}" />
                         </p:column>  
 
-                        <p:column headerText="Fecha de Creación" width="80" style="text-align: center">                            
+                        <p:column headerText="Fecha de Creación" width="80" style="text-align: center; #{cms.en_contabilidad ? 'background-color: #6BD821;font-weight: bold':''}">                            
                             <h:outputText value="#{cms.fecha_creacion}" />
                         </p:column>  
 
-                        <p:column headerText="Total" width="80" style="text-align: center">                            
+                        <p:column headerText="Total" width="80" style="text-align: center; #{cms.en_contabilidad ? 'background-color: #6BD821;font-weight: bold':''}">                            
                             <h:outputText value="#{cms.total}" />
                         </p:column>  
 
-                        <p:column headerText="No Factura" width="100" style="text-align: center" >
-                            <p:inputText style="width: 80px;height: 25px;" value="#{cms.no_factura}" >  
-                                <f:ajax event="blur"                                        
-                                        execute="@this" 
-                                        listener="#{transaccionesBean.setFacuraCMS(cms)}" 
-                                        render="@this"
-                                        />
-                            </p:inputText>
+                        <p:column headerText="No Factura" width="70" style="text-align: center; #{cms.en_contabilidad ? 'background-color: #6BD821;font-weight: bold':''};" >
+                            <h:outputText value="#{cms.no_factura}" />
                         </p:column> 
 
 
-                        <p:column headerText="Imprimir" width="90" style="text-align: center" >                           
+                        <p:column  id="si"  headerText="Recibido" width="50" style="text-align: center" >
+                            <h:outputText value="Si" rendered="#{cms.recibido}"/>
+                            <p:selectBooleanCheckbox rendered="#{not cms.recibido}" value="#{cms.recibido}">
+                                <p:ajax update="@this tablecms" listener="#{transaccionesBean.chekRecibido(cms, 1)}" />
+                            </p:selectBooleanCheckbox>
+                        </p:column> 
+
+
+                        <p:column  id="contabilidad"  headerText="En Contabilidad" width="60" style="text-align: center" >
+                            <h:outputText value="Si" rendered="#{cms.en_contabilidad}"/>
+                            <p:selectBooleanCheckbox rendered="#{not cms.en_contabilidad}" value="#{cms.en_contabilidad}">
+                                <p:ajax update="@this tablecms" listener="#{transaccionesBean.chekRecibido(cms, 2)}" />
+                            </p:selectBooleanCheckbox>
+                        </p:column> 
+                        <!--<p:column headerText="Imprimir" width="90" style="text-align: center" >                           
                             <h:commandLink id="print2" styleClass="btn btn-primary  iconSm" 
-                                           value="Imprimir" actionListener="#{transaccionesBean.generarCm(evt, cms.id_trans, false)}"
-                                           target="_blank"  immediate="true" />
-                        </p:column> 
+                              value="Imprimir" actionListener="{transaccionesBean.generarCm(evt, cms.id_trans, false)}"
+                                                    target="_blank"  immediate="true" />
+                        </p:column> -->
 
                     </p:dataTable>          
 

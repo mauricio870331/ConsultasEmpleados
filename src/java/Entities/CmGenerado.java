@@ -23,19 +23,26 @@ public class CmGenerado implements Serializable {
     private int total;
     private List<DetalleCm> listDetalleCm;
     private List<String> transUpdate;
+    private String no_factura;
+    private boolean recibido;
+    private boolean en_contabilidad;
 
     public CmGenerado() {
     }
 
-    public CmGenerado(String id_trans, String agencia, String cm_asoc, Date fecha_creacion, boolean verificado, int total) {
+    public CmGenerado(String id_trans, String agencia, String cm_asoc, Date fecha_creacion, boolean verificado, int total, String no_factura, int recibido, int en_contabilidad) {
         this.id_trans = id_trans;
         this.agencia = agencia;
         this.fecha_creacion = fecha_creacion;
-        this.cm_asoc=cm_asoc;
+        this.cm_asoc = cm_asoc;
         this.verificado = verificado;
         this.total = total;
+        this.no_factura = no_factura;
+        this.recibido = recibido == 1;
+        this.en_contabilidad = en_contabilidad == 1;
     }
-
+    
+    
     public String getId_trans() {
         return id_trans;
     }
@@ -104,7 +111,29 @@ public class CmGenerado implements Serializable {
     public void setTotal(int total) {
         this.total = total;
     }
-    
-    
+
+    public String getNo_factura() {
+        return no_factura;
+    }
+
+    public void setNo_factura(String no_factura) {
+        this.no_factura = no_factura;
+    }
+
+    public boolean isRecibido() {
+        return recibido;
+    }
+
+    public void setRecibido(boolean recibido) {
+        this.recibido = recibido;
+    }
+
+    public boolean isEn_contabilidad() {
+        return en_contabilidad;
+    }
+
+    public void setEn_contabilidad(boolean en_contabilidad) {
+        this.en_contabilidad = en_contabilidad;
+    }
 
 }

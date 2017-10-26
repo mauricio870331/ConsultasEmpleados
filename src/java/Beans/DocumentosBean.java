@@ -198,7 +198,7 @@ public class DocumentosBean implements Serializable {
         listAlerts("alertList");
     }
 
-    public void countAlerts() throws SQLException {      
+    public void countAlerts() throws SQLException {
         setCountAlert(Utils.CiudadesUtils.countAlertas());
         setNow(format.format(new Date()));
     }
@@ -241,6 +241,12 @@ public class DocumentosBean implements Serializable {
     public String getListDocs() throws SQLException {
         listarDocumentos("docs", "param");
         return ListDocs;
+    }
+
+    public void urlListDocs() throws SQLException, IOException {
+        listarDocumentos("docs", "param");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Docs/DocsList.xhtml");
+
     }
 
     public void setListDocs(String ListDocs) {
@@ -286,6 +292,12 @@ public class DocumentosBean implements Serializable {
     public String getListAlertasAdmin() throws SQLException {
         listAlerts("alertListAdm");
         return ListAlertasAdmin;
+    }
+    
+    
+    public void urlAlertasAdmin() throws SQLException, IOException {
+        listAlerts("alertListAdm");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Docs/AlertList.xhtml");        
     }
 
     public void setListAlertasAdmin(String ListAlertasAdmin) {

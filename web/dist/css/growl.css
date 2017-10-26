@@ -14,9 +14,6 @@
 }
 */
 
-
-
-
 .separe{   
     font-size: 12px;      
     text-align: left; 
@@ -160,5 +157,19 @@
 
 .miPicker{
     margin-bottom: 11px !important;    
+}
+
+.itemMenu{
+    margin-left: 7%;
+    margin-top:  10px;
+    color: #8aa4af !important;   
+}
+
+.itemMenu:hover{
+    color: white !important; 
+}
+
+.separated{
+    height: 5px;
 }
 

@@ -135,6 +135,10 @@ public class LoginBean implements Serializable {
                     FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Tiquetes/viewAutorizados.xhtml");
                     user = null;
                 }
+                if (l.get(0).getStr4().equals("REVISIONRELACION")) {
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Reportes/RevisionRelacion.xhtml");
+                    user = null;
+                }
 
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso:", "El Usuario No Existe..!"));

@@ -22,7 +22,7 @@ public class Transaccion implements Serializable {
     
     private int opc;
 
-    private int cantTiquetes;
+    private float cantTiquetes;
 
     private String descripcionTiquetes;
 
@@ -73,7 +73,7 @@ public class Transaccion implements Serializable {
         this.opc = opc;
     }
 
-    public Transaccion(Integer idTransaccion, int cantTiquetes, String descripcionTiquetes, short total, Date fechaMod) {
+    public Transaccion(Integer idTransaccion, float cantTiquetes, String descripcionTiquetes, short total, Date fechaMod) {
         this.idTransaccion = idTransaccion;
         this.cantTiquetes = cantTiquetes;
         this.descripcionTiquetes = descripcionTiquetes;
@@ -89,11 +89,11 @@ public class Transaccion implements Serializable {
         this.idTransaccion = idTransaccion;
     }
 
-    public int getCantTiquetes() {
+    public float getCantTiquetes() {
         return cantTiquetes;
     }
 
-    public void setCantTiquetes(int cantTiquetes) {
+    public void setCantTiquetes(float cantTiquetes) {
         this.cantTiquetes = cantTiquetes;
     }
 

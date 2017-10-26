@@ -34,13 +34,13 @@ public class TblViajesTiquetes implements Serializable {
 
     private String idaRegreso;
 
-    private int tiquetesAsignados;
+    private float tiquetesAsignados;
 
     private String strtTquetesAsignados;
 
     private boolean selected;
 
-    private int tiquetesEntregados;
+    private float tiquetesEntregados;
 
     private String userMod;
 
@@ -66,11 +66,11 @@ public class TblViajesTiquetes implements Serializable {
 
     private String os;
 
-    private int saldo;
+    private float saldo;
 
     private boolean disabled;
 
-    private int cantidadAEntregar;
+    private float cantidadAEntregar;
 
     public TblViajesTiquetes() {
     }
@@ -117,7 +117,7 @@ public class TblViajesTiquetes implements Serializable {
             String documento,
             String nombre,
             int tiquetesAsignados,
-            String idaRegreso, int id_iaje_tiquete, String os, int tiquetesEntregados) {
+            String idaRegreso, int id_iaje_tiquete, String os, float tiquetesEntregados) {
         this.detalleConvenio = getDetalleConvenio();
         this.detalleConvenio.getTblservicio().setServicio(servicio);
         this.detalleConvenio.getCodCiudadOrigen().setCiudad(origen);
@@ -145,11 +145,11 @@ public class TblViajesTiquetes implements Serializable {
             String nombre,
             String idaRegreso,
             int valor_expal,
-            int saldo,
+            float saldo,
             int detalle_convenio_pk,
             int id_convenio, int cod_ciudad_origen,
             int cod_ciudad_destino, int valor_cliente,
-            int tiquetesEntregados, String estado_conv) {
+            float tiquetesEntregados, String estado_conv) {
         this.id_viaje_tiquete = id_viaje_tiquete;
         this.detalleConvenio = getDetalleConvenio();
         this.detalleConvenio.getTblservicio().setServicio(servicio);
@@ -198,19 +198,19 @@ public class TblViajesTiquetes implements Serializable {
         this.idaRegreso = idaRegreso;
     }
 
-    public int getTiquetesAsignados() {
+    public float getTiquetesAsignados() {
         return tiquetesAsignados;
     }
 
-    public void setTiquetesAsignados(int tiquetesAsignados) {
+    public void setTiquetesAsignados(float tiquetesAsignados) {
         this.tiquetesAsignados = tiquetesAsignados;
     }
 
-    public int getTiquetesEntregados() {
+    public float getTiquetesEntregados() {
         return tiquetesEntregados;
     }
 
-    public void setTiquetesEntregados(int tiquetesEntregados) {
+    public void setTiquetesEntregados(float tiquetesEntregados) {
         this.tiquetesEntregados = tiquetesEntregados;
     }
 
@@ -363,15 +363,15 @@ public class TblViajesTiquetes implements Serializable {
         this.empresa = empresa;
     }
 
-    public int getSaldo() {
+    public float getSaldo() {
         return saldo;
     }
 
-    public void setSaldo(int saldo) {
+    public void setSaldo(float saldo) {
         this.saldo = saldo;
     }
 
-    public int getCantidadAEntregar() {
+    public float getCantidadAEntregar() {
         return cantidadAEntregar;
     }
 
@@ -380,7 +380,7 @@ public class TblViajesTiquetes implements Serializable {
         return "TblViajesTiquetes{" + "id_viaje_tiquete=" + id_viaje_tiquete + ", opc=" + opc + ", documento=" + documento + ", idEmpresa=" + idEmpresa + ", fechaInicial=" + fechaInicial + ", fechaFinal=" + fechaFinal + ", strfechaInicial=" + strfechaInicial + ", strfechaFinal=" + strfechaFinal + ", idaRegreso=" + idaRegreso + ", tiquetesAsignados=" + tiquetesAsignados + ", strtTquetesAsignados=" + strtTquetesAsignados + ", selected=" + selected + ", tiquetesEntregados=" + tiquetesEntregados + ", userMod=" + userMod + ", detalleConvenio=" + detalleConvenio + ", total=" + total + ", idConvenio=" + idConvenio + ", detalleConvPk=" + detalleConvPk + ", estado_convenio=" + estado_convenio + ", empresaEmpleado=" + empresaEmpleado + ", empresa=" + empresa + ", empleado=" + empleado + ", transaccionViajeroList=" + transaccionViajeroList + ", fechaMod=" + fechaMod + ", os=" + os + ", saldo=" + saldo + ", cantidadAEntregar=" + cantidadAEntregar + '}';
     }
 
-    public void setCantidadAEntregar(int cantidadAEntregar) {
+    public void setCantidadAEntregar(float cantidadAEntregar) {
         this.cantidadAEntregar = cantidadAEntregar;
     }
 
