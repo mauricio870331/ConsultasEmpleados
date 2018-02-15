@@ -28,7 +28,13 @@
                                  show-detail="true" show-summary="false" allowDismiss="true"
                                  delay="10000" escape="true" /> 
                         <br></br>
-                        <b:panelGrid colSpans="2,8,2" id="datos">                 
+                        <b:panelGrid colSpans="2,8,2" id="datos">    
+
+                            <h:outputText value="--" style="display: none"/>
+                            <b:inputText value="Contravia realizada con exito, favor imprimir...!" 
+                                         style="border: 0px;text-align: center;color: #3c8dbc;font-size: 20px;font-weight: bold;"
+                                         rendered="#{taquillaContraviasBean.showmesagge}" id="hidden" class="animacion"/>
+                            <h:message for="hidden" style="color: red" />
 
                             <h:outputText value="Nombre Comprador *:" />
                             <b:inputText value="#{taquillaContraviasBean.temporal.nombre_comprador}" tooltip="Ingrese Nombre Comprador" required="true"  id="nom_comprqador" required-message="Ingrese Nombre Comprador"/>
@@ -126,15 +132,21 @@
                             <h:outputText value="Observacion :" />
                             <b:inputTextarea value="#{taquillaContraviasBean.temporal.observacion}" required="false" id="obs"/>
                             <h:message for="obs" style="color: red" />
-                                                        
+
                         </b:panelGrid>
                         <br/> 
                         <b:commandButton id="guardar" styleClass="btn btn-primary btn-sm m" value="Guardar" look="primary" 
-                                         action="#{taquillaContraviasBean.agregarTiquete()}"  update="form:datos, growlMsg"/> 
-                        <a class="btn btn-primary btn-sm m" href="#{taquillaContraviasBean.listEntrega}">Cancelar | Regresar</a>   
-                        <h:commandLink id="print" styleClass="btn btn-primary btn-sm m" value="Imprimir" actionListener="#{taquillaContraviasBean.imprimir(actionEvent)}"
-                                       target="_blank" immediate="true" /> 
+                                         action="#{taquillaContraviasBean.agregarTiquete()}"  update="form:datos, growlMsg" /> 
                         
+                        <a class="btn btn-primary btn-sm m" href="#{taquillaContraviasBean.listEntrega}">Cancelar | Regresar</a> 
+                        
+                        <h:commandLink id="print" styleClass="btn btn-primary btn-sm m" 
+                                       onclick="changeVisible();" actionListener="#{taquillaContraviasBean.ChangeValMessage()}" 
+                                       action="#{taquillaContraviasBean.imprimir(actionEvent)}"
+                                       target="_blank" immediate="true" >
+                            <h:outputText value="Imprimir" />
+                        </h:commandLink>
+
                     </h:form>  
                 </b:panel>
 

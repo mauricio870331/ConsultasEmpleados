@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="listCmsExportNoParameters" language="groovy" pageWidth="537" pageHeight="752" columnWidth="537" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="b8f02535-bdf4-4d5a-b499-68704efdb3dd">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="148"/>
+	<property name="ireport.y" value="0"/>
+	<style name="miestilo">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{en_contabilidad} == 1]]></conditionExpression>
+			<style forecolor="#000000" backcolor="#2BBB18"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{en_contabilidad} == 0]]></conditionExpression>
+			<style forecolor="#FFFFFF" backcolor="#FF2626"/>
+		</conditionalStyle>
+	</style>
+	<queryString>
+		<![CDATA[select fecha, agencia, cm_asoc, en_contabilidad, recibido
+from  ReturnListCmsAdmin()
+group by id_trans, agencia, cm_asoc, fecha, verificado, no_factura, en_contabilidad, recibido order by 1,4]]>
+	</queryString>
+	<field name="fecha" class="java.sql.Timestamp"/>
+	<field name="agencia" class="java.lang.String"/>
+	<field name="cm_asoc" class="java.lang.String"/>
+	<field name="en_contabilidad" class="java.lang.Integer"/>
+	<field name="recibido" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="22" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="f8f50db0-240c-45d4-bab3-6c81615fe4f0" x="0" y="0" width="537" height="22"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Factura de Venta]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="15" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="0d5c61e4-3a73-4258-9c64-ef0716f496a4" x="93" y="0" width="162" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Agencia]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bb6362fa-d0b9-4fd0-aa72-0256a6d8d606" x="255" y="0" width="99" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CM Asociado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="dc255646-0955-41ce-aec0-c980a13a5e90" x="354" y="0" width="99" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[En contabilidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0195e8b2-007c-4d62-8f21-895aec25ba00" x="453" y="0" width="84" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Recibido]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0195e8b2-007c-4d62-8f21-895aec25ba00" x="0" y="0" width="93" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement uuid="fc86d6c3-83ae-4b92-ba62-b26cd8bba489" style="miestilo" mode="Opaque" x="93" y="0" width="162" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{agencia}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9179b04d-bb1f-4df1-b410-16967dd7b64e" style="miestilo" mode="Opaque" x="255" y="0" width="99" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{cm_asoc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f24862da-d2c5-46c7-9167-82e09189e6ed" style="miestilo" mode="Opaque" x="354" y="0" width="99" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[($F{en_contabilidad}.intValue()==1) ? "Si" : "No"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5370350d-621f-4f29-b52b-52b0175de8e3" style="miestilo" mode="Opaque" x="453" y="0" width="84" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[($F{recibido}.intValue()==1) ? "Si" : "No"]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy/MM/dd">
+				<reportElement uuid="5370350d-621f-4f29-b52b-52b0175de8e3" style="miestilo" mode="Opaque" x="0" y="0" width="93" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

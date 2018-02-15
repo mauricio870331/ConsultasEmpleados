@@ -20,7 +20,7 @@
             <b><h:outputText value="Formulario de ' Convenios ' Expreso Palmira." style="color: #005384"></h:outputText></b>            
         </ui:define>        
         <ui:define name="body" >
-            
+
             <center>
                 <b:panel>
                     <h:form id="form">
@@ -29,7 +29,13 @@
                                  delay="10000" escape="true" /> 
                         <br></br>
                         <b:panelGrid colSpans="2,8,2" id="datos">
-                            
+
+                            <h:outputText value="--" style="display: none"/>
+                            <b:inputText value="Convenio realizado con exito, favor imprimir...!" 
+                                         style="border: 0px;text-align: center;color: #3c8dbc;font-size: 20px;font-weight: bold;"
+                                         rendered="#{taquillaRegistroTiquete.showmesagge}" id="hidden" class="animacion"/>
+                            <h:message for="hidden" style="color: red" />
+
                             <h:outputText value="Fecha :" /> 
                             <b:datepicker id="f1" mode="icon-popup" tooltip="Seleccione Una Fecha" showWeek="true"  required="true" required-message="Ingrese Fecha"
                                           value="#{taquillaRegistroTiquete.selected.fechaviaje}" ></b:datepicker>
@@ -101,11 +107,11 @@
                             <h:message for="serv" style="color: red" />                            
 
                             <h:outputText value="Valor :" />
-                            
+
                             <b:inputText value="#{taquillaRegistroTiquete.selected.valor}" required="true"  id="valor" required-message="Ingrese Valor" >
                                 <f:ajax event="keyup" listener="#{taquillaRegistroTiquete.teclaValor()}"  render="tot"></f:ajax>
                             </b:inputText>
-                            
+
                             <h:message for="valor" style="color: red" />
 
                             <h:outputText value="Cantidad :" />
@@ -152,10 +158,19 @@
                         <br/>                                         
 
                         <b:commandButton id="guardar" styleClass="btn btn-primary btn-sm m" value="Guardar" look="primary" 
-                                         action="#{taquillaRegistroTiquete.agregarTiquete(loginBean.documentoUserLog,loginBean.nomUserLog)}" update="form:datos, growlMsg"/>                        
-                        <a class="btn btn-primary btn-sm m" href="#{taquillaRegistroTiquete.listEntrega}">Cancelar | Regresar</a>                       
-                        <h:commandLink id="print" styleClass="btn btn-primary btn-sm m" value="Imprimir" actionListener="#{taquillaRegistroTiquete.imprimir(actionEvent)}" 
-                                       target="_blank" immediate="true" />
+                                         action="#{taquillaRegistroTiquete.agregarTiquete(loginBean.documentoUserLog,loginBean.nomUserLog)}" 
+                                         update="form:datos, growlMsg"/>                        
+                        
+                        <a class="btn btn-primary btn-sm m" href="#{taquillaRegistroTiquete.listEntrega}">Cancelar | Regresar</a>  
+                        
+                        <h:commandLink id="print" styleClass="btn btn-primary btn-sm m" 
+                                       onclick="changeVisible();" actionListener="#{taquillaRegistroTiquete.ChangeValMessage()}" 
+                                       action="#{taquillaRegistroTiquete.imprimir(actionEvent)}"
+                                       target="_blank" immediate="true" >
+                            <h:outputText value="Imprimir" />
+                        </h:commandLink>
+
+
                     </h:form>  
                 </b:panel>
 

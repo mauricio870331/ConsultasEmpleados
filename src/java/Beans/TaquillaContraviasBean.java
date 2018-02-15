@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -31,7 +29,6 @@ import java.util.Iterator;
 import java.util.List;
 import javax.inject.Named;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -40,6 +37,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 
 /**
  * @author Mauricio Herrera - Juan Castrillon
@@ -57,6 +55,8 @@ public class TaquillaContraviasBean implements Serializable {
     private ArrayList<String> servicio = new ArrayList();
     private ArrayList<String> valorSer = new ArrayList();
     ArrayList<Ciudad> list_origen = new ArrayList();
+    private boolean showmesagge = false;
+
     /**
      * Variable privada: list_destino. Contendra el listado de las ciudades para
      * el combo destinos
@@ -87,9 +87,9 @@ public class TaquillaContraviasBean implements Serializable {
      * seleccionado para agregar a la lista de entrega
      */
     private TblRegistroContravias tiquetesCurrrent;
-
+    
     private TblRegistroContravias print;
-
+    
     String idAgencia = "";
     String consecutivo = "";
     /**
@@ -113,7 +113,7 @@ public class TaquillaContraviasBean implements Serializable {
      */
     private final boolean confirm = false;
     private Date fecha;
-
+    
     private boolean fics = false;
     private boolean pisoStr = false;
     private boolean pisoint = false;
@@ -150,21 +150,21 @@ public class TaquillaContraviasBean implements Serializable {
      * ContraviasTesoreriaList.xhtml
      */
     private String ContraviasTesoreriaList = "../Tesoreria/ContraviasTesoreriaList.xhtml";
-
+    
     private String ContraviasAuditoriaList = "../Auditoria/ContraviasAuditoriaList.xhtml";
     /**
      * Variable: ContraviasTesoreriaListHistory. Variable para la navegacion.
      * vista ContraviasTesoreriaHistorico.xhtml
      */
     private String ContraviasTesoreriaListHistory = "../Tesoreria/ContraviasTesoreriaHistorico.xhtml";
-
+    
     private String ContraviasAuditoriaListHistory = "../Auditoria/ContraviasAuditoriaHistorico.xhtml";
     /**
      * Variable privada: selectUser auxliar, almacenara el documento del usuario
      * sleccionado actualmente
      */
     private String selectUser = "";
-
+    
     private String trans = "";
     /**
      * Variable privada: noTquete auxliar, almacenara el numero de tiquete que
@@ -203,11 +203,11 @@ public class TaquillaContraviasBean implements Serializable {
      * para tesoreria
      */
     private String agencia = "";
-
+    
     public TaquillaContraviasBean() {
-
+        
     }
-
+    
     @PostConstruct
     public void init() {
 //        try {
@@ -237,8 +237,8 @@ public class TaquillaContraviasBean implements Serializable {
                 list_origen.add(new Ciudad(consultaGeneral.getNum1(), consultaGeneral.getStr1()));
             }
             list_destino = (ArrayList<Ciudad>) list_origen.stream().collect(Collectors.toList());
-
-        } catch (Exception ex) {
+            
+        } catch (SQLException ex) {
             System.out.println("error " + ex);
         }
     }
@@ -258,7 +258,7 @@ public class TaquillaContraviasBean implements Serializable {
             for (ConsultaGeneral obj : l) {
                 list_taquillas.add(new Usuarios(obj.getNum1(), obj.getStr1(), obj.getStr2(), obj.getStr3()));
             }
-
+            
         } catch (SQLException ex) {
             System.out.println("error " + ex);
         }
@@ -278,9 +278,9 @@ public class TaquillaContraviasBean implements Serializable {
             //valor expal
         }
         return valor;
-
+        
     }
-
+    
     public void getRutasweb() throws SQLException {
         if (!temporal.getOrigen().equals("") && !temporal.getDestino().equals("")) {
             LoginBean log = new LoginBean();
@@ -314,7 +314,7 @@ public class TaquillaContraviasBean implements Serializable {
                 temporal.setTotal(0);
                 servicios.clear();
             }
-
+            
         } else {
             temporal.setOrigen("");
             temporal.setDestino("");
@@ -324,9 +324,9 @@ public class TaquillaContraviasBean implements Serializable {
             servicios.clear();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso..!", "Seleccione Un Origen Por fvor.!"));
         }
-
+        
     }
-
+    
     public void getServicio(ArrayList<String> l) {
         servicio.clear();
         valorSer.clear();
@@ -339,7 +339,7 @@ public class TaquillaContraviasBean implements Serializable {
             }
         });
     }
-
+    
     public void getValorServicio(int cond) {
         System.out.println("***" + servTemp.trim() + " " + cond);
         int valor = 0;
@@ -362,7 +362,7 @@ public class TaquillaContraviasBean implements Serializable {
             temporal.setServicio(servTemp);
         }
     }
-
+    
     public String getCiudadById(int codCiudad) throws SQLException {
         ArrayList<ConsultaGeneral> l = new ArrayList<>();
         System.out.println("codCiudad " + codCiudad);
@@ -468,8 +468,8 @@ public class TaquillaContraviasBean implements Serializable {
         setTrans(idAgencia + "" + consecutivo);
         return "previewTiqueteContravia";
     }
-
-    public String guardatTiquete() throws SQLException, ParseException, IOException {
+    
+    public void guardatTiquete() throws SQLException, ParseException, IOException {
         long a = CrudObject.create(getPrint());
         if (a >= 1) {
             setTemporal(null);
@@ -478,12 +478,20 @@ public class TaquillaContraviasBean implements Serializable {
             servicios.clear();
             servicio.clear();
             servTemp = "Seleccione Servicio";
+            System.out.println("trans = " + getTrans());
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información", "Contravia Creada"));
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Taquilla/RegistroContravias.xhtml");
+            setShowmesagge(true);
         } else if (a == 0) {
             CiudadesUtils.rollBackConsecutivoAgencias(idAgencia, "consecutivo_contravias", consecutivo);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso..!", "Error Creando Contravia"));
-        }
-        return "RegistroContravias";
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Taquilla/previewTiqueteContravia.xhtml");
+            setShowmesagge(false);
+        }        
+    }
+    
+    public void ChangeValMessage() {
+        setShowmesagge(false);
     }
 
     /**
@@ -529,7 +537,7 @@ public class TaquillaContraviasBean implements Serializable {
                 temporal.setTotal(0);
                 servicios.clear();
             }
-
+            
         } else {
             temporal.setOrigen("");
             temporal.setDestino("");
@@ -538,7 +546,7 @@ public class TaquillaContraviasBean implements Serializable {
             temporal.setTotal(0);
             servicios.clear();
         }
-
+        
     }
 
     /**
@@ -551,6 +559,9 @@ public class TaquillaContraviasBean implements Serializable {
      * @since incluido desde la version 1.0
      */
     public void imprimir(ActionEvent evt) throws IOException, JRException, SQLException {
+//        System.out.println("trans = " + (String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("transContravia"));
+//        setTrans("MD000012");
+        System.out.println("hola imprimir");
         if (getTrans().equals("")) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "No se ha creado una contravia"));
         } else if (!getTrans().equals("")) {
@@ -563,6 +574,7 @@ public class TaquillaContraviasBean implements Serializable {
             parametros.put("transaccion", getTrans());
             byte[] jp = JasperRunManager.runReportToPdf(jasper.getPath(), parametros, c);
             HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+//            response.setHeader("Content-Disposition", "attachment; filename=reciboCajaContravia.pdf");
             response.setContentType("application/pdf");
             response.setContentLength(jp.length);
             try (ServletOutputStream outStream = response.getOutputStream()) {
@@ -576,7 +588,7 @@ public class TaquillaContraviasBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "No se ha creado una contravia"));
             setTrans("");
         }
-
+        
     }
 
     /**
@@ -630,7 +642,7 @@ public class TaquillaContraviasBean implements Serializable {
             }
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", msn));
         }
-
+        
     }
 
     /**
@@ -779,7 +791,7 @@ public class TaquillaContraviasBean implements Serializable {
         if (FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("selectUser") != null) {
             setSelectUser(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("selectUser"));
         }
-
+        
         LoginBean log = new LoginBean();
         String[] parts = log.getDocumentoUserLog().split(" ");
         String filtroOrigen = "";
@@ -887,14 +899,14 @@ public class TaquillaContraviasBean implements Serializable {
                         obj.getFecha1(),
                         obj.getFecha2(), obj.getStr15(), obj.getNum4(), (obj.getNum4() > 0)));
             }
-
+            
             if (listContraviasPendientes.isEmpty()) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Info", "No hay resultados para la consulta"));
             }
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "Seleccione un rango de fechas"));
         }
-
+        
     }
 
     /**
@@ -915,7 +927,7 @@ public class TaquillaContraviasBean implements Serializable {
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "Seleccione un rango de fechas"));
         }
-
+        
     }
 
     /**
@@ -949,11 +961,11 @@ public class TaquillaContraviasBean implements Serializable {
                     getTiquetesCurrrent().setUsuarioTaquillaEntrega("");
                 }
             }
-
+            
             tiquetesToList.forEach((next) -> {
                 System.out.println("next " + next.getNo_tiquete());
             });
-
+            
         } else if (getTiquetesCurrrent().isSelected()) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso", "El numero de tiquete no debe estar vacio"));
         }
@@ -980,9 +992,9 @@ public class TaquillaContraviasBean implements Serializable {
         } catch (SQLException e) {
             System.out.println("error " + e);
         }
-
+        
     }
-
+    
     public void setDetalle(TblRegistroContravias c) {
         setTiquetesCurrrent(c);
         //System.out.println("*********** "+tiquetesCurrrent.getTransaccion());
@@ -1007,7 +1019,7 @@ public class TaquillaContraviasBean implements Serializable {
         } catch (SQLException e) {
             System.out.println("error " + e);
         }
-
+        
     }
 
     /**
@@ -1100,6 +1112,8 @@ public class TaquillaContraviasBean implements Serializable {
                 JRXlsExporter exporter = new JRXlsExporter();
                 exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
                 exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+                exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
                 exporter.exportReport();
                 stream.flush();
             }
@@ -1125,6 +1139,8 @@ public class TaquillaContraviasBean implements Serializable {
                 JRXlsExporter exporter = new JRXlsExporter();
                 exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
                 exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+                exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
                 exporter.exportReport();
                 stream.flush();
             }
@@ -1133,47 +1149,47 @@ public class TaquillaContraviasBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información", "No hay registros para exportar..!"));
         }
     }
-
+    
     public ArrayList<Ciudad> getList_origen() {
         return list_origen;
     }
-
+    
     public void setList_origen(ArrayList<Ciudad> list_origen) {
         this.list_origen = list_origen;
     }
-
+    
     public ArrayList<Ciudad> getList_destino() {
         return list_destino;
     }
-
+    
     public void setList_destino(ArrayList<Ciudad> list_destino) {
         this.list_destino = list_destino;
     }
-
+    
     public Date getFecha() {
         return fecha;
     }
-
+    
     public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
-
+    
     public boolean isDisable() {
         return disable;
     }
-
+    
     public void setDisable(boolean disable) {
         this.disable = disable;
     }
-
+    
     public boolean isDisable2() {
         return disable2;
     }
-
+    
     public void setDisable2(boolean disable2) {
         this.disable2 = disable2;
     }
-
+    
     public String getRegistroContravias() {
         servicio.clear();
         try {
@@ -1183,143 +1199,143 @@ public class TaquillaContraviasBean implements Serializable {
         }
         return registroContravias;
     }
-
+    
     public void setRegistroContravias(String registroContravias) {
         this.registroContravias = registroContravias;
     }
-
+    
     public TblRegistroContravias getTemporal() {
         if (temporal == null) {
             temporal = new TblRegistroContravias();
         }
         return temporal;
     }
-
+    
     public void setTemporal(TblRegistroContravias temporal) {
         this.temporal = temporal;
     }
-
+    
     public ArrayList<String> getServicios() {
         return servicios;
     }
-
+    
     public void setServicios(ArrayList<String> servicios) {
         this.servicios = servicios;
     }
-
+    
     public String getCurrentTrans() {
         return currentTrans;
     }
-
+    
     public void setCurrentTrans(String currentTrans) {
         this.currentTrans = currentTrans;
     }
-
+    
     public String getListEntrega() {
         setTemporal(null);
         setCurrentTrans("");
         servicio.clear();
         return ListEntrega;
     }
-
+    
     public void setListEntrega(String ListEntrega) {
         this.ListEntrega = ListEntrega;
     }
-
+    
     public String getSelectUser() {
         return selectUser;
     }
-
+    
     public void setSelectUser(String selectUser) {
         this.selectUser = selectUser;
     }
-
+    
     public List<TblRegistroContravias> getListContraviasPendientes() {
         return listContraviasPendientes;
     }
-
+    
     public void setListContraviasPendientes(List<TblRegistroContravias> listContraviasPendientes) {
         this.listContraviasPendientes = listContraviasPendientes;
     }
-
+    
     public String getNoTquete() {
         return noTquete;
     }
-
+    
     public void setNoTquete(String noTquete) {
         this.noTquete = noTquete;
     }
-
+    
     public TblRegistroContravias getTiquetesCurrrent() {
         if (tiquetesCurrrent == null) {
             tiquetesCurrrent = new TblRegistroContravias();
         }
         return tiquetesCurrrent;
     }
-
+    
     public void setTiquetesCurrrent(TblRegistroContravias tiquetesCurrrent) {
         this.tiquetesCurrrent = tiquetesCurrrent;
     }
-
+    
     public List<TblRegistroContravias> getTiquetesToList() {
         return tiquetesToList;
     }
-
+    
     public void setTiquetesToList(List<TblRegistroContravias> tiquetesToList) {
         this.tiquetesToList = tiquetesToList;
     }
-
+    
     public String getListEntregaContravias() {
         setTiquetesCurrrent(null);
         getListContraviasPendientes().clear();
         setFics(false);
         return ListEntregaContravias;
     }
-
+    
     public void setListEntregaContravias(String ListEntregaContravias) {
         this.ListEntregaContravias = ListEntregaContravias;
     }
-
+    
     public String getUsuarioNodum() {
         return usuarioNodum;
     }
-
+    
     public void setUsuarioNodum(String usuarioNodum) {
         this.usuarioNodum = usuarioNodum;
     }
-
+    
     public String getClaveNodum() {
         return claveNodum;
     }
-
+    
     public void setClaveNodum(String claveNodum) {
         this.claveNodum = claveNodum;
     }
-
+    
     public String getTransContraviaEntrega() {
         return transContraviaEntrega;
     }
-
+    
     public void setTransContraviaEntrega(String transContraviaEntrega) {
         this.transContraviaEntrega = transContraviaEntrega;
     }
-
+    
     public Date getSelecFechaIni() {
         return selecFechaIni;
     }
-
+    
     public void setSelecFechaIni(Date selecFechaIni) {
         this.selecFechaIni = selecFechaIni;
     }
-
+    
     public Date getSelecFechaFin() {
         return selecFechaFin;
     }
-
+    
     public void setSelecFechaFin(Date selecFechaFin) {
         this.selecFechaFin = selecFechaFin;
     }
-
+    
     public String getContraviasTesoreriaList() throws SQLException {
         setSelecFechaFin(null);
         setSelecFechaIni(null);
@@ -1328,27 +1344,27 @@ public class TaquillaContraviasBean implements Serializable {
         listContraviasPendientes.clear();
         return ContraviasTesoreriaList;
     }
-
+    
     public void setContraviasTesoreriaList(String ContraviasTesoreriaList) {
         this.ContraviasTesoreriaList = ContraviasTesoreriaList;
     }
-
+    
     public ArrayList<Usuarios> getList_taquillas() {
         return list_taquillas;
     }
-
+    
     public void setList_taquillas(ArrayList<Usuarios> list_taquillas) {
         this.list_taquillas = list_taquillas;
     }
-
+    
     public String getAgencia() {
         return agencia;
     }
-
+    
     public void setAgencia(String agencia) {
         this.agencia = agencia;
     }
-
+    
     public String getContraviasTesoreriaListHistory() throws SQLException {
         setSelecFechaFin(null);
         setSelecFechaIni(null);
@@ -1357,11 +1373,11 @@ public class TaquillaContraviasBean implements Serializable {
         listContraviasPendientes.clear();
         return ContraviasTesoreriaListHistory;
     }
-
+    
     public void setContraviasTesoreriaListHistory(String ContraviasTesoreriaListHistory) {
         this.ContraviasTesoreriaListHistory = ContraviasTesoreriaListHistory;
     }
-
+    
     public String getContraviasAuditoriaList() throws SQLException {
         setSelecFechaFin(null);
         setSelecFechaIni(null);
@@ -1370,11 +1386,11 @@ public class TaquillaContraviasBean implements Serializable {
         listContraviasPendientes.clear();
         return ContraviasAuditoriaList;
     }
-
+    
     public void setContraviasAuditoriaList(String ContraviasAuditoriaList) {
         this.ContraviasAuditoriaList = ContraviasAuditoriaList;
     }
-
+    
     public String getContraviasAuditoriaListHistory() throws SQLException {
         setSelecFechaFin(null);
         setSelecFechaIni(null);
@@ -1383,49 +1399,49 @@ public class TaquillaContraviasBean implements Serializable {
         listContraviasPendientes.clear();
         return ContraviasAuditoriaListHistory;
     }
-
+    
     public void setContraviasAuditoriaListHistory(String ContraviasAuditoriaListHistory) {
         this.ContraviasAuditoriaListHistory = ContraviasAuditoriaListHistory;
     }
-
+    
     public String getServTemp() {
         return servTemp;
     }
-
+    
     public void setServTemp(String servTemp) {
         this.servTemp = servTemp;
     }
-
+    
     public ArrayList<String> getServicio() {
         return servicio;
     }
-
+    
     public void setServicio(ArrayList<String> servicio) {
         this.servicio = servicio;
     }
-
+    
     public ArrayList<String> getValorSer() {
         return valorSer;
     }
-
+    
     public void setValorSer(ArrayList<String> valorSer) {
         this.valorSer = valorSer;
     }
-
+    
     public TblRegistroContravias getPrint() {
         return print;
     }
-
+    
     public void setPrint(TblRegistroContravias print) {
         this.print = print;
     }
-
+    
     public String cancelRegistroTiquete() throws SQLException {
         CiudadesUtils.rollBackConsecutivoAgencias(idAgencia, "consecutivo_contravias", consecutivo);
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("contravia");
         return "RegistroContravias";
     }
-
+    
     public String existeVarSession() {
         String v = "_self";
         if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("contravia") != null) {
@@ -1433,45 +1449,53 @@ public class TaquillaContraviasBean implements Serializable {
         }
         return v;
     }
-
+    
     public String getTrans() {
         return trans;
     }
-
+    
     public void setTrans(String trans) {
         this.trans = trans;
     }
-
+    
     public boolean isFics() {
         return fics;
     }
-
+    
     public void setFics(boolean fics) {
         this.fics = fics;
     }
-
+    
     public boolean isPisoStr() {
         return pisoStr;
     }
-
+    
     public void setPisoStr(boolean pisoStr) {
         this.pisoStr = pisoStr;
     }
-
+    
     public boolean isPisoint() {
         return pisoint;
     }
-
+    
     public void setPisoint(boolean pisoint) {
         this.pisoint = pisoint;
     }
-
+    
     public String getUsuarioTaquillaEntrega() {
         return usuarioTaquillaEntrega;
     }
-
+    
     public void setUsuarioTaquillaEntrega(String usuarioTaquillaEntrega) {
         this.usuarioTaquillaEntrega = usuarioTaquillaEntrega;
     }
-
+    
+    public boolean isShowmesagge() {
+        return showmesagge;
+    }
+    
+    public void setShowmesagge(boolean showmesagge) {
+        this.showmesagge = showmesagge;
+    }
+    
 }

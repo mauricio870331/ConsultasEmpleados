@@ -1,7 +1,6 @@
 package Beans;
 
 import Entities.*;
-import Modelo.Conexion;
 import Modelo.ConexionPool;
 import Modelo.ConsultaGeneral;
 import Modelo.CrudObject;
@@ -17,21 +16,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import java.awt.event.ActionEvent;
-import java.sql.Connection;
 import java.text.DateFormat;
 import java.util.List;
 import javax.inject.Named;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -39,6 +33,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 
 /**
  * @author Mauricio Herrera - Juan Castrillon
@@ -63,6 +58,7 @@ public class TaquillaRegistroTiquete implements Serializable {
      * Variable privada: list_empresas. Contendra el listado de empresas
      *
      */
+    private boolean showmesagge = false;
     ArrayList<Empresas> list_empresas = new ArrayList();
 
     private ArrayList<String> servicio = new ArrayList();
@@ -189,7 +185,7 @@ public class TaquillaRegistroTiquete implements Serializable {
             }
             list_destino = (ArrayList<Ciudad>) list_origen.stream().collect(Collectors.toList());
             LoginBean log = new LoginBean();
-            if (log.getNomUserLog().contains("Yolanda")) {
+            if (log.getNomUserLog().contains("Yolanda")||log.getDocumentoUserLog().contains("Asolarte")) {
                 l = (ArrayList) CrudObject.getSelectSql("registroTiquete", 3, "nada");
             } else {
                 l = (ArrayList) CrudObject.getSelectSql("registroTiquete", 2, "nada");
@@ -332,7 +328,7 @@ public class TaquillaRegistroTiquete implements Serializable {
         return "previewTiquete";
     }
 
-    public String guardatTiquete() throws SQLException, ParseException, IOException {
+    public void guardatTiquete() throws SQLException, ParseException, IOException {
         long a = CrudObject.create(getPrint());
         if (a >= 1) {
             setTemporal(null);
@@ -340,12 +336,16 @@ public class TaquillaRegistroTiquete implements Serializable {
             servicio.clear();
             servTemp = "Seleccione Servicio";
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Viaje Creado"));
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Taquilla/RegistroTiquete.xhtml");
+            setShowmesagge(true);
         } else if (a == 0) {
             datosImprimir.clear();
             CiudadesUtils.rollBackConsecutivoAgencias(idAgencia, "consecutivo_convenios", consecutivo);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "Error Al crear Tiquete"));
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Taquilla/RegistroTiquete.xhtml");
+            setShowmesagge(false);
         }
-        return "RegistroTiquete";
+
     }
 
     /**
@@ -660,6 +660,8 @@ public class TaquillaRegistroTiquete implements Serializable {
                 JRXlsExporter exporter = new JRXlsExporter();
                 exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
                 exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+                exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
                 exporter.exportReport();
                 stream.flush();
             }
@@ -838,12 +840,11 @@ public class TaquillaRegistroTiquete implements Serializable {
         setList_universidades(CiudadesUtils.listarUniversidades());
         return estudiante_universidades;
     }
-    
-    
+
     public void url_universidades() throws SQLException, IOException {
         list_universidades.clear();
         setList_universidades(CiudadesUtils.listarUniversidades());
-        FacesContext.getCurrentInstance().getExternalContext().redirect(estudiante_universidades);        
+        FacesContext.getCurrentInstance().getExternalContext().redirect(estudiante_universidades);
     }
 
     public void setEstudiante_universidades(String estudiante_universidades) {
@@ -890,4 +891,15 @@ public class TaquillaRegistroTiquete implements Serializable {
         this.list_entregasestudiantes = list_entregasestudiantes;
     }
 
+    public boolean isShowmesagge() {
+        return showmesagge;
+    }
+
+    public void setShowmesagge(boolean showmesagge) {
+        this.showmesagge = showmesagge;
+    }
+
+    public void ChangeValMessage() {
+        setShowmesagge(false);
+    }
 }

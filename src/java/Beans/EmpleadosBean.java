@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -38,6 +36,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -1184,6 +1183,8 @@ public class EmpleadosBean implements Serializable {
                 JRXlsExporter exporter = new JRXlsExporter();
                 exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
                 exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+                exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
                 exporter.exportReport();
                 stream.flush();
             } catch (JRException e) {
@@ -1235,6 +1236,8 @@ public class EmpleadosBean implements Serializable {
                 JRXlsExporter exporter = new JRXlsExporter();
                 exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
                 exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+                exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
                 exporter.exportReport();
                 stream.flush();
             }
@@ -1264,7 +1267,6 @@ public class EmpleadosBean implements Serializable {
                 parametros.put("doc", getSelectUser());
                 report = "/Reports/faturaventaAdmonDoc.jasper";
             }
-
             System.out.println("datos report = " + format2.format(selecFechaIni) + "  " + format2.format(selecFechaFin) + "  " + getIdEmpresa() + "  " + getSelectUser());
             ConexionPool pool = new ConexionPool();
             pool.con = pool.dataSource.getConnection();
@@ -1276,6 +1278,8 @@ public class EmpleadosBean implements Serializable {
                 JRXlsExporter exporter = new JRXlsExporter();
                 exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
                 exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+                exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
                 exporter.exportReport();
                 stream.flush();
             }
@@ -1301,6 +1305,8 @@ public class EmpleadosBean implements Serializable {
                 JRXlsExporter exporter = new JRXlsExporter();
                 exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
                 exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+                exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
                 exporter.exportReport();
                 stream.flush();
             }
@@ -1346,6 +1352,8 @@ public class EmpleadosBean implements Serializable {
                 JRXlsExporter exporter = new JRXlsExporter();
                 exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
                 exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+                exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
                 exporter.exportReport();
                 stream.flush();
             }
@@ -1382,6 +1390,8 @@ public class EmpleadosBean implements Serializable {
                 JRXlsExporter exporter = new JRXlsExporter();
                 exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
                 exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+                exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
                 exporter.exportReport();
                 stream.flush();
             }
@@ -1417,6 +1427,8 @@ public class EmpleadosBean implements Serializable {
             JRXlsExporter exporter = new JRXlsExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+            exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+            exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
             exporter.exportReport();
             stream.flush();
         }
@@ -1441,6 +1453,8 @@ public class EmpleadosBean implements Serializable {
                 JRXlsExporter exporter = new JRXlsExporter();
                 exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
                 exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+                exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
                 exporter.exportReport();
                 stream.flush();
             }
@@ -1469,6 +1483,8 @@ public class EmpleadosBean implements Serializable {
                 JRXlsExporter exporter = new JRXlsExporter();
                 exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
                 exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+                exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
                 exporter.exportReport();
                 stream.flush();
             }

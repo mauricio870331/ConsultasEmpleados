@@ -54,7 +54,7 @@
 
                         <b:commandButton id="refresh" styleClass="iconSx" look="primary" value="" tooltip="Buscar">
                             <b:iconAwesome name="search" size="1x" />
-                            <f:ajax event="click" listener="#{transaccionesBean.listarCmsAdmin('cmGenAdminF')}" render="tablecms growl fechaIni fechaFin numeroCm" ></f:ajax>
+                            <f:ajax event="click" listener="#{transaccionesBean.listarCmsAdmin('cmGenAdminF')}" render="tablecms lbldesc tablecms2 growl fechaIni fechaFin numeroCm" ></f:ajax>
                         </b:commandButton>                       
 
                     </b:panelGrid>                     
@@ -108,10 +108,43 @@
                             <h:commandLink id="print2" styleClass="btn btn-primary  iconSm" 
                               value="Imprimir" actionListener="{transaccionesBean.generarCm(evt, cms.id_trans, false)}"
                                                     target="_blank"  immediate="true" />
-                        </p:column> -->
+                        </p:column> -->                       
+                    </p:dataTable>  
+                    <br/>
+                    <h4 jsf:id="lbldesc" style="display: #{(transaccionesBean.cmgeneradoListDescripcion.size()>0) ? 'block' : 'none'};background-color: #429808; font-weight: bold;color: #ffffff">Detalle Relación  -  Algunos valores se encuentran en la columna descripción..!</h4>
+                    <p:dataTable style="display: #{(transaccionesBean.cmgeneradoListDescripcion.size()>0) ? 'block' : 'none'};" id="tablecms2" 
+                                 var="cmdetalle"
+                                 value="#{transaccionesBean.cmgeneradoListDescripcion}" 
+                                 >
+                        <p:column headerText="Consecutivo"  width="100" style="text-align: center; #{cmdetalle.en_contabilidad ? 'background-color: #6BD821;font-weight: bold':''}">
+                            <h:outputText value="#{cmdetalle.id_trans}" />
+                        </p:column>   
 
-                    </p:dataTable>          
+                        <p:column headerText="Agencia"  width="100" style="text-align: center; #{cmdetalle.en_contabilidad ? 'background-color: #6BD821;font-weight: bold':''}">
+                            <h:outputText value="#{cmdetalle.agencia}" />
+                        </p:column>  
 
+                        <p:column headerText="Cm asociado"  width="70" style="text-align: center; #{cmdetalle.en_contabilidad ? 'background-color: #6BD821;font-weight: bold':''}">
+                            <h:outputText value="#{cmdetalle.cm_asoc}" />
+                        </p:column>  
+
+                        <p:column headerText="Fecha de Creación" width="80" style="text-align: center; #{cmdetalle.en_contabilidad ? 'background-color: #6BD821;font-weight: bold':''}">                            
+                            <h:outputText value="#{cmdetalle.fecha_creacion}" />
+                        </p:column>  
+
+                        <p:column headerText="Total" width="80" style="text-align: center; #{cmdetalle.en_contabilidad ? 'background-color: #6BD821;font-weight: bold':''}">                            
+                            <h:outputText value="#{cmdetalle.total}" />
+                        </p:column>  
+
+                        <p:column headerText="Descripción" width="70" style="text-align: center; #{cmdetalle.en_contabilidad ? 'background-color: #6BD821;font-weight: bold':''};" >
+                            <h:outputText value="#{cmdetalle.descripcionDetalle}" />
+                        </p:column> 
+                    </p:dataTable> 
+                    <br/>
+                    <b:commandButton class="btn btn-primary btn-sm m" look="primary" value="Exportar Listado Excel" 
+                                     action="#{transaccionesBean.exportarListadoCms()}" immediate="true" ajax="false" >
+                        <b:iconAwesome name="file-excel-o" />                       
+                    </b:commandButton>
                 </h:form>              
 
             </b:panel> 

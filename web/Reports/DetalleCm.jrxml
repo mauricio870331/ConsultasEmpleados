@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DetalleCm" pageWidth="575" pageHeight="250" orientation="Landscape" columnWidth="575" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="b5414a99-320b-45dd-a87e-55033c0904ee">
 	<property name="ireport.zoom" value="3.0"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="438"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="idTrans" class="java.lang.String"/>
 	<parameter name="impresion" class="java.lang.String"/>
@@ -110,7 +110,7 @@ from recibos_manuales where id_transaccion = $P{idTrans}]]>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{concepto}]]></textFieldExpression>
 			</textField>
-			<textField pattern="¤ #,##0">
+			<textField pattern="#,##0">
 				<reportElement uuid="dd02301a-64e0-47da-9d37-d194739cfd53" x="270" y="0" width="54" height="15"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
@@ -143,7 +143,7 @@ from recibos_manuales where id_transaccion = $P{idTrans}]]>
 				</textElement>
 				<text><![CDATA[Total:]]></text>
 			</staticText>
-			<textField pattern="¤ #,##0">
+			<textField pattern="#,##0">
 				<reportElement uuid="2cec2122-b419-489c-a171-890ca8031331" x="479" y="7" width="92" height="15"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$V{total}]]></textFieldExpression>

@@ -100,7 +100,7 @@ group by id_trans, agencia, cm_asoc, fecha, verificado, no_factura, en_contabili
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{no_factura}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#,##0">
 				<reportElement uuid="583b70fb-99bc-4e89-a1e4-fbe852d14412" x="483" y="0" width="97" height="15"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>

@@ -1,16 +1,11 @@
 package Beans;
 
 import Entities.*;
-import Modelo.Conexion;
 import Modelo.ConsultaGeneral;
 import Modelo.CrudObject;
 import Utils.CiudadesUtils;
 import java.io.IOException;
 import java.io.Serializable;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -182,7 +177,8 @@ public class TarifasBean implements Serializable {
         ArrayList<ConsultaGeneral> l = new ArrayList<>();
         l = (ArrayList) CrudObject.getSelectSql("empresaConvenio", 1, "param");
         for (ConsultaGeneral object : l) {
-            listEmpConvenio.add(new Empresas(object.getNum1(), object.getStr1(), object.getNum2(), object.getStr2(), object.getFecha1(),
+            listEmpConvenio.add(new Empresas(object.getNum1(), object.getStr1(),
+                    object.getNum2(), object.getStr2(), object.getFecha1(),
                     object.getFecha2(), object.getNum3(), object.getStr3()));
         }
         if (a == 0) {
@@ -206,7 +202,7 @@ public class TarifasBean implements Serializable {
         ArrayList<ConsultaGeneral> l = new ArrayList<>();
         l = (ArrayList) CrudObject.getSelectSql("detalleConvenio", 1, "" + idConvenio);
         for (ConsultaGeneral object : l) {
-            System.out.println(object.getFecha1() + " " + object.getFecha2() + " " + object.getNum2() + " " + object.getStr2());
+//            System.out.println(object.getFecha1() + " " + object.getFecha2() + " " + object.getNum2() + " " + object.getStr2());
             detalleConvenioList.add(new DetalleConvenio(object.getNum1(), object.getNum2(), object.getNum3(), object.getNum4(), object.getNum5(), object.getNum6(),
                     object.getNum7(), object.getNum8(), object.getNum9(), object.getFecha1(), object.getFecha2(), object.getStr3(), object.getStr4(),
                     object.getStr5(), object.getStr6(), object.getStr7()));

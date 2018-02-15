@@ -334,7 +334,7 @@ public class CiudadesUtils {
             if (rs.next()) {
                 cod = rs.getInt(1);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("error " + e);
         } finally {
             con3.close();
@@ -449,7 +449,9 @@ public class CiudadesUtils {
         boolean resp = false;
         try {
             pool.con = pool.dataSource.getConnection();
-            pstm = pool.con.prepareStatement("update tbl_usuarioRegistro set cliente = '" + val + "' where id_registro = " + id + "");
+            pstm = pool.con.prepareStatement("update tbl_usuarioRegistro set cliente = '" + val + "',"
+                    + "id_empresa = (select top 1 id_empresa from tbl_empresas where nombre like '%" + val + "%') "
+                    + "where id_registro = " + id + "");
             pstm.executeUpdate();
             resp = true;
         } catch (SQLException e) {
@@ -1067,7 +1069,7 @@ public class CiudadesUtils {
                 query = "update relacion_recibos set en_contabilidad = " + val + " where id_trans = '" + cms.getId_trans() + "'";
             }
 
-//            System.out.println("query " + query);
+            System.out.println("query " + query);
             pstm = pool.con.prepareStatement(query);
             pstm.executeUpdate();
             result = true;
@@ -1083,11 +1085,63 @@ public class CiudadesUtils {
         float result = 0;
         try {
             pool.con = pool.dataSource.getConnection();
-            String queryS = "select tiquetes_entregados from tbl_viajes_tiquetes where id_viaje_tiquete = "+id_Viaje_tiquete;
+            String queryS = "select tiquetes_entregados from tbl_viajes_tiquetes where id_viaje_tiquete = " + id_Viaje_tiquete;
             pstm = pool.con.prepareStatement(queryS);
             rs = pstm.executeQuery();
             if (rs.next()) {
                 result = rs.getFloat(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("error " + e);
+        } finally {
+            pool.con.close();
+        }
+        return result;
+    }
+
+    public static List<CmGenerado> returnCmsAsocDescrip(String numeroCm) throws SQLException {
+        List<CmGenerado> CmgeneradoList = new ArrayList();
+        int countDescripcion = 0;
+        try {
+            pool.con = pool.dataSource.getConnection();
+            String queryS = "select id_trans, agencia, cm_asoc, fecha_creacion, verificado,  valor, no_factura, en_contabilidad, recibido, descripcion "
+                    + " from ReturnListCms(" + Integer.parseInt(numeroCm) + ")";
+
+//            System.out.println("queryS " + queryS);
+            pstm = pool.con.prepareStatement(queryS);
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                if (!rs.getString(10).equals("")) {
+                    countDescripcion++;
+                }
+//                System.out.println("rs.getString(10) " + rs.getString(10));
+                CmgeneradoList.add(new CmGenerado(rs.getString(1), rs.getString(2), rs.getString(3),
+                        rs.getDate(4), rs.getBoolean(5), rs.getInt(6), rs.getString(7), rs.getInt(8), rs.getInt(9), rs.getString(10)));
+            }
+        } catch (SQLException e) {
+            System.out.println("error " + e);
+        } finally {
+            pool.con.close();
+        }
+        if (countDescripcion == 0) {
+            CmgeneradoList.clear();
+        }
+        return CmgeneradoList;
+    }
+
+    public static boolean verificarCmExist(String cm_asoc) throws SQLException {
+        boolean result = false;
+        try {
+            pool.con = pool.dataSource.getConnection();
+            String queryS = "select cm_asoc from detalle_relacion where cm_asoc = '" + cm_asoc + "' "
+                    + "union "
+                    + "select cm_asoc from recibos_manuales where cm_asoc = '" + cm_asoc + "'";
+
+//            System.out.println("queryS " + queryS);
+            pstm = pool.con.prepareStatement(queryS);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                result = true;
             }
         } catch (SQLException e) {
             System.out.println("error " + e);

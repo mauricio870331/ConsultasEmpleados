@@ -37,7 +37,51 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->       
+        <![endif]-->  
+        <style>
+            .animacion {
+                /*position: absolute;*/
+
+                animation-name: parpadeo;
+                animation-duration: 1s;
+                animation-timing-function: linear;
+                animation-iteration-count: infinite;
+
+                -webkit-animation-name:parpadeo;
+                -webkit-animation-duration: 1s;
+                -webkit-animation-timing-function: linear;
+                -webkit-animation-iteration-count: infinite;
+            }
+
+            @-moz-keyframes parpadeo{  
+                0% { opacity: 1.0; }
+                50% { opacity: 0.0; }
+                100% { opacity: 1.0; }
+            }
+
+            @-webkit-keyframes parpadeo {  
+                0% { opacity: 1.0; }
+                50% { opacity: 0.0; }
+                100% { opacity: 1.0; }
+            }
+
+            @keyframes parpadeo {  
+                0% { opacity: 1.0; }
+                50% { opacity: 0.0; }
+                100% { opacity: 1.0; }
+            }
+
+        </style>
+        <script>
+            function changeVisible() {                
+                if (document.getElementById("input_form:hidden") !== null) {
+                    console.log(132465);
+                    var a = document.getElementById("input_form:hidden");
+                    a.style.display = "none";
+                }
+
+            }
+        </script>
     </h:head>
     <h:body class="hold-transition skin-blue sidebar-mini" onload="#{loginBean.validarsession()};#{documentosBean.showalerts()}">
         <div class="wrapper">

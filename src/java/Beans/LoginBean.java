@@ -14,7 +14,9 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 import org.primefaces.component.growl.Growl;
 
 /**
@@ -130,7 +132,7 @@ public class LoginBean implements Serializable {
                 if (l.get(0).getStr4().equals("CARGATIQUETE")) {
                     FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Tiquetes/ListTiquetesEntregados.xhtml");
                     user = null;
-                }                
+                }
                 if (l.get(0).getStr4().equals("VERAUTORIZADOS")) {
                     FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Tiquetes/viewAutorizados.xhtml");
                     user = null;
@@ -171,7 +173,14 @@ public class LoginBean implements Serializable {
      */
     public void logout() throws IOException {
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("usuario");
-        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/login.xhtml");
+        ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
+        try {
+            ((HttpSession) ctx.getSession(false)).invalidate();
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/login.xhtml");
+        } catch (IOException e) {
+            System.out.println("error " + e);
+        }
+
     }
 
     /**

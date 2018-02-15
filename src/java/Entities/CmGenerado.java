@@ -26,11 +26,12 @@ public class CmGenerado implements Serializable {
     private String no_factura;
     private boolean recibido;
     private boolean en_contabilidad;
+    private String descripcionDetalle;
 
     public CmGenerado() {
     }
 
-    public CmGenerado(String id_trans, String agencia, String cm_asoc, Date fecha_creacion, boolean verificado, int total, String no_factura, int recibido, int en_contabilidad) {
+    public CmGenerado(String id_trans, String agencia, String cm_asoc, Date fecha_creacion, boolean verificado, int total, String no_factura, int en_contabilidad, int recibido) {
         this.id_trans = id_trans;
         this.agencia = agencia;
         this.fecha_creacion = fecha_creacion;
@@ -41,8 +42,20 @@ public class CmGenerado implements Serializable {
         this.recibido = recibido == 1;
         this.en_contabilidad = en_contabilidad == 1;
     }
-    
-    
+
+    public CmGenerado(String id_trans, String agencia, String cm_asoc, Date fecha_creacion, boolean verificado, int total, String no_factura, int en_contabilidad, int recibido, String descripcionDetalle) {
+        this.id_trans = id_trans;
+        this.agencia = agencia;
+        this.fecha_creacion = fecha_creacion;
+        this.cm_asoc = cm_asoc;
+        this.verificado = verificado;
+        this.total = total;
+        this.no_factura = no_factura;
+        this.recibido = recibido == 1;
+        this.en_contabilidad = en_contabilidad == 1;
+        this.descripcionDetalle = descripcionDetalle;
+    }
+
     public String getId_trans() {
         return id_trans;
     }
@@ -85,8 +98,10 @@ public class CmGenerado implements Serializable {
 
     @Override
     public String toString() {
-        return "CmGenerado{" + "id_trans=" + id_trans + ", agencia=" + agencia + ", fecha_creacion=" + fecha_creacion + ", listDetalleCm=" + listDetalleCm + ", transUpdate=" + transUpdate + '}';
+        return "CmGenerado{" + "id_trans=" + id_trans + ", agencia=" + agencia + ", fecha_creacion=" + fecha_creacion + ", verificado=" + verificado + ", cm_asoc=" + cm_asoc + ", total=" + total + ", listDetalleCm=" + listDetalleCm + ", transUpdate=" + transUpdate + ", no_factura=" + no_factura + ", recibido=" + recibido + ", en_contabilidad=" + en_contabilidad + ", descripcionDetalle=" + descripcionDetalle + '}';
     }
+
+   
 
     public boolean isVerificado() {
         return verificado;
@@ -134,6 +149,14 @@ public class CmGenerado implements Serializable {
 
     public void setEn_contabilidad(boolean en_contabilidad) {
         this.en_contabilidad = en_contabilidad;
+    }
+
+    public String getDescripcionDetalle() {
+        return descripcionDetalle;
+    }
+
+    public void setDescripcionDetalle(String descripcionDetalle) {
+        this.descripcionDetalle = descripcionDetalle;
     }
 
 }

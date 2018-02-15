@@ -33,6 +33,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import org.primefaces.component.growl.Growl;
 
 /**
@@ -260,7 +261,10 @@ public class TransaccionesBean implements Serializable {
 
     private CmGenerado cmgenerado;
 
+    private List<String> cars = new ArrayList();
+
     private List<CmGenerado> CmgeneradoList = new ArrayList();
+    private List<CmGenerado> CmgeneradoListDescripcion = new ArrayList();
 
     private List<DetalleCm> detalleCmList = new ArrayList();
 
@@ -320,6 +324,8 @@ public class TransaccionesBean implements Serializable {
             LoginBean log = new LoginBean();
             param = log.getNomUserLog();
         }
+
+        System.out.println("param " + param);
         l = (ArrayList) CrudObject.getSelectSql(vista, 1, param);
         for (ConsultaGeneral obj : l) {
             CmgeneradoList.add(new CmGenerado(obj.getStr1(), obj.getStr2(), obj.getStr3(), obj.getFecha1(), obj.isBool1(), obj.getNum1(), obj.getStr4(), obj.getNum2(), obj.getNum3()));
@@ -336,6 +342,7 @@ public class TransaccionesBean implements Serializable {
             if (!numeroCm.equals("")) {
                 param = numeroCm;
                 vista = "cmGenAdminByCm";
+                CmgeneradoListDescripcion = Utils.CiudadesUtils.returnCmsAsocDescrip(numeroCm);
             } else {
                 if (selecFechaIni != null && selecFechaFin != null) {
                     param += format2.format(selecFechaIni) + " 00:00:00," + format2.format(selecFechaFin) + " 23:59:59";
@@ -352,6 +359,12 @@ public class TransaccionesBean implements Serializable {
         for (ConsultaGeneral obj : l) {
             CmgeneradoList.add(new CmGenerado(obj.getStr1(), obj.getStr2(), obj.getStr3(), obj.getFecha1(), obj.isBool1(), obj.getNum1(), obj.getStr4(), obj.getNum2(), obj.getNum3()));
         }
+
+//        if (CmgeneradoListDescripcion.size() > 0) {
+//            CmgeneradoListDescripcion.forEach((cm) -> {
+//                System.out.println(cm.toString());
+//            });
+//        }
 //        numeroCm = "";
 //        selecFechaIni = null;
 //        selecFechaFin = null;
@@ -359,14 +372,13 @@ public class TransaccionesBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Info", "No hay resultados para la consulta"));
         }
     }
-    
-    
-     public void clearCmsAdmin() throws SQLException {        
+
+    public void clearCmsAdmin() throws SQLException {
         CmgeneradoList.clear();
         numeroCm = "";
-        selecFechaIni= null;
-        selecFechaFin=null;
-        user="";      
+        selecFechaIni = null;
+        selecFechaFin = null;
+        user = "";
     }
 
     public void verificarCmAsoc(String consecutivo, boolean verificado) throws SQLException {
@@ -531,7 +543,6 @@ public class TransaccionesBean implements Serializable {
      * array list
      *
      * @param tiquete
-     * @param opc
      * @throws java.sql.SQLException
      * @since incluido desde la version 1.0
      */
@@ -542,11 +553,23 @@ public class TransaccionesBean implements Serializable {
             tiquete.setSelected(false);
             return;
         }
+
+        if (tiquete.getCantidadAEntregar() == 0.1F || tiquete.getCantidadAEntregar() == 0.2F
+                || tiquete.getCantidadAEntregar() == 0.3F || tiquete.getCantidadAEntregar() == 0.4F
+                || tiquete.getCantidadAEntregar() == 0.6F || tiquete.getCantidadAEntregar() == 0.7F
+                || tiquete.getCantidadAEntregar() == 0.8F || tiquete.getCantidadAEntregar() == 0.9F) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "Los valores permitidos para entregar son: 0.5 y mayor o igual a 1"));
+            tiquete.setCantidadAEntregar(0);
+            tiquete.setSelected(false);
+            return;
+        }
+
         if (tiquete.getCantidadAEntregar() == 0) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "Debes agregar la cantidad"));
             tiquete.setSelected(false);
             return;
         }
+
         setTiquetesCurrrent(tiquete);
         if (existEnArray(tiquetesToList, tiquete.getId_Viaje_tiquete())) {
 //                    indiceDato(tiquetesToList, getTiquetesCurrrent().getTransaccion());
@@ -960,6 +983,39 @@ public class TransaccionesBean implements Serializable {
 
     }
 
+    public void exportarListadoCms() throws IOException, JRException, SQLException {
+//        if (FacturaVenta.isEmpty()) {
+//            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Info", "No hay resultados para Exportar"));
+//        } else {
+//            Map parametros = new HashMap();
+//            parametros.put("idEmpresa", getIdEmpresa());
+        String report = "/Reports/listCmsExportNoParameters.jasper";
+//            parametros.put("fechaIni", format2.format(selecFechaIni) + " 00:00:00");
+//            parametros.put("fechaFin", format2.format(selecFechaFin) + " 23:59:59");
+//            if (!selectUser.equals("")) {
+//                parametros.put("doc", getSelectUser());
+//                report = "/Reports/faturaventaAdmonDoc.jasper";
+//            }
+//            System.out.println("datos report = " + format2.format(selecFechaIni) + "  " + format2.format(selecFechaFin) + "  " + getIdEmpresa() + "  " + getSelectUser());
+        ConexionPool pool = new ConexionPool();
+        pool.con = pool.dataSource.getConnection();
+        File jasper = new File(FacesContext.getCurrentInstance().getExternalContext().getRealPath(report));
+        JasperPrint jp = JasperFillManager.fillReport(jasper.getPath(), null, pool.con);
+        HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        response.addHeader("Content-disposition", "attachment; filename=Listado_Relacion.xls");
+        try (ServletOutputStream stream = response.getOutputStream()) {
+            JRXlsExporter exporter = new JRXlsExporter();
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+            exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+            exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
+            exporter.exportReport();
+            stream.flush();
+        }
+        FacesContext.getCurrentInstance().responseComplete();
+//        }
+    }
+
     /*
     * Método que valida el número de tiquete del sistema
     * @param numtiquet
@@ -1189,6 +1245,22 @@ public class TransaccionesBean implements Serializable {
             detalleCmList2.clear();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "Solo puedes asociar un CM a la vez..!"));
             return;
+        }       
+        
+        if (howEmpresas(emprsa, (ArrayList<DetalleCm>) currentCmList2) > 1) {
+            empresaAnterior.clear();
+            currentCmList2.clear();
+            detalleCmList2.clear();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "Solo puedes asociar una Empresa a la vez..!"));
+            return;
+        }        
+
+        if (Utils.CiudadesUtils.verificarCmExist(currentCmList2.get(0).getCm_asoc())) {
+            empresaAnterior.clear();
+            currentCmList2.clear();
+            detalleCmList2.clear();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "El número de CM ya fue relacionado en otra transacción..!"));
+            return;
         }
 
         if (currentCmList2.size() > 0) {
@@ -1270,6 +1342,7 @@ public class TransaccionesBean implements Serializable {
                 trans.clear();
                 cmgenerado = null;
                 listarCms("cmGen");
+                selectEmpresa = "";
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Relacion Generada con exito..!"));
             } else {
                 setPrintCm2(true);
@@ -1277,6 +1350,7 @@ public class TransaccionesBean implements Serializable {
                 currentCmList2.clear();
                 trans.clear();
                 cmgenerado = null;
+                selectEmpresa = "";
                 listarCms("cmGen");
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "Error al generar el Relacion!"));
             }
@@ -1286,10 +1360,21 @@ public class TransaccionesBean implements Serializable {
             currentCmList2.clear();
             trans.clear();
             cmgenerado = null;
+            selectEmpresa = "";
             listarCms("cmGen");
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "Aún no has ingresado un recibos a relacionar!"));
         }
 
+    }
+
+    private static int howEmpresas(String empresa, ArrayList<DetalleCm> ar) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(empresa);
+        ar.stream().filter((detalleCm) -> (!sb.toString().contains(detalleCm.getConcepto()))).forEachOrdered((detalleCm) -> {
+            sb.append(detalleCm.getConcepto()).append(",");
+        });
+        String[] split = sb.toString().substring(0, sb.toString().length() - 1).split(",");
+        return split.length;
     }
 
     //GenerrarCM   
@@ -1617,9 +1702,6 @@ public class TransaccionesBean implements Serializable {
                             obj.getNum3(),
                             obj.getStr6()));
                 }
-                selectEmpresa = "";
-////            selectedEmpresas = null;
-//            contain = 0;
                 if (detalleCmList2.isEmpty()) {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Info", "No hay resultados para la consulta"));
                 }
@@ -1873,6 +1955,8 @@ public class TransaccionesBean implements Serializable {
                 JRXlsExporter exporter = new JRXlsExporter();
                 exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
                 exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+                exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
                 exporter.exportReport();
                 stream.flush();
             } catch (JRException e) {
@@ -1907,6 +1991,8 @@ public class TransaccionesBean implements Serializable {
                     JRXlsExporter exporter = new JRXlsExporter();
                     exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
                     exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                    exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+                    exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
                     exporter.exportReport();
                     stream.flush();
                 }
@@ -1934,6 +2020,8 @@ public class TransaccionesBean implements Serializable {
                 JRXlsExporter exporter = new JRXlsExporter();
                 exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
                 exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+                exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
                 exporter.exportReport();
                 stream.flush();
             } catch (JRException e) {
@@ -1957,6 +2045,8 @@ public class TransaccionesBean implements Serializable {
                 JRXlsExporter exporter = new JRXlsExporter();
                 exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
                 exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+                exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
                 exporter.exportReport();
                 stream.flush();
                 numeroCm = "";
@@ -1978,6 +2068,8 @@ public class TransaccionesBean implements Serializable {
                 JRXlsExporter exporter = new JRXlsExporter();
                 exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
                 exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+                exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+                exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
                 exporter.exportReport();
                 stream.flush();
                 selecFechaIni = null;
@@ -2571,6 +2663,22 @@ public class TransaccionesBean implements Serializable {
 
     public void setNumeroCm(String numeroCm) {
         this.numeroCm = numeroCm;
+    }
+
+    public List<String> getCars() {
+        return cars;
+    }
+
+    public void setCars(List<String> cars) {
+        this.cars = cars;
+    }
+
+    public List<CmGenerado> getCmgeneradoListDescripcion() {
+        return CmgeneradoListDescripcion;
+    }
+
+    public void setCmgeneradoListDescripcion(List<CmGenerado> CmgeneradoListDescripcion) {
+        this.CmgeneradoListDescripcion = CmgeneradoListDescripcion;
     }
 
 }

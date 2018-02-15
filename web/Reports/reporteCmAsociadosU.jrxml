@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporteCmAsociadosU" language="groovy" pageWidth="1000" pageHeight="672" columnWidth="1000" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="2b36cca6-d69c-447a-bade-e8285dece0f2">
-	<property name="ireport.zoom" value="5.0"/>
-	<property name="ireport.x" value="0"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporteCmAsociadosU" language="groovy" pageWidth="1000" pageHeight="672" columnWidth="1000" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="2b36cca6-d69c-447a-bade-e8285dece0f2">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="1282"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="fechaIni" class="java.lang.String"/>
 	<parameter name="fechaFin" class="java.lang.String"/>
@@ -164,14 +164,14 @@ where id_transaccion in (select id_trans from relacion_recibos where Fecha_Creac
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{ida_regreso}]]></textFieldExpression>
 			</textField>
-			<textField pattern="¤ #,##0">
+			<textField pattern="#,##0">
 				<reportElement uuid="49f68d02-ef5d-4900-8be5-db952921c357" x="761" y="0" width="69" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{valor_expal}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#,##0">
 				<reportElement uuid="69e81faf-535f-411a-a868-2c908846fb60" x="830" y="0" width="69" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>

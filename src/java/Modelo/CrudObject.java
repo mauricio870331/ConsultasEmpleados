@@ -157,6 +157,7 @@ public class CrudObject {
             validacion = true;
         } else if (x instanceof TblRegistroContravias) {
             contravias = (TblRegistroContravias) x;
+            String servicio = (contravias.getServicio().length() > 20) ?  contravias.getServicio().substring(0,20) : contravias.getServicio();
             preparet = "insert into tbl_registroContravias values(\"" + contravias.getTransaccion() + "\",\"" + contravias.getId_empresa() + "\",\"" + contravias.getNombre_comprador()
                     + "\",\"" + contravias.getCc_comprador() + "\",\"" + contravias.getNombre_viajero()
                     + "\",\"" + contravias.getCc_viajero() + "\",\"" + contravias.getOrigen() + "\",\"" + contravias.getDestino()
@@ -164,7 +165,7 @@ public class CrudObject {
                     + ",\"" + contravias.getIda_regreso() + "\",\"" + contravias.getCod_bus() + "\",\"" + contravias.getObservacion()
                     + "\",\"" + format2.format(contravias.getFecha_creacion()) + "\",\"" + contravias.getNo_tiquete() + "\",\"" + contravias.getTaquilla_vende()
                     + "\",\"" + contravias.getUserNodumVende() + "\",\"" + contravias.getUsuarioTaquilla_vende()
-                    + "\",\"" + contravias.getServicio() + "\"," + contravias.getPiso()
+                    + "\",\"" + servicio + "\"," + contravias.getPiso()
                     + ",\"" + contravias.getEstado()
                     + "\",\"" + contravias.getTaquilla_entrega() + "\",\"" + contravias.getUserNodumEntrega() + "\",\"" + contravias.getUsuarioTaquillaEntrega()
                     + "\",\"" + contravias.getTelefonoComprador() + "\",\"" + contravias.getNo_reserva() + "\"," + contravias.getReimprimir()
@@ -486,10 +487,9 @@ public class CrudObject {
                 while (rst.next()) {
                     result = rst.getInt(1);
                 }
-                if (result > 0) {
-                    if (CiudadesUtils.updateTotalTransbyId(result)) {
-                        CiudadesUtils.updateTotalTransTiq(result);
-                    }
+                if (result > 0) {                    
+                        CiudadesUtils.updateTotalTransTiq(result);  
+                        CiudadesUtils.updateTotalTransbyId(result);
                 }
                 mns = result;
                 System.out.println(" mns " + mns);

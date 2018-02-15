@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ContraviasTesoreria" language="groovy" pageWidth="1867" pageHeight="802" columnWidth="1867" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ddaa744c-efb6-497c-a177-df82a9d02c96">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ContraviasTesoreria" language="groovy" pageWidth="1867" pageHeight="802" columnWidth="1867" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="ddaa744c-efb6-497c-a177-df82a9d02c96">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="1327"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="fechaIni" class="java.lang.String"/>
 	<parameter name="fechaFin" class="java.lang.String"/>
@@ -265,12 +265,12 @@
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{cant_tiquetes}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField pattern="#,##0" isBlankWhenNull="true">
 				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="957" y="0" width="60" height="15"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField pattern="#,##0" isBlankWhenNull="true">
 				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="1017" y="0" width="60" height="15"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>

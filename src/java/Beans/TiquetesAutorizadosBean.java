@@ -4,10 +4,6 @@ import Entities.*;
 import Modelo.ConsultaGeneral;
 import Modelo.CrudObject;
 import Utils.CiudadesUtils;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -26,7 +22,6 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -53,7 +48,7 @@ public class TiquetesAutorizadosBean implements Serializable {
 
     private TiquetesAutorizados currenTiquete;
     private Usuarios user;
-    
+
     private List<String> users = new ArrayList();
 
     private ArrayList<String> servicio = new ArrayList();
@@ -139,6 +134,7 @@ public class TiquetesAutorizadosBean implements Serializable {
                     obj.getStr4(), obj.getStr5(), obj.getStr6(), obj.getFecha1(), obj.getStr7(), obj.getFecha2(),
                     obj.getStr8(), obj.getStr9(), obj.getStr10(), obj.getStr11(), obj.getStr12(), obj.getStr13(), obj.getStr14()));
         }
+        cargarDatos();
     }
 
     public void BuascarUser() throws SQLException {
@@ -433,7 +429,6 @@ public class TiquetesAutorizadosBean implements Serializable {
         }
         return "ListTiquetesEntregados";
     }
-    
 
     public Growl getGrowl() {
         return growl;
@@ -521,13 +516,12 @@ public class TiquetesAutorizadosBean implements Serializable {
         FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Tiquetes/RegistroTiquete.xhtml");
 
     }
-    
-    
+
     public void urlRegresarAdmin() throws IOException {
         FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Empresas/EmpresasList.xhtml");
 
     }
-    
+
     public void cargarUsuarios() throws SQLException {
         try {
             users.clear();

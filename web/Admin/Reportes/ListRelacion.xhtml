@@ -23,7 +23,7 @@
                 <h:form id="form">
                     <b:growl  id="growl" showDetail="true" placementFrom="bottom" globalOnly="true" />  
 
-                    <b:panelGrid colSpans="1,2,1,2,3,3" id="datos" >                  
+                    <b:panelGrid colSpans="1,2,1,2,3,2,1" id="datos" >                  
                         <h:outputText value="F. Inicial:" />
                         <p:calendar id="fechaIni" alt="Seleccione fecha" value="#{transaccionesBean.selecFechaIni}" pattern="dd/MM/yy" >                              
                             <f:ajax event="dateSelect" execute="@this" ></f:ajax>
@@ -45,6 +45,11 @@
                                     execute="@this" 
                                     render="@this"></f:ajax>
                         </b:selectOneMenu>
+                        
+                        <b:inputText value="#{transaccionesBean.numeroCm}" required="true" name="numeroCm" id="numeroCm"
+                                     placeholder="CM Asociado"
+                                     tooltip="Ingrese Numero de Cm a Buscar">                            
+                        </b:inputText>   
 
                         <b:commandButton id="refresh" styleClass="iconSx" look="primary" value="" tooltip="Buscar">
                             <b:iconAwesome name="search" size="1x" />

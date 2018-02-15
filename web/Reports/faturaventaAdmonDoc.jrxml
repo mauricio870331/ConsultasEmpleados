@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="faturaventaAdmon" language="groovy" pageWidth="1450" pageHeight="500" columnWidth="1450" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ddaa744c-efb6-497c-a177-df82a9d02c96">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="faturaventaAdmon" language="groovy" pageWidth="1450" pageHeight="500" columnWidth="1450" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="ddaa744c-efb6-497c-a177-df82a9d02c96">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="1410"/>
+	<property name="ireport.x" value="909"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="idEmpresa" class="java.lang.Integer"/>
 	<parameter name="fechaIni" class="java.lang.String"/>
@@ -17,7 +17,7 @@
 case when vt.ida_regreso = 'Si' then (tv.cant_tiquetes * dc.valor_cliente)* 2
 			       else (tv.cant_tiquetes * dc.valor_cliente) end total,
 			   vt.orden_servicio, case when t.tiquetes_entregados is null then '--' else t.tiquetes_entregados end   as tiquetes,
-case when (select cm_asoc from detalle_relacion where id_trans_conv = t.id_transaccion) is null then 'Pendiente' else (select cm_asoc from detalle_relacion where id_trans_conv = t.id_transaccion) end cm
+case when (select distinct cm_asoc from detalle_relacion where id_trans_conv = t.id_transaccion and tabla = 'transaccion') is null then 'Pendiente' else (select distinct cm_asoc from detalle_relacion where id_trans_conv = t.id_transaccion and tabla = 'transaccion') end cm
 		 FROM tbl_empleados e, tbl_ciudades c,
 		      tbl_ciudades c2, detalle_convenio dc,
 		      tbl_viajes_tiquetes vt, transaccion_viajero tv, transaccion t
@@ -33,7 +33,7 @@ case when (select cm_asoc from detalle_relacion where id_trans_conv = t.id_trans
             select t.documento, t.nombre, t.ot, c.ciudad, c2.ciudad, t.valor, t.cantidad, t.Fecha_Creacion,
             case when t.ida_regreso = 'N' then 'No' else 'Si' end ida_regreso,
             t.total, 'NA' orden_servicio, case when tiquete is null then '--' else tiquete end as tiquetes,
-            case when (select cm_asoc from detalle_relacion where id_trans_conv = t.id_registro) is null then 'Pendiente' else (select cm_asoc from detalle_relacion where id_trans_conv = t.id_registro) end cm from tbl_usuarioRegistro t, tbl_ciudades c,
+            case when (select distinct cm_asoc from detalle_relacion where id_trans_conv = t.id_registro and tabla = 'tbl_usuarioRegistro') is null then 'Pendiente' else (select distinct cm_asoc from detalle_relacion where id_trans_conv = t.id_registro and tabla = 'tbl_usuarioRegistro') end cm from tbl_usuarioRegistro t, tbl_ciudades c,
 		    tbl_ciudades c2
 		    where t.cod_ciudad_origen = c.cod_ciudad
 		    AND t.cod_ciudad_destino = c2.cod_ciudad
@@ -48,10 +48,10 @@ case when (select cm_asoc from detalle_relacion where id_trans_conv = t.id_trans
 	<field name="origen" class="java.lang.String"/>
 	<field name="destino" class="java.lang.String"/>
 	<field name="valor_cliente" class="java.lang.Integer"/>
-	<field name="tiquetes_asignados" class="java.lang.Integer"/>
+	<field name="tiquetes_asignados" class="java.lang.Double"/>
 	<field name="fecha_venta" class="java.sql.Timestamp"/>
 	<field name="ida_regreso" class="java.lang.String"/>
-	<field name="total" class="java.lang.Integer"/>
+	<field name="total" class="java.lang.Double"/>
 	<field name="orden_servicio" class="java.lang.String"/>
 	<field name="tiquetes" class="java.lang.String"/>
 	<field name="cm" class="java.lang.String"/>
@@ -191,7 +191,7 @@ case when (select cm_asoc from detalle_relacion where id_trans_conv = t.id_trans
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{destino}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#,##0">
 				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="613" y="0" width="100" height="15"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{valor_cliente}]]></textFieldExpression>
@@ -201,7 +201,7 @@ case when (select cm_asoc from detalle_relacion where id_trans_conv = t.id_trans
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{tiquetes_asignados}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#,##0">
 				<reportElement uuid="bb77c554-3ae8-48c2-a8aa-2bc2b429c752" x="813" y="0" width="100" height="15"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
