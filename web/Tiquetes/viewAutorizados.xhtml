@@ -86,10 +86,19 @@
                             <h:outputText value="#{tiquetes.estado}"  style="font-size: 10px" />
                         </p:column> 
 
-                        <p:column headerText="Tiquetes" width="240" style="text-align: center" >
-                            <p:inputText style="width: 150px;height: 28px;" value="#{tiquetes.tiquete}" >  
+                        <p:column headerText="Fecha Regreso" width="80">
+                            <h:outputText value="#{tiquetes.fecha_regreso}"  style="font-size: 10px" />
+                        </p:column> 
+
+                        <p:column headerText="Tiquetes" width="350" style="text-align: center" >
+                            <p:inputText style="width: 80px;height: 28px;" value="#{tiquetes.tiquete}" >  
                                 <f:ajax event="blur" listener="@this" render="@this"></f:ajax>
                             </p:inputText>
+
+                            <p:inputText rendered="#{tiquetes.idaRegreso=='SI'}" style="width: 80px;height: 28px;margin-left: 5px;" placeholder="T. Regreso" value="#{tiquetes.tiquete_regreso}" >  
+                                <f:ajax event="blur" listener="@this" render="@this"></f:ajax>
+                            </p:inputText>
+
                             <b:commandButton style="margin-left: 5px;" id="updateThis" styleClass="iconSx" look="primary" value="" tooltip="Guardar">
                                 <b:iconAwesome name="save" size="1x" />
                                 <f:ajax event="click" 

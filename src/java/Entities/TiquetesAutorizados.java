@@ -22,6 +22,8 @@ public class TiquetesAutorizados implements Serializable {
     private String destino;
     private String motivo_solicitud;
     private Date fecha_solicitud;
+    private Date fecha_regreso;
+    private String fecha_regresoS;
     private String estado;
     private Date fecha_entrega;
     private String tipo_servicio;
@@ -30,7 +32,8 @@ public class TiquetesAutorizados implements Serializable {
     private String usaurio_solicita;
     private String usuarioSolicitaString;
     private String tiquete = "";
-    private String idaRegreso;   
+    private String tiquete_regreso = "";
+    private String idaRegreso;
     private boolean selected = false;
 
     public TiquetesAutorizados() {
@@ -43,8 +46,13 @@ public class TiquetesAutorizados implements Serializable {
         this.telefono = telefono;
     }
 
-    
-    public TiquetesAutorizados(int id_carga, String documento, String nombre_completo, String telefono, String origen, String destino, String motivo_solicitud, Date fecha_solicitud, String estado, Date fecha_entrega, String tipo_servicio, String taquilla_entrega, String usuario_taquilla, String usaurio_solicita, String tiquete, String idaRegreso, String usuarioSolicitaString) {
+    public TiquetesAutorizados(int id_carga, String documento,
+            String nombre_completo, String telefono,
+            String origen, String destino, String motivo_solicitud,
+            Date fecha_solicitud, String estado,
+            Date fecha_entrega, String tipo_servicio,
+            String taquilla_entrega, String usuario_taquilla,
+            String usaurio_solicita, String tiquete, String idaRegreso, String usuarioSolicitaString, Date fecha_regreso, String tiquete_regreso) {
         this.id_carga = id_carga;
         this.documento = documento;
         this.nombre_completo = nombre_completo;
@@ -62,6 +70,8 @@ public class TiquetesAutorizados implements Serializable {
         this.tiquete = tiquete;
         this.idaRegreso = idaRegreso;
         this.usuarioSolicitaString = usuarioSolicitaString;
+        this.fecha_regreso = fecha_regreso;
+        this.tiquete_regreso = tiquete_regreso;
     }
 
     @Override
@@ -197,7 +207,6 @@ public class TiquetesAutorizados implements Serializable {
         this.destino = destino;
     }
 
-  
     public boolean isSelected() {
         return selected;
     }
@@ -212,6 +221,30 @@ public class TiquetesAutorizados implements Serializable {
 
     public void setUsuarioSolicitaString(String usuarioSolicitaString) {
         this.usuarioSolicitaString = usuarioSolicitaString;
+    }
+
+    public Date getFecha_regreso() {
+        return fecha_regreso;
+    }
+
+    public void setFecha_regreso(Date fecha_regreso) {
+        this.fecha_regreso = fecha_regreso;
+    }
+
+    public String getTiquete_regreso() {
+        return tiquete_regreso;
+    }
+
+    public void setTiquete_regreso(String tiquete_regreso) {
+        this.tiquete_regreso = tiquete_regreso;
+    }
+
+    public String getFecha_regresoS() {
+        return fecha_regresoS;
+    }
+
+    public void setFecha_regresoS(String fecha_regresoS) {
+        this.fecha_regresoS = fecha_regresoS;
     }
 
 }

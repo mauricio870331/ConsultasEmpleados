@@ -185,7 +185,7 @@ public class TaquillaRegistroTiquete implements Serializable {
             }
             list_destino = (ArrayList<Ciudad>) list_origen.stream().collect(Collectors.toList());
             LoginBean log = new LoginBean();
-            if (log.getNomUserLog().contains("Yolanda")||log.getDocumentoUserLog().contains("Asolarte")) {
+            if (log.getDocumentoUserLog().contains("1113637868") || log.getDocumentoUserLog().contains("1130613672")) {
                 l = (ArrayList) CrudObject.getSelectSql("registroTiquete", 3, "nada");
             } else {
                 l = (ArrayList) CrudObject.getSelectSql("registroTiquete", 2, "nada");
@@ -235,6 +235,10 @@ public class TaquillaRegistroTiquete implements Serializable {
             temporal.setUsuarioNodum(null);
             temporal.setClaveNodum(null);
             temporal.setUsuarioTaquilla("");
+            return "RegistroTiquete";
+        }
+        if (temporal.getValor() == 0) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "El valor no puede ser 0 revise por favor..!"));
             return "RegistroTiquete";
         }
         Date fechaCreacion = new Date();
@@ -430,11 +434,12 @@ public class TaquillaRegistroTiquete implements Serializable {
 
     public void getServicio(ArrayList<String> l) {
         servicio.clear();
-        valorSer.clear();
+//        valorSer.clear();
         l.stream().forEach((string) -> {
-            String[] prt = string.split(",");
-            servicio.add(prt[4]);
-            valorSer.add(prt[3]);
+//            String[] prt = string.split(",");
+            servicio.add(string);
+//            servicio.add(prt[4]);
+//            valorSer.add(prt[3]);
         });
     }
 
@@ -443,7 +448,7 @@ public class TaquillaRegistroTiquete implements Serializable {
         int valor = 0;
         for (int i = 0; i < servicio.size(); i++) {
             if (servicio.get(i).equals(servTemp)) {
-                valor = Integer.parseInt(valorSer.get(i));
+//                valor = Integer.parseInt(valorSer.get(i));
                 break;
             }
         }

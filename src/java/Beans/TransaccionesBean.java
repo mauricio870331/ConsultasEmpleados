@@ -333,7 +333,7 @@ public class TransaccionesBean implements Serializable {
     }
 
     public void listarCmsAdmin(String vista) throws SQLException {
-        System.out.println("vista" + vista + "selecFechaIni " + selecFechaIni + " selecFechaFin " + selecFechaFin);
+        System.out.println("vista" + vista + " selecFechaIni " + selecFechaIni + " selecFechaFin " + selecFechaFin);
         CmgeneradoList.clear();
         numeroCm = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("numeroCm");
         ArrayList<ConsultaGeneral> l = new ArrayList<>();
@@ -484,7 +484,7 @@ public class TransaccionesBean implements Serializable {
                 for (ConsultaGeneral obj : l) {
                     TiquetesAutorizados.add(new TiquetesAutorizados(obj.getNum1(), obj.getStr1(), obj.getStr2(), obj.getStr3(),
                             obj.getStr4(), obj.getStr5(), obj.getStr6(), obj.getFecha1(), obj.getStr7(), obj.getFecha2(),
-                            obj.getStr8(), obj.getStr9(), obj.getStr10(), obj.getStr11(), obj.getStr12(), obj.getStr13(), obj.getStr14()));
+                            obj.getStr8(), obj.getStr9(), obj.getStr10(), obj.getStr11(), obj.getStr12(), obj.getStr13(), obj.getStr14(), obj.getFecha3(), obj.getStr15()));
                 }
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Info", "No hay resultados para la consulta"));
@@ -977,7 +977,6 @@ public class TransaccionesBean implements Serializable {
                 tiquete = null;
                 listEstudiantes.clear();
             }
-
             return "ConvenioEstudiante";
         }
 

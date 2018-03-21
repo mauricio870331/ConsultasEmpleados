@@ -132,7 +132,7 @@ public class TiquetesAutorizadosBean implements Serializable {
         for (ConsultaGeneral obj : l) {
             TiquetesAutorizados.add(new TiquetesAutorizados(obj.getNum1(), obj.getStr1(), obj.getStr2(), obj.getStr3(),
                     obj.getStr4(), obj.getStr5(), obj.getStr6(), obj.getFecha1(), obj.getStr7(), obj.getFecha2(),
-                    obj.getStr8(), obj.getStr9(), obj.getStr10(), obj.getStr11(), obj.getStr12(), obj.getStr13(), obj.getStr14()));
+                    obj.getStr8(), obj.getStr9(), obj.getStr10(), obj.getStr11(), obj.getStr12(), obj.getStr13(), obj.getStr14(), obj.getFecha3(), obj.getStr15()));
         }
         cargarDatos();
     }
@@ -152,7 +152,7 @@ public class TiquetesAutorizadosBean implements Serializable {
         for (ConsultaGeneral obj : l) {
             TiquetesAutorizados.add(new TiquetesAutorizados(obj.getNum1(), obj.getStr1(), obj.getStr2(), obj.getStr3(),
                     obj.getStr4(), obj.getStr5(), obj.getStr6(), obj.getFecha1(), obj.getStr7(), obj.getFecha2(),
-                    obj.getStr8(), obj.getStr9(), obj.getStr10(), obj.getStr11(), obj.getStr12(), obj.getStr13(), obj.getStr14()));
+                    obj.getStr8(), obj.getStr9(), obj.getStr10(), obj.getStr11(), obj.getStr12(), obj.getStr13(), obj.getStr14(), obj.getFecha3(), obj.getStr15()));
         }
 
     }
@@ -167,7 +167,7 @@ public class TiquetesAutorizadosBean implements Serializable {
             for (ConsultaGeneral obj : l) {
                 TiquetesAutorizados.add(new TiquetesAutorizados(obj.getNum1(), obj.getStr1(), obj.getStr2(), obj.getStr3(),
                         obj.getStr4(), obj.getStr5(), obj.getStr6(), obj.getFecha1(), obj.getStr7(), obj.getFecha2(),
-                        obj.getStr8(), obj.getStr9(), obj.getStr10(), obj.getStr11(), obj.getStr12(), obj.getStr13(), obj.getStr14()));
+                        obj.getStr8(), obj.getStr9(), obj.getStr10(), obj.getStr11(), obj.getStr12(), obj.getStr13(), obj.getStr14(), obj.getFecha3(), obj.getStr15()));
             }
         } else {
             ListarTiquetesEntregados();
@@ -410,15 +410,16 @@ public class TiquetesAutorizadosBean implements Serializable {
                                     break;
                             }
                         }
-                        lista.add(sb.toString().substring(0, sb.toString().length() - 1));
+                        if (!sb.toString().equals("")) {
+                            lista.add(sb.toString().substring(0, sb.toString().length() - 1));
+                        }
                     }
 
                 }
             }
-//        lista.forEach((next) -> {
-//            System.out.println("next " + next);
-//        });
-
+//            lista.forEach((next) -> {
+//                System.out.println("next " + next);
+//            });
             if (!Utils.CiudadesUtils.cargarAutorizadosExcel(lista, log.getDocumentoUserLog())) {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso", "Error al cargar el archivo");
                 FacesContext.getCurrentInstance().addMessage(null, msg);

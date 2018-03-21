@@ -153,15 +153,24 @@ public class CiudadesUtils {
         ArrayList<String> result = new ArrayList();
         try {
             cn = Conexion.conectar2();
-            String sql = "select a.fecha as fecha, origen,destino,case when b.Temporada='Baja' then cast(precio as numeric) "
-                    + "when b.Temporada='Alta' then cast(precio2 as numeric) end precio,servicio,SUBSTRING(hora,0,3)+':'+ SUBSTRING(hora,3,5) horario, "
-                    + "observaciones from cpp_rutasweb a ,cpt_rutasweb b  where a.nro_trans=b.nro_trans and "
-                    + "a.fecha_mod in (select MAX(fecha_mod) from cpp_rutasweb) and origen = '" + origen + "' and destino = '" + destino + "'  order by precio desc";
-            System.out.println("query = " + sql);
+//            String sql = "select a.fecha as fecha, "
+//                    + "origen,destino,"
+//                    + "case when b.Temporada='Baja' then cast(precio as numeric) "
+//                    + "when b.Temporada='Alta' then cast(precio2 as numeric) end precio,"
+//                    + "servicio,SUBSTRING(hora,0,3)+':'+ SUBSTRING(hora,3,5) horario, "
+//                    + "observaciones from cpp_rutasweb a ,cpt_rutasweb b  where a.nro_trans=b.nro_trans and "
+//                    + "a.fecha_mod in (select MAX(fecha_mod) from cpp_rutasweb) and origen = '" + origen + "' and destino = '" + destino + "'  order by precio desc";
+
+            String sql = "select distinct servicio from cpp_rutasweb a ,cpt_rutasweb b  where a.nro_trans=b.nro_trans and "
+                    + " a.fecha_mod in (select MAX(fecha_mod) from cpp_rutasweb) and origen = '" + origen + "' and destino = '" + destino + "'"
+                    + " order by 1 desc";
+
+//            System.out.println("query = " + sql);
             pstm = cn.prepareStatement(sql);
             rs = pstm.executeQuery();
             while (rs.next()) {
-                String cadena = rs.getString(1).trim() + "," + rs.getString(2).trim() + "," + rs.getString(3).trim() + "," + rs.getInt(4) + "," + rs.getString(5).trim() + " " + rs.getString(7).trim().replace(",", " -") + "," + rs.getString(5).trim() + " -- " + rs.getString(6);
+//                String cadena = rs.getString(1).trim() + "," + rs.getString(2).trim() + "," + rs.getString(3).trim() + "," + rs.getInt(4) + "," + rs.getString(5).trim() + " " + rs.getString(7).trim().replace(",", " -") + "," + rs.getString(5).trim() + " -- " + rs.getString(6);
+                String cadena = rs.getString(1).trim();
                 if (!result.contains(cadena)) {
                     result.add(cadena);
                 }
@@ -172,10 +181,10 @@ public class CiudadesUtils {
             cn.close();
             pstm.close();
         }
-        HashSet<String> hs = new HashSet();
-        hs.addAll(result);
-        result.clear();
-        result.addAll(hs);
+//        HashSet<String> hs = new HashSet();
+//        hs.addAll(result);
+//        result.clear();
+//        result.addAll(hs);
         return result;
     }
 
@@ -856,7 +865,7 @@ public class CiudadesUtils {
                         rs.getString(7), rs.getDate(8),
                         rs.getString(9), rs.getDate(10), rs.getString(11),
                         rs.getString(12), rs.getString(13), rs.getString(14),
-                        rs.getString(15), rs.getString(16), rs.getString(17)));
+                        rs.getString(15), rs.getString(16), rs.getString(19), rs.getDate(17), rs.getString(18)));
             }
         } catch (SQLException e) {
             System.out.println("error " + e);
@@ -904,8 +913,9 @@ public class CiudadesUtils {
     public static boolean updateNumberTiquete(TiquetesAutorizados t) throws SQLException {
         boolean result = false;
         try {
+
             pool.con = pool.dataSource.getConnection();
-            String query = "update tiquetes_autorizados set tiquete = '" + t.getTiquete() + "' where id_carga = " + t.getId_carga() + "";
+            String query = "update tiquetes_autorizados set tiquete = '" + t.getTiquete() + "', tiquete_regreso = '" + t.getTiquete_regreso() + "' where id_carga = " + t.getId_carga() + "";
             System.out.println("query " + query);
             pstm = pool.con.prepareStatement(query);
             pstm.executeUpdate();
@@ -946,11 +956,12 @@ public class CiudadesUtils {
             pool.con = pool.dataSource.getConnection();
             lista.forEach((String next) -> {
                 String datos[] = next.split(",");
-                String query = "insert into tiquetes_autorizados values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                String query = "insert into tiquetes_autorizados values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                 try {
 //                System.out.println("query " + query);
+
                     pstm = pool.con.prepareStatement(query);
-                    pstm.setString(1, datos[0].replace(".", ""));
+                    pstm.setString(1, datos[0].replace(".", "").trim());
                     pstm.setString(2, datos[1] + " " + datos[2]);
                     pstm.setString(3, datos[3]);
                     pstm.setString(4, datos[4]);
@@ -965,6 +976,8 @@ public class CiudadesUtils {
                     pstm.setString(13, Autoriza);
                     pstm.setString(14, null);
                     pstm.setString(15, datos[8]);
+                    pstm.setString(16, ((datos[9].equals("NA")) ? "1900-01-01" : datos[9]));
+                    pstm.setString(17, null);
                     pstm.executeUpdate();
                 } catch (SQLException ex) {
                     System.out.println("error " + ex);
@@ -1104,9 +1117,8 @@ public class CiudadesUtils {
         int countDescripcion = 0;
         try {
             pool.con = pool.dataSource.getConnection();
-            String queryS = "select id_trans, agencia, cm_asoc, fecha_creacion, verificado,  valor, no_factura, en_contabilidad, recibido, descripcion "
+            String queryS = "select id_trans, agencia, cm_asoc, fecha_creacion, verificado,  valor, no_factura, en_contabilidad, recibido,  case when descripcion IS NULL then '' else descripcion end "
                     + " from ReturnListCms(" + Integer.parseInt(numeroCm) + ")";
-
 //            System.out.println("queryS " + queryS);
             pstm = pool.con.prepareStatement(queryS);
             rs = pstm.executeQuery();

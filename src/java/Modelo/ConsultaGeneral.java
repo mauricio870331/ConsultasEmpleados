@@ -39,6 +39,8 @@ public class ConsultaGeneral {
     private String str13;
     private String str14;
     private String str15;
+    private String str16;
+    private String str17;
     private boolean bool1;
     private boolean bool2;
     private boolean bool3;
@@ -84,7 +86,7 @@ public class ConsultaGeneral {
 
     //tiquetesAutorzados
     public ConsultaGeneral(int num1, String str1, String str2, String str3, String str4, String str5, String str6,
-            Date fecha1, String str7, Date fecha2, String str8, String str9, String str10, String str11, String str12, String str13, String str14) {
+            Date fecha1, String str7, Date fecha2, String str8, String str9, String str10, String str11, String str12, String str13, String str14, Date fecha3, String str15) {
         this.num1 = num1;
         this.str1 = str1;
         this.str2 = str2;
@@ -100,8 +102,10 @@ public class ConsultaGeneral {
         this.str12 = str12;
         this.str13 = str13;
         this.str14 = str14;
+        this.str15 = str15;
         this.fecha1 = fecha1;
         this.fecha2 = fecha2;
+        this.fecha3 = fecha3;
     }
 
     //Constructores
@@ -963,6 +967,22 @@ public class ConsultaGeneral {
 
     public void setFloat1(float float1) {
         this.float1 = float1;
+    }
+
+    public String getStr16() {
+        return str16;
+    }
+
+    public void setStr16(String str16) {
+        this.str16 = str16;
+    }
+
+    public String getStr17() {
+        return str17;
+    }
+
+    public void setStr17(String str17) {
+        this.str17 = str17;
     }
 
 }

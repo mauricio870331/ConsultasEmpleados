@@ -51,7 +51,7 @@
                             <h:outputText value="#{tiquetes.nombre_completo}" />
                         </p:column>
 
-                        <p:column headerText="Telefono" width="83">
+                        <p:column headerText="Telefono" width="100">
                             <h:outputText value="#{tiquetes.telefono}" />
                         </p:column> 
 
@@ -80,6 +80,10 @@
                             <h:outputText value="#{tiquetes.fecha_solicitud}"  style="font-size: 10px" />
                         </p:column> 
 
+                        <p:column headerText="Fecha Regreso" width="80">
+                            <h:outputText value="#{tiquetes.fecha_regreso=='1900-01-01' ? 'NA' :tiquetes.fecha_regreso}"  style="font-size: 10px" />
+                        </p:column> 
+
                         <p:column headerText="Fecha Entrega" width="80">
                             <h:outputText value="#{tiquetes.fecha_entrega}"  style="font-size: 10px" />
                         </p:column> 
@@ -97,8 +101,13 @@
                                         />
                             </p:inputText>
                         </p:column>-->                         
-                        <p:column headerText="Tiquete" width="200" style="text-align: center">
+                        <p:column headerText="Tiquete Ida" width="100" style="text-align: center">
                             <h:outputText value="#{tiquetes.tiquete}" />
+                        </p:column>  
+                        
+                        
+                        <p:column headerText="Tiquete Regreso" width="100" style="text-align: center">
+                            <h:outputText value="#{tiquetes.tiquete_regreso}" />
                         </p:column>  
 
                         <p:column headerText="Acciones" width="110" rendered="#{loginBean.rol== 'CARGATIQUETE'}" style="text-align: center" >

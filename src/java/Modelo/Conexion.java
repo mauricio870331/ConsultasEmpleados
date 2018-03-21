@@ -15,11 +15,11 @@ public class Conexion {
 //        System.out.println("inicia1");
 //                String connectionUrl = "jdbc:sqlserver://192.168.20.55:1433;"
 //                 + "databaseName=expresop_convenios;user=sa;password=EPpal2003;";
-//        
+        
         String connectionUrl = "jdbc:sqlserver://192.168.10.1:1433;"
                 + "databaseName=expresop_convenios;user=expresop;password=s1st3m45;";
         
-        
+//        
 //        String connectionUrl = "jdbc:sqlserver://192.168.10.7:1433;" 
 //                + "databaseName=expresop_convenios;user=SA;password=EPpal2003;"; //pruebas
         

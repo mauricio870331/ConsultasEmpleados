@@ -102,7 +102,7 @@
                                 </f:facet>
                                 <f:selectItem itemLabel="Seleccione Servicio" itemValue=""/>
                                 <f:selectItems value="#{taquillaRegistroTiquete.servicio}" var="c" itemValue="#{c}" itemLabel="#{c}"></f:selectItems>   
-                                <f:ajax event="change" listener="#{taquillaRegistroTiquete.getValorServicio(1)}"  render="valor tot growlMsg"></f:ajax>
+                               <!-- <f:ajax event="change" listener="{taquillaRegistroTiquete.getValorServicio(1)}"  render="valor tot growlMsg"></f:ajax>-->
                             </b:selectOneMenu>
                             <h:message for="serv" style="color: red" />                            
 

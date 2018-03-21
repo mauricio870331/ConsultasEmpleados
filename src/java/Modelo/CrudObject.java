@@ -157,7 +157,10 @@ public class CrudObject {
             validacion = true;
         } else if (x instanceof TblRegistroContravias) {
             contravias = (TblRegistroContravias) x;
-            String servicio = (contravias.getServicio().length() > 20) ?  contravias.getServicio().substring(0,20) : contravias.getServicio();
+            String servicio = "No encontrado";
+            if (contravias.getServicio() != null) {
+                servicio = (contravias.getServicio().length() > 20) ? contravias.getServicio().substring(0, 20) : contravias.getServicio();
+            }
             preparet = "insert into tbl_registroContravias values(\"" + contravias.getTransaccion() + "\",\"" + contravias.getId_empresa() + "\",\"" + contravias.getNombre_comprador()
                     + "\",\"" + contravias.getCc_comprador() + "\",\"" + contravias.getNombre_viajero()
                     + "\",\"" + contravias.getCc_viajero() + "\",\"" + contravias.getOrigen() + "\",\"" + contravias.getDestino()
@@ -230,7 +233,8 @@ public class CrudObject {
             validacion = true;
         } else if (x instanceof TiquetesAutorizados) {
             tiquetesAutorizados = (TiquetesAutorizados) x;
-            preparet = "insert into tiquetes_autorizados values(\"" + tiquetesAutorizados.getDocumento().replace(".", "")
+            
+            preparet = "insert into tiquetes_autorizados values(\"" + tiquetesAutorizados.getDocumento().replace(".", "").trim()
                     + "\",\"" + tiquetesAutorizados.getNombre_completo()
                     + "\",\"" + tiquetesAutorizados.getTelefono()
                     + "\",\"" + tiquetesAutorizados.getOrigen()
@@ -244,7 +248,9 @@ public class CrudObject {
                     + "\",\"" + tiquetesAutorizados.getUsuario_taquilla()
                     + "\",\"" + tiquetesAutorizados.getUsaurio_solicita()
                     + "\",\"" + tiquetesAutorizados.getTiquete()
-                    + "\",\"" + tiquetesAutorizados.getIdaRegreso() + "\")";
+                    + "\",\"" + tiquetesAutorizados.getIdaRegreso()
+                    + "\",\"" + ((tiquetesAutorizados.getFecha_regreso()==null) ? "1900-01-01" : format2.format(tiquetesAutorizados.getFecha_regreso()))
+                    + "\",\"" + tiquetesAutorizados.getTiquete_regreso() + "\")";
             validacion = true;
         }
         if (validacion) {
@@ -262,7 +268,7 @@ public class CrudObject {
                 }
                 mns = result;
                 System.out.println("result " + mns);
-            } catch (Exception ex) {
+            } catch (SQLException ex) {
                 System.out.println("error " + ex);
             } finally {
                 pool.con.close();
@@ -487,9 +493,9 @@ public class CrudObject {
                 while (rst.next()) {
                     result = rst.getInt(1);
                 }
-                if (result > 0) {                    
-                        CiudadesUtils.updateTotalTransTiq(result);  
-                        CiudadesUtils.updateTotalTransbyId(result);
+                if (result > 0) {
+                    CiudadesUtils.updateTotalTransTiq(result);
+                    CiudadesUtils.updateTotalTransbyId(result);
                 }
                 mns = result;
                 System.out.println(" mns " + mns);
@@ -1406,7 +1412,9 @@ public class CrudObject {
                                 rs.getDate(10),
                                 rs.getString(11),
                                 rs.getString(12),
-                                rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17)));
+                                rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), 
+                                rs.getString(19),
+                                rs.getDate(17),rs.getString(18)));
                     }
                 }
             }

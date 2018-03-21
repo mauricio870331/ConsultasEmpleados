@@ -86,15 +86,23 @@
 
                             <h:outputText value="Ida y Regreso :" />
                             <b:selectOneMenu value="#{tiquetesAutorizadosBean.currenTiquete.idaRegreso}" id="ida"  
-                                             tooltip="Selecione una Opción" required="true" required-message="Seleccione una Opción">
+                                             tooltip="Selecione una Opción" required="true"
+                                             required-message="Seleccione una Opción">
                                 <f:facet name="append">
                                     <b:iconAwesome name="list" />
                                 </f:facet>
                                 <f:selectItem itemLabel="Seleccione" itemValue=""/>
                                 <f:selectItem itemLabel="Si" itemValue="SI"/>
-                                <f:selectItem itemLabel="No" itemValue="NO"/>                               
+                                <f:selectItem itemLabel="No" itemValue="NO"/>
+                                <f:ajax event="change" listener="@this" render="f2"></f:ajax>                                
                             </b:selectOneMenu>
                             <h:message for="ida" style="color: red" />
+
+                            <h:outputText id="f2" value="Fecha Regreso:" /> 
+                            <b:datepicker id="f1" 
+                                          mode="icon-popup" tooltip="Seleccione Una Fecha" showWeek="true"  required="#{tiquetesAutorizadosBean.currenTiquete.idaRegreso=='SI' ? 'true' : 'false'}" required-message="Ingrese Fecha Regreso"
+                                          value="#{tiquetesAutorizadosBean.currenTiquete.fecha_regreso}" ></b:datepicker>
+                            <h:message id="f3" for="f1" style="color: red;"></h:message>  
 
                         </b:panelGrid>
                         <br/>                                         
