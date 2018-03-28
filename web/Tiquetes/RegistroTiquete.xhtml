@@ -73,7 +73,14 @@
                                     <b:iconAwesome name="list" />
                                 </f:facet>
                                 <f:selectItem itemLabel="Seleccione Servicio" itemValue=""/>
-                                <f:selectItems value="#{tiquetesAutorizadosBean.servicio}" var="c" itemValue="#{c}" itemLabel="#{c}"></f:selectItems>   
+                                <f:selectItem itemLabel="ECO" itemValue="ECO"/>
+                                <f:selectItem itemLabel="METTRO" itemValue="METTRO"/>
+                                <f:selectItem itemLabel="METTRO X" itemValue="METTRO X"/>
+                                <f:selectItem itemLabel="S26" itemValue="S26"/>
+                                <f:selectItem itemLabel="S26 Maxxi" itemValue="S26 Maxxi"/>
+                                <f:selectItem itemLabel="S26 Maxxi Dupplo" itemValue="S26 Maxxi Dupplo"/>
+
+                                <!--<f:selectItems value="{tiquetesAutorizadosBean.servicio}" var="c" itemValue="{c}" itemLabel="{c}"></f:selectItems> -->  
                             </b:selectOneMenu>
                             <h:message for="serv" style="color: red" />   
 
