@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Cartalaboral" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c144bb56-f204-4ae6-8448-e55fcaea5033">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="documento" class="java.lang.String"/>
+	<parameter name="ruta" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SET LANGUAGE SPANISH
+SELECT 'El (la) señor(a) '+rtrim(ltrim(nombre))+', identificado(a) con la cédula de ciudadania No. '+rtrim(ltrim(cod_persona))+
+        CASE WHEN estado_trab = 'ACTIVO' THEN ' labora' ELSE ' laboró' END+' en la empresa '+rtrim(ltrim(empresa))+' '+replace(observaciones,'del','Desde el')+
+		' desempeñando el cargo '+rtrim(ltrim(descrip))+', con un tipo de contrato '+rtrim(ltrim(nom_contrato))+','+
+		' devengando un salario de '+(SELECT dbo.CantidadConLetra(sueldo) +'($ '+ CONVERT(VARCHAR(50), CAST( sueldo AS MONEY ),1)+')m/cte.')+
+		' '+rtrim(ltrim(auxilio)) texto, empresa, ltrim(rtrim(hoy)) hoy, nit, firma, rtrim(ltrim(cedula_firma)) cc_firma, fegreso,
+		case when rtrim(ltrim(nit))='805003951-3' then 'Representante legal'
+		else (SELECT  T2.descrip FROM ct_RHTrabajador T1
+		INNER JOIN ct_RHcategoriaTr T2 ON T1.cod_cate_tr = T2.cod_cate_tr AND T1.estado_trab = 'ACTIVO' AND T2.cod_emp = T1.cod_emp
+		WHERE T1.cod_persona = cedula_firma)
+		end  cargo_firma,
+		(SELECT dir_web FROM ct_empresas WHERE nom_emp =empresa) web
+FROM  Carta_Laboral($P{documento}) WHERE fingreso IN (SELECT MAX(fingreso)
+FROM Carta_Laboral($P{documento})
+GROUP BY empresa,cod_persona)]]>
+	</queryString>
+	<field name="texto" class="java.lang.String"/>
+	<field name="empresa" class="java.lang.String"/>
+	<field name="hoy" class="java.lang.String"/>
+	<field name="nit" class="java.lang.String"/>
+	<field name="firma" class="java.lang.String"/>
+	<field name="cc_firma" class="java.lang.String"/>
+	<field name="fegreso" class="java.sql.Date"/>
+	<field name="cargo_firma" class="java.lang.String"/>
+	<field name="web" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="224" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="174" width="572" height="18" uuid="c5ed0c22-8451-4eb1-bc19-191cb8468b95"/>
+				<textElement textAlignment="Center">
+					<font size="13" isBold="false"/>
+				</textElement>
+				<text><![CDATA[HACE CONSTAR QUE:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="98" width="572" height="18" uuid="92f115ec-8f7c-401f-9d23-fa7d5d675aa0"/>
+				<textElement textAlignment="Center" markup="none">
+					<font size="13" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["EL SUSCRITO "+$F{cargo_firma}.trim()+" DE LA EMPRESA"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="116" width="572" height="18" uuid="3838c12f-8661-4a41-aff9-f017c6a03946"/>
+				<textElement textAlignment="Center" markup="none">
+					<font size="13" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{empresa}.trim()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="134" width="572" height="18" uuid="23245b67-28c7-4445-af06-ec81fdbae53d"/>
+				<textElement textAlignment="Center" markup="none">
+					<font size="13" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nit}.trim()]]></textFieldExpression>
+			</textField>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="16" y="11" width="170" height="57" uuid="0806acf3-0e6d-42f8-8cf6-a9afa1074d42"/>
+				<imageExpression><![CDATA[($F{empresa}.trim().equalsIgnoreCase("TRANSPORTES EXPRESO PALMIRA S.A.")) ? $P{ruta}+"\\logo2.png" : ($F{empresa}.trim().equalsIgnoreCase("Serviafil")) ? $P{ruta}+"\\serviafil.jpg" : $P{ruta}+"\\noimage.png"]]></imageExpression>
+			</image>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="402" y="11" width="170" height="57" uuid="af570c0e-cb72-4e44-9d10-0f0b68a67f1c"/>
+				<imageExpression><![CDATA[($F{empresa}.trim().equalsIgnoreCase("LOGISTICA EP ASESORIAS E INVERSIONES SAS")) ? $P{ruta}+"\\logoEPexpress.png" : $P{ruta}+"\\noimage.png"]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="419" splitType="Stretch">
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="35" y="369" width="108" height="43" uuid="23074509-496a-4be8-bcbe-e73c36afab8c"/>
+				<imageExpression><![CDATA[$P{ruta}+"\\sello.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="35" y="27" width="492" height="154" uuid="d970a1ad-39b5-4ec9-b750-cf2b43c25bec"/>
+				<textElement textAlignment="Justified">
+					<font size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{texto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="35" y="272" width="492" height="39" uuid="c146b07b-c92b-42fe-a24b-2a465add24c4"/>
+				<textElement textAlignment="Justified">
+					<font size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Para constancia se firma en Cali el dia "+$F{hoy}+" para diligencias personales."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="35" y="334" width="439" height="20" uuid="7f92e733-349c-40bd-8835-c499d899a8e9"/>
+				<textElement>
+					<font size="13" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{firma}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="35" y="354" width="439" height="20" uuid="697bed5a-5b1f-4027-890e-a44f63279189"/>
+				<textElement>
+					<font size="13" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cargo_firma}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="50" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="4" width="572" height="1" uuid="e2eaab70-0c5c-45ee-8dd8-c0724a7d5b8b"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="8" width="285" height="15" uuid="e90d628b-b386-467a-918b-38807bce5500"/>
+				<text><![CDATA[Carrera 34 # 10 - 229 Acopi - Yumbo | PBX: (2) 664 46 89 ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="22" width="285" height="15" uuid="61fdd848-d0fc-4c2e-bcda-8f56fce8fd25"/>
+				<text><![CDATA[Linea amiga 01 8000 93 66 62 Celular:  321 890 3597]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="35" width="285" height="15" uuid="3a83d1ff-479b-4e7a-b534-4329b48e54cd"/>
+				<textElement markup="none"/>
+				<textFieldExpression><![CDATA[$F{web}]]></textFieldExpression>
+			</textField>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="339" y="6" width="108" height="43" uuid="675330d4-4695-497f-af1d-7de2afa609de"/>
+				<imageExpression><![CDATA[($F{empresa}.trim().equalsIgnoreCase("TRANSPORTES EXPRESO PALMIRA S.A.")) ? $P{ruta}+"\\supertransporte.png" : $P{ruta}+"\\noimage.png"]]></imageExpression>
+			</image>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="447" y="5" width="125" height="43" uuid="c23d8d7a-a1ba-455d-a250-b729fee8ccba"/>
+				<imageExpression><![CDATA[$P{ruta}+"\\veritas.png"]]></imageExpression>
+			</image>
+		</band>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="50">
+			<line>
+				<reportElement x="0" y="3" width="572" height="1" uuid="e5cbc97a-74ea-46ec-9aea-35e922a15395"/>
+			</line>
+			<staticText>
+				<reportElement x="4" y="5" width="285" height="15" uuid="ec347a00-b6f5-45c1-8d28-1d33a2c3108e"/>
+				<text><![CDATA[Carrera 34 # 10 - 229 Acopi - Yumbo | PBX: (2) 664 46 89 ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="18" width="285" height="15" uuid="27259738-45f0-4675-9a5d-026c3b6822b6"/>
+				<text><![CDATA[Linea amiga 01 8000 93 66 62 Celular:  321 890 3597]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="4" y="31" width="285" height="15" uuid="adc08465-c9e3-4658-a5be-e05b5ee28b25"/>
+				<textElement markup="none"/>
+				<textFieldExpression><![CDATA[$F{web}]]></textFieldExpression>
+			</textField>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="447" y="5" width="125" height="43" uuid="0ec9ae65-ebd6-4d22-b239-2b6fae749133"/>
+				<imageExpression><![CDATA[$P{ruta}+"\\veritas.png"]]></imageExpression>
+			</image>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="339" y="5" width="108" height="43" uuid="245a3227-145e-4609-9840-980227963685"/>
+				<imageExpression><![CDATA[($F{empresa}.trim().equalsIgnoreCase("TRANSPORTES EXPRESO PALMIRA S.A.")) ? $P{ruta}+"\\supertransporte.png" : $P{ruta}+"\\noimage.png"]]></imageExpression>
+			</image>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

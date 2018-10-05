@@ -9,30 +9,29 @@ scratch. This page gets rid of all links and provides the needed markup only.
        xmlns:f="http://xmlns.jcp.org/jsf/core"
        xmlns:b="http://bootsfaces.net/ui"
        xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-
        xmlns:jsf="http://xmlns.jcp.org/jsf">
     <h:head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta http-equiv="refresh" content="600"/>
-        <link rel="shortcut icon" type="image/x-icon" href="../../dist/img/convenios.png" />
-        <title><ui:insert name="titleapp">App Convenios</ui:insert></title>
+        <link rel="shortcut icon" type="image/x-icon" href="../resources/Documents_50px.png" />        
+        <title><ui:insert name="titleapp">App Certificados</ui:insert></title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
         <!-- Bootstrap 3.3.6 -->
-        <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
         <!-- Font Awesome 
         <link rel="stylesheet" href="../dist/css/font-awesome/4.5.0/css/font-awesome.min.css" />-->
         <!-- Ionicons 
         <link rel="stylesheet" href="../dist/css/ionicons/2.0.1/css/ionicons.min.css" />-->
         <!-- Theme style -->
-        <link rel="stylesheet" href="../../dist/css/AdminLTE.min.css" />
+        <link rel="stylesheet" href="../dist/css/AdminLTE.min.css" />
         <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
               page. However, you can choose any other skin. Make sure you
               apply the skin class to the body tag so the changes take effect.
         -->
-        <link rel="stylesheet" href="../../dist/css/skins/skin-blue.min.css" />
-        <link rel="stylesheet" href="../../dist/css/growl.css" />
+        <link rel="stylesheet" href="../dist/css/skins/skin-green.min.css" />
+        <link rel="stylesheet" href="../dist/css/growl.css" />
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -63,9 +62,69 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         break;
                 }
             });
+
+            $(document).on('click', '.ui-diagram > .ui-diagram-element', function (info) {
+                var texto = $(this).html();
+                console.log(texto)
+                if (texto !== "Tareas Que Puedes Realizar") {
+                    if (texto === "Descargar Carta laboral") {
+                        $(".myclick").trigger("click");
+                    } else {
+                        elementClicked([{
+                                name: 'elementId',
+                                value: texto
+                            }]);
+                    }
+                }
+            });
+
+            /*$(document).ready(function () {
+             setTimeout(function () {
+             $(".nota").removeClass("parpadea");
+             }, 2000);
+             });*/
+
+
+
+            PrimeFaces.locales['es'] = {
+                closeText: 'Cerrar',
+                prevText: 'Anterior',
+                nextText: 'Siguiente',
+                monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+                dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+                weekHeader: 'Semana',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: '',
+                timeOnlyTitle: 'Sólo hora',
+                timeText: 'Tiempo',
+                hourText: 'Hora',
+                minuteText: 'Minuto',
+                secondText: 'Segundo',
+                currentText: 'Fecha actual',
+                ampm: false,
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día',
+                allDayText: 'Todo el día'
+            };
+
+
+
         </script>
 
         <style>
+
+            .btn-primary {
+                background-color: #00a65a;
+                border-color: #00a65a;
+            }
+
+
             .ui-inputswitch-on {
                 background: #71C461!important;
                 color: #fff!important;
@@ -96,6 +155,75 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 height: 35px!important;                
             }
 
+            .ui-diagram-element {
+                border:0.1em dotted #020201;    
+                width:18em; 
+                height:4em;     
+                line-height:4em;
+                text-align: center;
+                background-color: #00a65a;
+                color: white;
+                font-weight: bold;
+                cursor: pointer;
+            } 
+
+            .video-responsive {
+                position: relative;
+                padding-bottom: 50.25%; /* 16/9 ratio */
+                padding-top: 30px; /* IE6 workaround*/
+                height: 0;
+                overflow: hidden;
+            }
+
+            .video-responsive iframe,
+            .video-responsive object,
+            .video-responsive embed {
+                position: absolute;
+                top: 0;
+                left: 0;
+                margin-left: 5%;
+                width: 90%;
+                height: 90%;
+            }
+
+
+            .nota {   
+                color: red;
+                font-weight: bold;
+                font-size: 25px;
+            }
+
+            .parpadea {
+                animation-name: parpadeo;
+                animation-duration: 1s;
+                animation-timing-function: linear;
+                animation-iteration-count: infinite;
+
+                -webkit-animation-name:parpadeo;
+                -webkit-animation-duration: 1.5s;
+                -webkit-animation-timing-function: linear;
+                -webkit-animation-iteration-count: 2;
+            }
+
+            @-moz-keyframes parpadeo{  
+                0% { opacity: 1.0; }
+                50% { opacity: 0.0; }
+                100% { opacity: 1.0; }
+            }
+
+            @-webkit-keyframes parpadeo {  
+                0% { opacity: 1.0; }
+                50% { opacity: 0.0; }
+                100% { opacity: 1.0; }
+            }
+
+            @keyframes parpadeo {  
+                0% { opacity: 1.0; }
+                50% { opacity: 0.0; }
+                100% { opacity: 1.0; }
+            }
+
+
         </style>
 
 
@@ -121,7 +249,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     |               | sidebar-mini                            |
     |*********************************************************|
     -->
-    <h:body class="hold-transition skin-blue sidebar-mini" onload="#{loginBean.validarsession()}">
+    <h:body class="hold-transition skin-green sidebar-mini" onload="#{loginBean.validarsession()}">
         <div class="wrapper">
 
             <!-- Main Header -->
@@ -130,9 +258,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <!-- Logo -->
                 <a href="javascript:void(0)" class="logo">
                     <!-- mini logo for sidebar mini 50x50 pixels -->
-                    <span class="logo-mini"><b>CV</b></span>
+                    <span class="logo-mini"><b>CE</b></span>
                     <!-- logo for regular state and mobile devices -->
-                    <span class="logo-lg"><b>Convenios</b></span>
+                    <span class="logo-lg"><b>Certificados Expal</b></span>
                 </a>
 
                 <!-- Header Navbar -->
@@ -173,11 +301,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </div>
                                     </li>
                                 </ul>
-                            </li>
-                            <!-- Control Sidebar Toggle Button -->
-                            <li>
-                                <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-                            </li>
+                            </li>                            
                         </ul>
                     </div>
                 </nav>
@@ -200,8 +324,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <li class="header">MENÚ</li>
                         <!-- Optionally, you can add icons to the links -->
 
-                        <li class="treeview" jsf:rendered="#{(loginBean.rol == 'ADMIN')}">
-                            <a href="#"><i class="fa fa-cogs"></i> <span>Maestros</span>
+                        <li class="treeview active" >
+                            <a href="#"><i class="fa fa-search"></i> <span>Consultas</span>
                                 <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
@@ -210,211 +334,28 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <li>
                                     <h:form>
                                         <div class="separated"></div>
-                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{empresaBean.listarEmpresasLink()}">Maestro Empresas</a> 
+                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{desprendiblesBean.consultDesprendible()}">Desprendibles de pago</a> 
                                         <div class="separated"></div>
                                     </h:form>
                                 </li>
                                 <li>
                                     <h:form>
                                         <div class="separated"></div>
-                                        <a class="itemMenu"  href="javascript:void(0)" jsf:action="#{ciudadesBean.redirectCiudadesList()}">Maestro Ciudades</a>
+                                        <a class="itemMenu myclick"  href="javascript:void(0)"  target="_blank" jsf:action="#{desprendiblesBean.generarCartaLaboral(evt, loginBean.datosUserToconsulta.documento)}">Certificados Laborales</a>
                                         <div class="separated"></div>
                                     </h:form>
-                                </li>
-                                <li>
-                                    <h:form >
-                                        <div class="separated"></div>
-                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{usuariosBean.ListUsuarioLink()}">Maestro Usuarios</a>
-                                        <div class="separated"></div>
-                                    </h:form>
-                                </li>
-                                <li>
-                                    <h:form>
-                                        <div class="separated"></div>
-                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{rolesBean.urlListRoles()}">Maestro Rol</a>
-                                        <div class="separated"></div>
-                                    </h:form>                                 
-                                </li>                                 
-                                <li>
-                                    <h:form>
-                                        <div class="separated"></div>
-                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{serviciosBean.urlListServicios()}">Maestro Servicios</a>
-                                        <div class="separated"></div>
-                                    </h:form>   
-                                </li>
-                                <li>
-                                    <h:form>
-                                        <div class="separated"></div>
-                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{documentosBean.urlListDocs()}">Maestro Documentos</a>
-                                        <div class="separated"></div>
-                                    </h:form>  
-                                </li>
-                                <li>
-                                    <h:form>
-                                        <div class="separated"></div>
-                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{documentosBean.urlAlertasAdmin()}">Maestro Alertas</a>
-                                        <div class="separated"></div>
-                                    </h:form>  
-                                </li>
-                                <li>
-                                    <h:form>
-                                        <div class="separated"></div>
-                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{usuariosBean.urlListaEstudiantes()}">Maestro Estudiantes</a>
-                                        <div class="separated"></div>
-                                    </h:form>                                     
-                                </li>
-                            </ul>
-                        </li>
-                        
-                        <li class="treeview" jsf:rendered="#{(loginBean.rol == 'ADMIN')}">
-                            <a href="#"><i class="fa fa-book"></i> <span>Formularios</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li>
-                                    <h:form>
-                                        <div class="separated"></div>
-                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{tarifasBean.urlListTarifa()}">Convenio</a>
-                                        <div class="separated"></div>
-                                    </h:form> 
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="treeview" jsf:rendered="#{(loginBean.rol == 'ADMIN')}">
-                            <a href="#"><i class="fa fa-credit-card"></i> <span>Autorizar Tiquetes</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li>
-                                    <h:form>
-                                        <div class="separated"></div>
-                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{tiquetesAutorizadosBean.urlListA()}">Tiquetes Entregados</a>
-                                        <div class="separated"></div>
-                                    </h:form>                                     
-                                </li>
-                                <li>
-                                    <h:form>
-                                        <div class="separated"></div>
-                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{tiquetesAutorizadosBean.urlCreateA()}">Autorizar Tiquetes</a>
-                                        <div class="separated"></div>
-                                    </h:form>                                      
                                 </li> 
-                            </ul>
-                        </li>
 
+                                <li>
+                                    <h:form>
+                                        <div class="separated"></div>
+                                        <a class="itemMenu myclick"  href="javascript:void(0)" jsf:action="#{loginBean.logout()}">Cerrar Sesión</a>
+                                        <div class="separated"></div>
+                                    </h:form>
+                                </li> 
 
-
-                        <li class="treeview" jsf:rendered="#{(loginBean.rol == 'ADMIN')}">
-                            <a href="#"><i class="fa fa-file"></i> <span>Reportes</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li>
-                                    <h:form>
-                                        <div class="separated"></div>
-                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{empleadosBean.urlListFacturaVentaAdmon()}">Factura de Venta</a>
-                                        <div class="separated"></div>
-                                    </h:form> 
-                                </li>
-                                <li>
-                                    <h:form>
-                                        <div class="separated"></div>
-                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{empleadosBean.urlListSaldosViajesAdmon()}">Saldo Actual</a>
-                                        <div class="separated"></div>
-                                    </h:form>                                    
-                                </li>
-                                <li>
-                                    <h:form>
-                                        <div class="separated"></div>
-                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{transaccionesBean.urlmpresionesCtravias()}">Reimprimir Recibo de caja</a>
-                                        <div class="separated"></div>
-                                    </h:form> 
-                                </li>  
-                                <li>
-                                    <h:form>
-                                        <div class="separated"></div>
-                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{taquillaRegistroTiquete.url_universidades()}">Tiquete Estudiantes</a>
-                                        <div class="separated"></div>
-                                    </h:form> 
-                                </li>
                             </ul>
-                        </li>
-                        
-                        <li class="treeview" jsf:rendered="#{(loginBean.rol == 'REVISIONRELACION')}">
-                            <a href="#"><i class="fa fa-book"></i> <span>CM´S Asociados</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li>
-                                    <h:form>
-                                        <div class="separated"></div>
-                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{transaccionesBean.urlRevisarRelacion()}">Revisar</a>
-                                        <div class="separated"></div>
-                                    </h:form> 
-                                </li>                                
-                            </ul>   
-                        </li>
-                        
-                        
-                        <li class="treeview" jsf:rendered="#{(loginBean.rol == 'ADMIN')}">
-                            <a href="#"><i class="fa fa-history"></i> <span>Reportes Historico</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li>
-                                    <h:form>
-                                        <div class="separated"></div>
-                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{empleadosBean.urltListFacturaVentaAdmonHisrory()}">Factura de Venta Historico</a>
-                                        <div class="separated"></div>
-                                    </h:form> 
-                                </li>
-                            </ul>
-                        </li>
-                        
-                        <li class="treeview" jsf:rendered="#{(loginBean.rol == 'ADMIN')}">
-                            <a href="#"><i class="fa fa-book"></i> <span>CM´S Asociados</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li>
-                                    <h:form>
-                                        <div class="separated"></div>
-                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{transaccionesBean.urlListRelacion()}">Verificar Cm Asociado</a>
-                                        <div class="separated"></div>
-                                    </h:form> 
-                                </li>                                
-                            </ul>                            
-                        </li>
-                        
-                        <li class="treeview">
-                            <a href="#"><i class="fa fa-gears"></i> <span>Configuración</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li>
-                                    <h:form>
-                                        <div class="separated"></div>
-                                        <a class="itemMenu" href="javascript:void(0)" jsf:action="#{tiquetesAutorizadosBean.urlChangePassA()}">Cambiar Contraseña</a>
-                                        <div class="separated"></div>
-                                    </h:form> 
-                                </li>
-                            </ul>
-                        </li>
+                        </li>                       
                     </ul>
                     <!-- /.sidebar-menu -->
                 </section>
@@ -447,7 +388,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                 </div>
                 <!-- Default to the left -->
-                <strong>Sistemas Expreso Palmira; 2016</strong>
+                <strong>Sistemas Expreso Palmira; 2018</strong>
             </footer>
 
             <!-- Control Sidebar -->
@@ -457,70 +398,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
                     <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
                 </ul>
-                <!-- Tab panes -->
-                <div class="tab-content">
-                    <!-- Home tab content -->
-                    <div class="tab-pane active" id="control-sidebar-home-tab">
-                        <h3 class="control-sidebar-heading">Recent Activity</h3>
-                        <ul class="control-sidebar-menu">
-                            <li>
-                                <a href="javascript::;">
-                                    <i class="menu-icon fa fa-birthday-cake bg-red"></i>
-
-                                    <div class="menu-info">
-                                        <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
-
-                                        <p>Will be 23 on April 24th</p>
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
-                        <!-- /.control-sidebar-menu -->
-
-                        <h3 class="control-sidebar-heading">Tasks Progress</h3>
-                        <ul class="control-sidebar-menu">
-                            <li>
-                                <a href="javascript::;">
-                                    <h4 class="control-sidebar-subheading">
-                                        Custom Template Design
-                                        <span class="pull-right-container">
-                                            <span class="label label-danger pull-right">70%</span>
-                                        </span>
-                                    </h4>
-
-                                    <div class="progress progress-xxs">
-                                        <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
-                        <!-- /.control-sidebar-menu -->
-
-                    </div>
-                    <!-- /.tab-pane -->
-                    <!-- Stats tab content -->
-                    <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
-                    <!-- /.tab-pane -->
-                    <!-- Settings tab content -->
-                    <div class="tab-pane" id="control-sidebar-settings-tab">
-                        <form method="post">
-                            <h3 class="control-sidebar-heading">General Settings</h3>
-
-                            <div class="form-group">
-                                <label class="control-sidebar-subheading">
-                                    Report panel usage
-                                    <input type="checkbox" class="pull-right" checked="checked" />
-                                </label>
-
-                                <p>
-                                    Some information about this general settings option
-                                </p>
-                            </div>
-                            <!-- /.form-group -->
-                        </form>
-                    </div>
-                    <!-- /.tab-pane -->
-                </div>
+                <!-- Tab panes -->              
             </aside>
             <!-- /.control-sidebar -->
             <!-- Add the sidebar's background. This div must be placed
@@ -534,9 +412,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!--<script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>-->
 
         <!-- Bootstrap 3.3.6 -->
-        <script src="../../bootstrap/js/bootstrap.min.js"></script>
+        <script src="../bootstrap/js/bootstrap.min.js"></script>
         <!-- AdminLTE App -->
-        <script src="../../dist/js/app.min.js"></script>
+        <script src="../dist/js/app.min.js"></script>
 
         <!-- Optionally, you can add Slimscroll and FastClick plugins.
              Both of these plugins are recommended to enhance the

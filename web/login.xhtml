@@ -13,8 +13,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <h:head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>        
-        <title>Convenios | Log in</title>
-        <link rel="shortcut icon" type="image/x-icon" href="dist/img/convenios.png" />
+        <title>Certificados | Log in</title>
+        <link rel="shortcut icon" type="image/x-icon" href="resources/Documents_50px.png" />     
         <meta http-equiv="refresh" content="240"/>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
@@ -35,7 +35,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
-        <script language="JavaScript">
+        <!--<script language="JavaScript">
             javascript:window.history.forward(1);
             var nav = navigator.userAgent.toLocaleLowerCase();
             if(nav.indexOf("chrome")==-1){
@@ -43,42 +43,59 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 window.location = "ErrorPage.xhtml";
             }
             //javascript:window.history.back(1);           
-        </script>
+        </script>-->
+        <style>
+            .btn-primary {
+                background-color: #00a65a;
+                border-color: #00a65a;
+            }
+
+            .btn-primary:hover {
+                background-color: #0a9455;
+                border-color: #0a9455;               
+            }
+
+            .recuperar{
+                color: #00a65a;
+            }
+
+            .recuperar:hover{
+                color: #00a65a;
+            }
+        </style>
     </h:head>
     <h:body class="hold-transition login-page" onload="#{loginBean.logout2()}">
         <div class="login-box">
             <div class="login-logo">
-                <a href="login.xhtml"><b>Módulos Comerciales</b></a>
+                <a href="login.xhtml" ><img src="resources/logo2.png" style="width: 70%;" alt=""/></a>
             </div>
             <!-- /.login-logo -->
             <div class="login-box-body">
-                <p class="login-box-msg">Inicio de Sesión </p>
+                <p class="login-box-msg" style="font-size: 15px;font-weight: bold">Certificados Laborales - Inicio de Sesión </p>                
                 <h:form id="form">
                     <b:growl  id="growl" showDetail="true" placementFrom="top" globalOnly="true" show-detail="true" 
                               show-summary="true" allow-dismiss="true" animation-enter="animated bounceInDown"
                               animation-exit="animated flipOutX" escape="true" />
                     <div class="form-group has-feedback">
-                        <h:inputText pt:placeholder="Documento" class="form-control" value="#{loginBean.user.documento}" ></h:inputText>          
+                        <h:inputText pt:placeholder="Documento" class="form-control" value="#{loginBean.usersConsulta.documento}" ></h:inputText>          
                         <span class="glyphicon glyphicon-user form-control-feedback"></span>
                     </div>
                     <div class="form-group has-feedback">
-                        <h:inputSecret pt:placeholder="Clave" class="form-control"  value="#{loginBean.user.clave}" ></h:inputSecret>         
+                        <h:inputSecret pt:placeholder="Clave" class="form-control"  value="#{loginBean.usersConsulta.pass}" ></h:inputSecret>         
                         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                     </div>
                     <div class="row">
-                        <div class="col-xs-8">
-
-                        </div>
                         <!-- /.col -->
                         <div class="col-xs-4">
                             <button type="submit" class="btn btn-primary btn-block btn-flat" jsf:action="#{loginBean.login()}" update="@form" >Ingresar</button>
-                        </div>
-                        <!-- /.col -->
+                        </div>            
                     </div>
+                    <br/>
+                    <a class="recuperar" href="javascript:void(0)" jsf:action="#{loginBean.prepareRememberClave()}">Recordar Clave</a> 
+                    | <a class="recuperar" href="javascript:void(0)" jsf:action="#{loginBean.prepareRegister()}">Registarme</a><br/>
+                    <a style="color: #00a65a;font-size: 20px;font-weight: bold;" href="resources/Instructivo.pdf" target="_blank" >Manual De Usuario</a><br/>
+
                 </h:form>
-                <!--<a href="javascript:void(0)">Recordar Clave</a><br/>-->
-
-
             </div>
             <!-- /.login-box-body -->
         </div>

@@ -48,12 +48,11 @@ public class Conexion {
 
     //Conexion Rutas
     public static Connection conectar2() {
-        String connectionUrl = "jdbc:sqlserver://192.168.10.1:1433;"
+        String connectionUrl = "jdbc:sqlserver://192.168.20.55:1433;"
                 + "databaseName=NodumEP;user=sa;password=EPpal2003;";
         // Declaramos los sioguientes objetos
         try {
-            //Establecemos la conexión
-            System.out.println("conn");
+            //Establecemos la conexión           
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             con2 = DriverManager.getConnection(connectionUrl);
             // Create and execute an SQL statement that returns some data.

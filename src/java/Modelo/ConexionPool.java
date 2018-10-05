@@ -18,12 +18,10 @@ import org.apache.commons.dbcp.BasicDataSource;
 public class ConexionPool {
 
     public static String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    public static String user = "expresop";
-    public static String password = "s1st3m45";//ya esta listo
-    public static String url = "jdbc:sqlserver://192.168.10.1:1433;databaseName=expresop_convenios";
-//    public static String user = "sa";
-//    public static String password = "EPpal2003";//ya esta listo
-//    public static String url = "jdbc:sqlserver://192.168.10.7:1433;databaseName=expresop_convenios";
+    public static String user = "sa";
+    public static String password = "EPpal2003";//ya esta listo
+    public static String url = "jdbc:sqlserver://192.168.10.1:1433;databaseName=NodumEP";
+
     public static String query;
     public static Statement stat;
     public static ResultSet rs;

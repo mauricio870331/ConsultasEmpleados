@@ -1,23 +1,23 @@
 package Beans;
 
-import Entities.Docs;
-import Entities.Usuarios;
-import Modelo.ConsultaGeneral;
-import Modelo.CrudObject;
+import Entities.usersToConsultas;
+import Modelo.Funciones;
 import java.io.IOException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import org.primefaces.component.growl.Growl;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Mauricio Herrera - Juan Castrillon
@@ -31,13 +31,13 @@ public class LoginBean implements Serializable {
      * Variable privada: user. Contendra los datos del usuario que esta logueado
      * actualmente
      */
-    private Usuarios user;
+    private usersToConsultas usersConsulta;
+    private boolean recibircorreos;
     /**
      * Variable: growl. Variable que instancia el contenedor de mensajes en las
      * vistas
      */
     private String verdoc = "";
-    private List<Docs> listDocumentos = new ArrayList();
     private Date createAt = null;
     Growl growl = new Growl();
     private String logOUT;
@@ -81,71 +81,132 @@ public class LoginBean implements Serializable {
     }
 
     /**
-     * Método que verifica los datos del usuario para iniciar sesion, si los
-     * datos son correctos almacena el usuario recuperado de la base de datos y
-     * lo establece como variable de sesion
+     * // * Método que verifica los datos del usuario para iniciar sesion, si
+     * los // * datos son correctos almacena el usuario recuperado de la base de
+     * datos y // * lo establece como variable de sesion
      *
      * @throws java.io.IOException
      * @throws java.sql.SQLException
      * @since incluido desde la version 1.0
      */
     public void login() throws IOException, SQLException {
-        if (user.getDocumento().equals("")) {
+        if (usersConsulta.getDocumento().equals("")) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso:", "El Campo Usuario no debe estar vacio..!"));
-        } else if (user.getClave().equals("")) {
+        } else if (usersConsulta.getPass().equals("")) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso:", "El Campo Clave no debe estar vacio..!"));
         } else {
-            ArrayList<ConsultaGeneral> l = new ArrayList<>();
-            l = (ArrayList) CrudObject.getSelectSql("login", 1, "" + user.getDocumento() + "," + user.getClave() + "");
-            if (l.size() > 0) {
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuario", l);
-                System.out.println(l.get(0).getNum2());
-                if (l.get(0).getStr4().equals("TAQUILLA")) {
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Taquilla/ListaEntrega.xhtml");
-                    user = null;
-                    cargarDocsAgency();
-                }
-                if (l.get(0).getStr4().equals("ADMIN")) {
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Empresas/EmpresasList.xhtml");
-                    user = null;
-                }
-                if (l.get(0).getStr4().equals("EMPRESA")) {
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Empresa/Empleados/EmpleadosList.xhtml");
-                    user = null;
-                }
-                if (l.get(0).getStr4().equals("TESORERIA")) {
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Tesoreria/ContraviasTesoreriaList.xhtml");
-                    user = null;
-                }
-                if (l.get(0).getStr4().equals("VALORES")) {
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Valores/ListRelacion.xhtml");
-                    user = null;
-                }
-                if (l.get(0).getStr4().equals("AUDITOR")) {
-                    if (l.get(0).getStr1().equals("29533170")) {
-                        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Auditoria/ContraviasAuditoriaList.xhtml");
-                    } else {
-                        FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Auditoria/ListRelacion.xhtml");
-                    }
-                    user = null;
-                }
-                if (l.get(0).getStr4().equals("CARGATIQUETE")) {
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Tiquetes/ListTiquetesEntregados.xhtml");
-                    user = null;
-                }
-                if (l.get(0).getStr4().equals("VERAUTORIZADOS")) {
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Tiquetes/viewAutorizados.xhtml");
-                    user = null;
-                }
-                if (l.get(0).getStr4().equals("REVISIONRELACION")) {
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/Admin/Reportes/RevisionRelacion.xhtml");
-                    user = null;
-                }
+            getDatauser();
+            Funciones f = new Funciones();
+            usersToConsultas u;
+            try {
+                u = f.Login(usersConsulta.getDocumento(), usersConsulta.getPass(), getDatauser());
+                if (u != null) {
+                    System.out.println(u.toString());
+                    FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuario", u);
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("/ConsultasEmpleados/faces/Consultas/ConsultarDesprendibles.xhtml");
+//                   FacesContext.getCurrentInstance().getExternalContext().redirect("/ConsultasEmpleados/faces/Bienvenida.xhtml");
 
-            } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso:", "El Usuario No Existe..!"));
+                } else {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso:", "Usuario o clave invalida..!"));
+                }
+            } catch (Exception ex) {
+                System.out.println("error " + ex);
+            }
+
+        }
+    }
+
+    public void RecordarClave() throws IOException, SQLException {
+        if (usersConsulta.getDocumento().equals("")) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso:", "El Campo Usuario no debe estar vacio..!"));
+        } else if (usersConsulta.getFecha_exp_cc() == null) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso:", "El Campo Clave Expedición del documento no debe estar vacio..!"));
+        } else {
+            try {
+                Funciones f = new Funciones();
+                if (f.reCordarClave(usersConsulta)) {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info:", "Se ha enviado la clave al correo registrado, revisa tu bandeja.!"));
+                } else {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso:", "No se pudo recuperar la clave"));
+                }
+            } catch (Exception e) {
+                System.out.println("error  " + e);
+            }
+
+        }
+    }
+
+    public void prepareRegister() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/ConsultasEmpleados/faces/Registro.xhtml");
+    }
+
+    public void prepareRememberClave() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/ConsultasEmpleados/faces/RecuperarClave.xhtml");
+    }
+
+    public void backtoLogin() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/ConsultasEmpleados/faces/login.xhtml");
+    }
+
+    public void Register() throws IOException {
+
+        System.out.println("usersConsulta " + usersConsulta.toString());
+        if (usersConsulta.getDocumento().equals("")) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso:", "El campo documento no debe estar vacio."));
+        } else if (usersConsulta.getNickName().equals("")) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso:", "El campo nombre no debe estar vacio."));
+        } else if (usersConsulta.getPass().equals("")) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso:", "El campo clave no debe estar vacio."));
+        } else if (!usersConsulta.getPass().equals(usersConsulta.getRep_pass())) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso:", "Las contraseñas no coinciden."));
+        } else if (usersConsulta.getFecha_exp_cc() == null) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso:", "La fecha de expedición del documento no debe ser vacio..!"));
+        } else {
+            try {
+                Funciones f = new Funciones();
+                if (f.validarUsuario(usersConsulta.getDocumento(), 1)) {
+                    if (!usersConsulta.getCorreo().equals("")) {
+                        if (isRecibircorreos()) {
+                            usersConsulta.setRecibirCorreos("S");
+                        } else {
+                            usersConsulta.setRecibirCorreos("N");
+                        }
+                    } else {
+                        usersConsulta.setRecibirCorreos("N");
+                    }
+
+                    if (!f.validarUsuario(usersConsulta.getDocumento(), 2)) {
+                        if (f.registrarUsuario(usersConsulta)) {
+                            usersConsulta = null;
+                            f = null;
+                            FacesContext.getCurrentInstance().getExternalContext().redirect("/ConsultasEmpleados/faces/login.xhtml");
+                        } else {
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso:", "No se pudo registrar el usuario..!"));
+                        }
+                    } else {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso:", "El usuario ya existe..!"));
+                    }
+
+                } else {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso:", "No has estado vinculado con la empresa ó lo estuviste pero tus datos estan inactivos, acercate directamente a gestión humana..!"));
+                }
+                f = null;
+            } catch (SQLException ex) {
+                System.out.println("error login bean metodo: Register()" + ex);
             }
         }
+    }
+
+    public static ArrayList<String> getDatauser() throws UnknownHostException {
+        ArrayList datosUser = new ArrayList();
+        String remoteAddr = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getRemoteAddr();
+        InetAddress addr = InetAddress.getByName(remoteAddr);
+        String hostname = addr.getHostName();
+        String browser = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getHeader("User-Agent");
+        datosUser.add(remoteAddr);
+        datosUser.add(hostname);
+        datosUser.add(browser);
+        return datosUser;
     }
 
     public String getVerdoc() throws SQLException {
@@ -176,23 +237,11 @@ public class LoginBean implements Serializable {
         ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
         try {
             ((HttpSession) ctx.getSession(false)).invalidate();
-            FacesContext.getCurrentInstance().getExternalContext().redirect("/Convenios/faces/login.xhtml");
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/ConsultasEmpleados/faces/login.xhtml");
         } catch (IOException e) {
             System.out.println("error " + e);
         }
 
-    }
-
-    /**
-     * Método que recupera el nombre del usuario de sesion.
-     *
-     * @return nombre del usuario logueado
-     * @since incluido desde la version 1.0
-     */
-    public String getNomUserLog() {
-        ArrayList<ConsultaGeneral> l = new ArrayList<>();
-        l = (ArrayList) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuario");
-        return l.get(0).getStr2() + " " + l.get(0).getStr3();
     }
 
     /**
@@ -201,57 +250,9 @@ public class LoginBean implements Serializable {
      * @return Documento del usuario logueado
      * @since incluido desde la version 1.0
      */
-    public String getDocumentoUserLog() {
-        ArrayList<ConsultaGeneral> l = new ArrayList<>();
-        l = (ArrayList) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuario");
-        return l.get(0).getStr1();
-    }
-
-    /**
-     * Método que recupera el rol del usuario de sesion.
-     *
-     * @return Rol del usuario logueado
-     * @since incluido desde la version 1.0
-     */
-    public String getRol() {
-        ArrayList<ConsultaGeneral> l = new ArrayList<>();
-        l = (ArrayList) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuario");
-        return l.get(0).getStr4();
-    }
-
-    /**
-     * Método que recupera el id del usuario de sesion.
-     *
-     * @return Id del usuario logueado
-     * @since incluido desde la version 1.0
-     */
-    public int getIdUserLog() {
-        ArrayList<ConsultaGeneral> l = new ArrayList<>();
-        l = (ArrayList) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuario");
-        return l.get(0).getNum1();
-    }
-
-    /**
-     * Método que recupera el id_empresa del usuario de sesion.
-     *
-     * @return id_empresa del usuario logueado
-     * @since incluido desde la version 1.0
-     */
-    public int getIdEmpresa() {
-        ArrayList<ConsultaGeneral> l = new ArrayList<>();
-        l = (ArrayList) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuario");
-        return l.get(0).getNum3();
-    }
-
-    public Usuarios getUser() {
-        if (user == null) {
-            user = new Usuarios();
-        }
-        return user;
-    }
-
-    public void setUser(Usuarios user) {
-        this.user = user;
+    public usersToConsultas getDatosUserToconsulta() {
+        usersConsulta = (usersToConsultas) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuario");
+        return usersConsulta;
     }
 
     public Growl getGrowl() {
@@ -260,41 +261,6 @@ public class LoginBean implements Serializable {
 
     public void setGrowl(Growl growl) {
         this.growl = growl;
-    }
-
-    private void cargarDocsAgency() throws SQLException {
-//        StringBuilder strb = new StringBuilder();
-        listDocumentos.clear();
-        System.out.println("doc = " + getDocumentoUserLog());
-        String[] parts = getDocumentoUserLog().split(" ");
-        String docl = "";
-        if (parts.length > 1) {
-            docl = parts[0];
-        } else {
-            docl = getDocumentoUserLog();
-        }
-        ArrayList<ConsultaGeneral> d = new ArrayList<>();
-        d = (ArrayList) CrudObject.getSelectSql("docsAgency", 1, docl + ",0");
-        for (ConsultaGeneral doc : d) {
-            listDocumentos.add(new Docs(doc.getNum1(), doc.getStr1(), doc.getStr2(), doc.getStr3(), doc.getFecha1(), doc.getNum2()));
-        }
-//        if (d.size() > 0) {
-//            strb.append(d.get(0).getStr2());
-//            strb.append(d.get(0).getStr1());
-//            setVerdoc(strb.toString());
-//            setCreateAt(d.get(0).getFecha1());
-//        } else {
-//            setVerdoc("javascript:void(0)");
-//            setCreateAt(null);
-//        }
-    }
-
-    public List<Docs> getListDocumentos() {
-        return listDocumentos;
-    }
-
-    public void setListDocumentos(List<Docs> listDocumentos) {
-        this.listDocumentos = listDocumentos;
     }
 
     public String getLogOUT() throws IOException {
@@ -309,6 +275,25 @@ public class LoginBean implements Serializable {
 
     public void logout2() throws IOException {
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("usuario");
+    }
+
+    public usersToConsultas getUsersConsulta() {
+        if (usersConsulta == null) {
+            usersConsulta = new usersToConsultas();
+        }
+        return usersConsulta;
+    }
+
+    public void setUsersConsulta(usersToConsultas usersConsulta) {
+        this.usersConsulta = usersConsulta;
+    }
+
+    public boolean isRecibircorreos() {
+        return recibircorreos;
+    }
+
+    public void setRecibircorreos(boolean recibircorreos) {
+        this.recibircorreos = recibircorreos;
     }
 
 }
