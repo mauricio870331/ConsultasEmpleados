@@ -54,7 +54,7 @@ public class Funciones {
         usersToConsultas user = null;
         try {
 //            System.out.println("enciprtada = " + Encriptar(pass));
-            System.out.println("desencriptada = " + Desencriptar("CKnVAeGmnXtoxxCAz6pRaw=="));
+            System.out.println("desencriptada = " + Desencriptar("mzi0i2m19F8G61xzOCP2lA=="));
             pool.con = pool.dataSource.getConnection();
             pstm = pool.con.prepareStatement("select * from usersToConsultas "
                     //+ "where (documento ='" + doc + "')");
@@ -226,7 +226,7 @@ public class Funciones {
         try {
             pool.con = pool.dataSource.getConnection();
             String query = "select * from usersToConsultas where documento = '" + user.getDocumento() + "' and fec_exp_documento = '" + format.format(user.getFecha_exp_cc()) + "'";
-//            System.out.println("query " + query);
+            System.out.println("query " + query);
             pstm = pool.con.prepareStatement(query);
             rs = pstm.executeQuery();
             if (rs.next()) {
